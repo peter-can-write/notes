@@ -92,3 +92,41 @@ Man hat auch gemerkt, dass gerade die Verbindung zwischen Leit- bzw. Rechnewerk
 und dem Hauptspeicher der Haupt-Flaschenhals in der Von-Neumann Architektur
 ist. Deswegen gibt es eben Caches bzw. generell eine Speicherhierarchie. Dieses
 Problem wird auch *Von-Neumann-Flaschenhals* genannt.
+
+### Schichten
+
+Bei Rechnern unterscheidet man heute zwischen sechs Schichten:
+
+1. Benutzerprogramm-Schicht
+
+In höherer Programmiersprache definiert: Variablen, verschiedenen, eventuell
+selbstdefinierten Typs. Oftmals weitere Schichten (Betriebssystemsschicht,
+Awenderschicht etc.)
+
+2. Von-Neumann-Schicht
+
+Definiert durch Maschinenbefehlssatz und die Objekte, auf denen dieser arbeitet:
+Wörter, Adressen, Speicherzellen, Register. Durch Mikroprogrammierung
+interagiert die Von-Neumann-Schicht mit der Mikroarchtektur-Schicht.
+
+3. Mikroarchitektur-Schicht
+
+Auch: Register-Transfer-Level (RTL), definiert durch Quell- und Zielregister und
+Operationen, die auf diesen Registern operieren (sie transportieren oder
+verknuepfen).
+
+Definiert durch den Mikroinstruktionssatz und die Objekte, auf denen dieser
+arbeitet: Register, Speicherzellen, Verbindungswege, verknuepfende Elemente wie
+Schaltnetze, Schaltwerke.
+
+4. Gatter-Schicht (AND/NOR Gatter)
+
+Definiert durch elementare Boolesche Funktionen, die unter Benutzung elementarer
+Schalter durch Bausteine realisiert werden.
+
+5. Bauelemente-Schicht
+
+Definiert durch idealisierte Bauelemente, z.B Widerstände, Kondensatoren,
+Transistoren, Leitungen etc.
+
+6. Physikalische-Schicht (Silicium, Metal-Oxid etc.)
