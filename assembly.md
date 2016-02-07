@@ -1972,6 +1972,7 @@ Extrem wichtige, gerne vergessene Dinge.
 * Speicherzugriffe typisieren! (`mov dword [0x0], 1`)
 * Den Rest Teil bei Divisionen vorher loeschen!!!
 * Zwischen Aufrufen von Prozeduren und Anspringen von Marken unterscheiden!
-* `TEST` ist unnoetig nach einer arithmetischen Operation!
+* `CMP` ist unnoetig nach einer arithmetischen Operation!
 * Werte vom Speicher werden rueckwaerts ins Register gelegt!
 * Shiften geht variabel nur mit CL
+* Am besten einfach alle Register die man nicht veraendern darf pushen/popen.

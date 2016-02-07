@@ -1028,3 +1028,7 @@ Jede Mikroinstruktion ist 80-Bit breit, und besteht aus den folgenden Bits:
 * Nach IFETCH zeigt der BZ schon auf die naechste Instruktion/Adresse.
 * Bei Spruengen Befehlszaehler schon im ersten Takt auf den Adressbus geben!
 * Bei Berechnung von Takten/Speicherzugriffen auch IFETCH beachten!!
+* Die Adressen sind 16-Bit beim Assemblieren, also 1 Adresse = 16 Bit (0x01,
+  0x02 nicht 0x01, 0x03).
+* OpCodes in der Tabelle nicht vergessen auszufuellen.
+* INC/DEC geht mit Carry Flag!
