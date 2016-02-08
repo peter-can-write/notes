@@ -1,4 +1,5 @@
 ### Pipelining
+
 + Bearbeitung eines Objekts wird in Teilschritte zerlegt (Phasen der Pipeline)
 + jede Einheit genau eine spezielle Teiloperation ausfuehrt
 
@@ -85,5 +86,3 @@ Funktionseinheiten.
   der ausfuehrungbereiten Threads aus.
 - *Block Interleaving* Befehle eines Threads so lange ausgefuehrt, bis
   ein Befehl mit langer Latenzzeit ausgefuehrt wird, dann wechsel.
-  
-

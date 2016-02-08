@@ -1,5 +1,8 @@
 # Speicher
 
+Bei Speichern stehen Kapazitaet (wie viel kann gespeichert werden?) und
+Schnelligkeit oft im Gegensatz.
+
 Speicher haben ein Problem:
 
 * grosse Speicher sind langsam
@@ -363,3 +366,389 @@ Im Falle des Software-Prefetching gibt es in der ISA Instruktionen, die
 manuelles Prefetching zu erlauben. Der Compiler eines Programms kann dabei
 Prefetching Instruktionen einfuegen, um somit auch unregelmaesse,
 nicht-sequentielle Zugriffe verbessern zu koennen.
+
+## Speicherarten
+
+### Halbleiterspeicher
+
+Es gibt zwei Arten von Halbleiterspeichern, die sich in ihren Kosten und
+Geschwindigkeit unterscheiden:
+
+* SRAM
+* DRAM
+
+#### SRAM
+
+Static-Random-Access-Memory (SRAM) ist die Variante von Halbleiterspeicher, die
+zwar sehr *schnell* (10-30 nsec Zugriffszeiten) sind, aber dementsprechend *viel
+kosten*. Sie sind aufwendiger herzustellen, werden also hauptsaechlich in
+kleinen Speichern, wie __Caches__ verwendet. SRAM Bausteine sind durch
+*Flip-Flops* (MOSFET) realisiert.
+
+#### DRAM
+
+Dynamic-Random-Access-Memory (DRAM) werden nicht durch Flip-Flops, sondern
+mittels *Kondensatoren* hergestellt. Kondensatoren koennen viel weniger Energie
+speichern als andere Halbleiterspeicher, koennen diese Energie aber auch sehr
+viel schneller abgeben. Das Hauptproblem jedoch ist, dass Kondensatoren
+*Leckstroeme* haben. Das bedeutet, dass Energie kontinuierlich verloren geht und
+man diese Kondensatoren periodisch (ca. alle 2ms) auffrischen muss. Auch ist das
+Lesen des Bits einer DRAM-Zelle *zerstoerend*, also muss die Zelle auch gleich
+nachgefrischt werden. Dadurch ist die Zykluszeit, also die Zeit zwischen
+Zugriffen, laenger als die Zugriffszeit (weil noch aufgefrischt werden muss).
+
+Kondensatoren sind im Vergleich zu Flip-Flops (SRAM) langsamer, aber auch
+billiger. Sie sind gut fuer Hauptspeicher.
+
+https://www.youtube.com/watch?v=LNci-13Bp1U
+
+##### Aufbau
+
+Ein DRAM-Baustein ist eine Matrix aus DRAM-Zellen. Eine jede Zelle wird also
+durch eine Zeile und eine Spalte adressiert. Hierfuer wird die Adresse
+aufgespalten in Zeilen- und Spaltenteil. Diese beiden Teile werden in je einem
+Register gespeichert. Es gibt dann zwei Signale, das RAS (row-address-strobe)
+Signal und CAS (column-address-strobe) Signal, welche die Spalten- und
+Zeilenadressierung *aktivieren*. Also zuerst werden die Teile gespeichert, und
+dann werden die RAS/CAS Signale gesandt, um den Speicherzugriff in der Spalte
+des Spaltenregisters und der Zeile des Zeilenregisters durchzfuehren. Hierbei
+wird __immer eine ganze Zeile gelesen__, und erst dann das Bit an der
+selektierten Spalte rausgelesen. Es gibt dann ein Write-Enable (WE) Signal, das
+dem Speicher sagt, ob nun geschrieben werden soll, oder nur gelesen.
+
+Nachdem eine Zeile in das Zeilenregister geschrieben wurde und durch die RAS
+aktiviert wurde, wird die ganze Zeile gelesen und in ein weiteres Register, den
+*Leseverstaerker* geschrieben. Da die ganze Zeile nun verfuegbar ist, ist es
+viel schneller, einzelne Bits der selben Zeile hintereinander zu
+adressieren. Man muss nur die Spalten-adresse aendern. Braucht man hingegen eine
+voellig neue Zeile, muss man wieder die ganze Zeile laden.
+
+Cache-Zeilen sind somit also an die Laenge der Zeile angepasst.
+
+##### DIMMs
+
+In einem Computer werden DRAMs auf sogenannten DIMMs (dual inline memory-module)
+aufgebaut. Ein solches Modul besteht aus $8$ Chips, wobei jeder Chip weiter
+aufgeteilt ist. Die Speicherkapazitaet von DIMMs wird meist in GBit
+angefuehrt. Der Faktor zwischen GBit und GByte (oder MBit/MByte, KBit/KByte) ist
+jeweils $8$, also ein $8$ GBit sind ein Gbyte.
+
+Eine DIMM-*Reihe* (einfach ein DIMM-Baustein) hat acht Dateleitungen zu den acht
+SDRAM Chips. Jeder SDRAM Chip kann einen GBit speichern. Somit hat man insgesamt
+acht GBit auf dem Speicher, was wiederum einem GByte entspricht.
+
+Ein einzelner SDRAM-Chip speichert also einen Gbit, was $2^{30}/8 = 2^{27}$
+MByte entspricht. Hierbei wird die Spalten/Zeilen-Matrix intern noch in Felder
+aufgeteilt, also wird aus dem Adressteil noch die Feld-Adresse extrapoliert.
+
+#### SDRAM
+
+DRAM an sich ist asynchron. Daten werden also geliefert, sobad die
+entsprechenden Signale ankommen. Bei der Synchronous-DRAM (SDRAM) werden nun
+alle Signale mit einem festen Taktsignal kombiniert. Somit koennen Daten also
+nur entsprechend einem Takt gelesen werden.
+
+### PROM
+
+PROM steht allgemein fuer *programmable-read-only-memory*. Es gibt hierbei noch
+EPROM und EEPROM Varianten, die weiter unten erklaert sind. PROM selbst wird
+durch *zerstoerbare Sicherungen* realisiert. Das bedeutet, man kann den Speicher
+ein einziges Mal programmieren, wobei er nach der einmaligen *Einbrennung* der
+Bits zum ROM (read-only-memory) wird. PROM unterscheidet sich zu ROM, dass bei
+ROM die Daten schon bei der Manufaktur eingebaut werden. Bei PROM kann man sich
+zumindest einmal einen solchen datenlosen PROM Chip kaufen, und ihn erst dann
+programmieren.
+
+http://www.batronix.com/shop/electronic/eprom-programming.html (!)
+https://en.wikipedia.org/wiki/Programmable_read-only_memory
+
+#### EPROM
+
+EPROM steht fuer erasable-read-only-memory. Es ist wie PROM eine Variante eines
+__non-volatile__ Memory Chip -- die Daten bleiben also nach ausschalten der
+Stromquelle erhalten. Hierbei aber werden die Daten in Transistoren auf dem Chip
+eingebrannt. Sie koennen dann wieder geloescht werden (*eraseable*-PROM), indem
+sie einer sehr starken *UV-Quelle* ausgesetzt werden. Deswegen haben EPROM Chips
+meist ein kleines Fenster, wo die UV-Quelle angesetzt werden kann. Nach dem
+Loeschen koennen neue Daten eingebrannt werden. Es handelt sich also nicht wie
+beim PROM um einen OTP (one-time-programmable) Speicher.
+
+https://en.wikipedia.org/wiki/EPROM
+
+#### EEPROM
+
+EEPROM (electrically-erasable-read-only-memory) unterscheidet sich von EPROM
+dadurch, dass der Loeschvorgang nicht durch eine UV-Quelle geschehen muss,
+sondern auch elektrisch realisiert werden kann. Dieser Vorgang dauert zwar
+laenger, aber mit einem geeigneten elektrischen Protokoll kann man den Chip nun
+auch programmieren, ohne dafuer spezielle UV-Apparatur zu benoetigen.
+
+### ROM
+
+Letztlich gibt es noch die Variante des reinen ROM (read-only-memory). Bei
+dieser primitiven Speichertechnik werden die Daten schon bei der Herstellung
+eingebaut (durch elektrische Schaltungen). ROM eignet sich somit also fuer
+Daten, die gewiss nicht veraendet werden muessen und schon bei der Herstellung
+feststehen.
+
+### FLASH Speicher
+
+Flash-Speicher sind eine Erweiterung von EEPROM. EEPROM konnte nur
+neu-geschrieben werden, wenn vorher alle Daten geloescht wurden. Flash-Speicher
+sind aber in Seiten (pages) organisiert. Eine Seite besteht dabei aus $512$ oder
+$2048$ Bytes. Es muss nun nicht zuerst der ganze Speicher geloescht werden,
+sondern es kann auch seitenweise geloescht und neu beschrieben werden. Es kann
+aber auch schneller gelesen werden als auf DRAM.
+
+Ein grosser Nachteil von Flash ist die Lebenserwartung. Eine Flash-Zelle kann
+ungefaehr $10.000$ bis $1.000.000$ mal geschrieben werden. Man braucht daher
+Reservezellen. Flashes selbst werden durch Oxid realisiert, welche beim Loeschen
+leiden.
+
+Eine Strategie, um dieses Problem der Lebenserwartung zu umgehen ist
+__Wear-Leveling__. Hierbei versucht man die Schreibzugriffe relativ
+gleichmaessig ueber die Zellen zu verteilen. Dazu hat man einen weiteren Chip,
+der die Daten dynamisch zu neuen Bloecken re-organisiert.
+
+https://en.wikipedia.org/wiki/Flash_memory
+
+## Ein-/Ausgabe
+
+Man unterscheidet bei Ein-/Ausgabegeraeten zwischen *zeichenorientierten*
+(character/stream oriented) und *blockorientierten* (block oriented) Geraeten.
+
+https://bryansoliman.wordpress.com/2011/07/25/block-oriented-devices-vs-stream-oriented-devices/
+
+### Zeichenorientierte Geraete
+
+Zeichenorientierte (stream-oriented) E/A-Geraete liefern ihre Daten zeichen-,
+also byte-weise. Diese Art von Eingabe ist typisch fuer Dialoggerate wie die
+Tastatur, der Bildschirm, die Maus oder der Drucker. Fuer solche Gerate ist kein
+Buffering notwendig, also sind Verarbeitungs- und Zugriffszeit *schneller*.
+
+### Blockorientierte Geraete
+
+Bei Block-orientierten Geraeten werden Daten in groesseren Einheiten,
+typischerweise $256$ Byte oder einigen KByte, gelesen oder geschrieben. Diese
+Form von E/A ist typisch fuer:
+
+* Festplatten
+* Floppy-Disks
+* Optische Baender (CD/DVD-ROM)
+
+### Anbindung
+
+Die Anbindung von Ein-/Ausgabegeraten erfolgt in der Regel ueber spezialisierte
+Hardware -- einem sogennanten (Device) *Controller*. Diese hat oft einen eigenen
+Mikroprozessor und erhaelt Kommandos sowie Daten vom CPU. Der Controller
+behandelt dann die Anbindung bzw. Steuerung des eigentlichen Geraetes ueber
+dessen Interface. Er behandelt also alle Operationen und Protokolle, die
+eigentlich nichts mit den Daten zu tun haben. Die Kommunikation zwischen
+Controller und CPU passiert dabei ueber Interrupts.
+
+Ein Device-Controller braucht dabei auch immer einen Device-Driver. Das ist also
+die Driver Software, die man auf Windows installieren muss.
+
+Der Zweck von Controllern ist die __Entlastung von CPUs sowie die Realisierung
+von zeitkritischen Steueraufgaben__.
+
+Ein Beispiel fuer einen E/A-Controller ist ein Ethernet-Controller. Dieser muss
+die Seriell-/Parallel-Wandlung der Daten, die Sicherung der Uebertragung durch
+Pruefbits, Kollisionsbehandlung sowie noch weitere Aufgaben behandeln. Diese
+Aufgaben muesste sonst die CPU machen (Entlastung) und diese waere auch weiter
+weg, koennte also zeitkritische Dekodierung nicht so leicht behandeln.
+
+https://chortle.ccsu.edu/AssemblyTutorial/Chapter-04/ass04_3.html
+
+#### Direct-Memory-Access (DMA)
+
+Daten muessen vom Hauptspeicher an die (Controller der) E/A-Gerate uebertragen
+werden. Hierbei muesste normalerweise der CPU die Daten fetchen und zu den
+Controllern uebergeben. Die Idee eines DMA-Controllers ist es nun, eine eigene
+Einheit neben der CPU zu haben, die diese Speicherzugriffe fuer die CPU
+erledigt. Die CPU muss an den DMA-Controller also nur die Anfangsadresse und die
+Laenge des Datenblocks weiterleiten, und diese kann dann parallel zur
+Ausfuehrung der CPU diese Daten holen und an den Controller uebergeben. Somit
+wird die CPU weiter entlastet.
+
+Diese DMA-Faehigkeit kann dabei direkt in den Controller des E/A-Gerates
+eingebaut sein, oder es gibt einen separaten Baustein, der diese Aufgabe
+uebernimmt.
+
+### Hintergrundspeicher
+
+Ein *Hintergrund*speicher steht separat zum Hauptspeicher, und ist dazu gedacht,
+groessere Datenmengen dauerhaft zu speichern, beispielsweise zur Archivierung
+von Daten. Er ist sehr viel groesser als der Hauptspeicher, aber dementsprechend
+auch sehr viel langsamer.
+
+Hierzu wird meist eine der folgenden Methoden zur Realisierung angewandt:
+
+* *magnetische* Aufzeichnung:
+  + Festplatten (HDD)
+  + Magnetbaender (alte VHS Kasetten)
+  + Disketten (Floppy)
+
+* *optische* Aufzeichnung:
+  + CD-ROM/R/RW
+  + DVD
+  + Blu-Ray (verwendet blauen Laser; schneller)
+
+#### Magnetische Aufzeichnung
+
+Bei magnetischen Aufzeichnungsverfahren werden Daten auf magnetisierbaren
+Metallen gespeichert. Ein Bit wird hierbei durch die Magnetisierungs*richtung*
+eines bestimmten Teiles der Schicht gespeichert. Diese Sued/Nord bzw. Nord/Sued
+Polung kann dann durch elektrische Induktion zum Lesen eines bestimmten Bits
+verwendet werden.
+
+Ein Problem ist die zeitliche Synchronisation der Bits. Eine lange Folge von
+identischen Bits ist schwer auseinanderzuhalten, wenn die zeitliche
+Synchronisation nicht perfekt ist (das Problem das Manchester-Encoding
+loest). Man muss also speziell codieren (sodass unabhaengig von den Bits die
+Magnetisierung haeufig genug wechselt) und auch Pruefbits speichern.
+
+##### Plattenspeicher
+
+Eine Art von Festplattenspeicher der konventionelle Plattenspeicher wie man ihn
+aus dem Datenbankbereich kennt. Hierbei sind die Daten auf magnetisierten,
+runden Spuren angeordnet. Ein Schreib-Lesekopf kann dann die Daten lesen,
+waehren die Platte rotiert.
+
+## Virtueller Speicher
+
+Ein Betriebssystem muss die Mehrprozess- und Mehrbenutzerfaehigkeit eines
+Rechners ermoeglichen. Es muss also zu einem Zeitpunkt mehrere Prozesse mehrere
+Benutzer (quasi)-gleichzeitig abarbeiten. Weiters muss das Betriebssystem auch
+Programme laden und fuer diese Speicher reservieren (Code und Daten). Auch ist
+das Betriebssystem dafuer zustaendig, eine effiziente Nutzung des Speichers zu
+gewaehrleisten. Ein Prozess braucht nicht immer den gesamten moglichen Speicher,
+und oftmals brauchen alle Prozesse zusammen auch mehr Speicher, als im
+Hauptspeicher verfuegbar ist. Deswegen muss das Betriebssystem nicht benoetigte
+Teile des Adressraums auf dem Hintergrundspeicher auslagern, um so Platz zu
+schaffen.
+
+Das Prinzip der *virtuellen Adressierung* ist eine Methode, um all diese
+Aufgaben zu ermoeglichen. Das Grundkonzept hierbei ist, dass Programme mit
+*logischen* (also *virtuellen*) Daten-Adressen arbeiten, welche nicht unbedingt
+den echten Adressen der Daten im Hauptspeicher entsprechen. Nach den Vorgaben
+des Betriebssystems wird eine logische Adresse erst durch die
+*Memory-Management-Unit* (MMU) bei jedem Speicherzugriff in die echte, physische
+Adresse umgesetzt. Jeder Prozess in einem Betriebssystem besitzt also seinen
+eigenen virtuellen Adressraum und wenn ein Prozess ein Datum adressiert,
+uebersetzt die MMU diese Adresse in die wirkliche Adresse.
+
+Eine weitere Aufgabe der MMU ist die Ueberprufung der Zugriffsrechte eines
+Prozesses fuer ein Datum. hat ein Prozess nicht die Rechte, auf ein Datum
+zuzugreifen, erzeugt die MMU eine *Ausnahme*.
+
+### Umsetzungstechniken
+
+Die Umsetzung der logischen in die physischen Adressen durch die MMU erfolgt
+ueber bestimmte Tabellen. Diese Tabellen enthalten natuerlich nicht fuer jedes
+Byte eine Ubersetzung. Sonst muesste man den halben Speicher nur fuer diese
+Tabelle opfern. Man uebersetzt also nicht byte-weise, sondern in groesseren
+Speicherbloecken. Mit einem *Speicherblock* kann hierbei entweder ein *Segment*
+oder eine *Seite* gemeint sein (siehe unten). Es werden also nur die Block-Teile
+(oberen Bits) einer jeden Adresse uebersetzt, waehrend der Offset in diesen
+Block (auf das genaue Datum) gleich bleibt.
+
+Wenn es nun eine solche Uebersetzungstabelle fuer Speicherbloecke gibt, kann das
+Betriebssystem jedem Prozess einen kontinuierlichen (contiguous) Speicher zur
+Verfuegung stellen, wobei ein Block aus diesem Adressraum an *beliebiger* Stelle
+im Hauptspeicher stehen kann.
+
+Auch kann das Betriebssysteme Speicherbloecke wenn noetig auf den
+Hintergrundspeicher auslagern. Dann wird die Adressabbildung fuer diesen Block
+in der Umsetzungstabelle geloescht. Will ein Prozess nun doch auf diese Seite
+zugreifen, wird ein page-error erzeugt (Seitenfehler). Dann muss der
+Speicherblock geladen werden, die Umsetzungstabelle aktualisiert werden und der
+Prozess fortgefuehrt werden.
+
+https://www.quora.com/What-is-the-difference-between-paging-and-segment-in-memory-management
+
+#### Segementierung
+
+Bei der Segmentierung wird er Adressraum eines jeden Prozesses in logisch
+zusammengehoerige Bloecke, sogennante *Segemente*, gegliedert. Beispielsweise
+kann es Code-, Daten- und Kellersegmente geben.
+
+Es gibt dann also eine Tabelle, welche die virtuellen Segmente in die physischen
+uebersetzt. Diese Tabelle enthaelt fuer jedes virtuelle Segment einen Eintrag,
+der folgende Informationen beinhaltet:
+
+* Die physische Anfangsadresse des Segments.
+* Die Laenge des Segments.
+* Die Zugriffsrechte.
+
+Die Zugriffsrechte beinhalten hierbei das read/write-execute Byte sowie die
+Privilegstufe, welche angibt, ob die Daten nur im Systemmodus, oder auch im
+Benutzermodus der CPU adressiert werden koennen.
+
+Will man nun auf ein Segment zugreifen, wird der Segmentindex (aus den oberen
+Bits einer Adresse) gegen die Tabelle gemapped, und die Anfangsadresse
+geholt. Diese wird dann auf den Offset dazuaddiert, um somit die physische
+Adrese zu geben. Die Laenge des Segements ist dazu da, zu ueberpruefen, ob der
+Offset nicht ausserhalb der Laenge liegt.
+
+Die meisten moderenen Betriebssystem verwenden anstatt Segmentierung jedoch eher
+Paging.
+
+https://www.quora.com/Paging-versus-segmentation-why-are-they-two-separate-methods-and-why-would-I-chose-one-over-the-other
+
+#### Paging
+
+Neben der Segementierung gibt es noch die Moeglichkeit der *seitenbasierten*
+Speicherverwaltung, dem sogenannten *Paging*. Hierbei wird der virtuelle
+Adressraum in Bloecke gleicher Groesse aufgeteilt, wobei eine solcher Block dann
+als Seite (page) bezeichnet wird. Eine typische Seitengroesse ist $4\, KiB$.
+
+Eine Seite (page) im virtuellen Adressraum entspricht dann einer Kachel (page
+frame) im physischen Adressraum (auf dem Hauptspeicher). Wieder gibt es hier
+eine Umsetzungstabelle, welche fuer jede Seite die:
+
+* physische Adresse der zugehoerigen Kachel (falls nicht ausgelagert)
+* Zugriffsrechte
+
+enthaelt.
+
+Wenn paging als Virtualisierungstechnik genutzt wird, gibt es noch ein
+spezielles Register in der CPU, welche die Adresse des page-table (der
+Umsetzungstabelle) fuer den momentanen Prozess enthaelt. Dieser page-table liegt
+im Hauptspeicher liegenden *page-directory*, neben den page-tables fuer alle
+anderen Prozesse. Wird ein Prozess gewechselt, wird die Adresse des
+page-table fuer diesen Prozess in das spezielle Register geladen.
+
+##### Translation-Lookaside-Buffer (TLB)
+
+Um kontinuierlich viele Zugriffe auf das im Hauptspeicher liegende
+page-table (die Umsetzungstabelle zwischen Seiten/pages und Kacheln/page
+frames) zu vermeiden, gibt es einen speziellen Cache, den sogenannten
+Translation-Lookaside-Buffer (TLB). Dieser wird fuer jeden Prozess am Anfang
+geflushed. Dann, wenn eine Seite einmal im page-table gesucht wird, wird die
+virtuelle Seitenadresse als Tag fuer den Cache verwendet, und die dazugehoerige
+physische Kacheladresse dort gespeichert. Somit kann man beim naechsten mal die
+Kacheladresse schon gleich durch diesen Cache gewinnen, ohne vorher noch
+zusaetzlich zum Hauptspeicher gehen zu muessen.
+
+Translation-Lookaside-Buffers sind meist voll- oder mengenassoziativ und halten
+typischerweise $32$ bis $512$ Eintraege. Auch gibt es oft getrennte TLBs fuer
+Daten und Code.
+
+https://www.quora.com/What-is-the-difference-between-paging-and-segment-in-memory-management
+
+##### Seitengroesse
+
+Die Seitengroesse wird meist mit $4\, KiB$ gewaehlt, manchmal aber auch
+groesser. Wann ist was besser?
+
+* Gruende fuer groessere Seiten:
+  + Kleinere Seitentabellen.
+  + Ein-Auslagerung von groesseren Seiten ist effizienter.
+  + TLB wird oefter und effizienter genutzt (mehr Daten pro Seite = mehr Hits
+    fuer eine Seite im Cache).
+
+* Gruende fuer kleinere Seiten:
+  + Weniger Fragmentierung (effizientere/flexiblere Speichernutzung)
+  + Aufwand zum Star von kleinen Prozessen ist niedrieger (brauchen nicht so
+    einen grossen Addressraum)
