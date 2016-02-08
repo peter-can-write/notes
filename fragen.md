@@ -564,4 +564,63 @@ Ja es ist moeglich. Die Eigenschaft ist, dass man bei der Registereinheit zwei
 mal das selbe Register adressieren kann, welches separat aus den beiden
 Datenausgaengen $A$ und $B$ ausgegeben wird.
 
-##
+## 44. Welche Rolle spielt das Am2902(Carry Lookahead)
+
+Die Volladdierer sind in der Reihe geschaltet und deshalb braucht der
+n-te Addierer den Carry Bit von dem vorherigen und das Am2902 versucht
+noch am Anfang der Addition zu erraten ob die Carry bits gesetzt sind
+oder nicht. 
+
+Noch dazu: er verarbeitet Carry-Generate- und Carry-Propagate-Signale
+der ALUs sowie ein Carry-In-Signal und generiert daraus die Carry
+Eingaenge der ALUs.
+
+## 45. Wieso laesst die Quellensteuerung des Am2901 die Kombination DB
+nicht zu?
+
+Da wir nur drei Bits zur Auswahl der Quellen zur Verfuegung haben,
+gibt es nur 8 moegliche Kombinationen und sie sind alle schon
+ausgenutzt. Und es lohnt sich nicht noch ein Bit einzufuehren.
+
+## 46. Kann der Am2901 die Funktion gdw. nativ berechnen?
+
+Ja, mit XNOR. (Alle anderen Funktionen werden wir auf den
+Merkblaettern sehen koennen, so chill)
+
+
+## 47. Welche Statusregister besitzt Am2904 (Wortrandlogik)?
+
+Er besitzt zwei: Mikrostatus- und Maschinenstatusregister. Der erste
+ist fuer den Mikroprogrammierer gedacht, um komplexere Mikroprogramme
+zu schreiben und der andere wird quasi dem Assemblerprogrammierer exportiert.
+
+
+## 48. Welche Bits des Mikrinstruktionsformats sind fuer die Absadresse?
+
+BAR: MI_6..17 (koennte man aus dem Merkblatt ablesen)
+
+## 49. Zeichnen sie einen 2:1 Multiplexer. (AND, OR, NOT)
+
+You're the master in drawing with the help of the keyboard, I leave it
+to you. Fck this shit!
+
+## 50. Was versteht man unter einem Hazard in einer Schaltung?
+
+Ein kurzzeitig falscher Wert einer boolschen Funktion, der bei der
+Aenderung der Eingaegen dadurch entsteht, dass der Strom sich mit einer
+endlichen Geschwindigkeit ausbreitet und deshalb koennen durch
+unterschiedliche Leitungslaengen unerwartete Verzoegerungen entstehen.
+
+## 51. Unterschied zwischen einem Schaltnetz und Schaltwerk?
+
+Ein Schaltnetz ist ein Buendel von Funktionen und die Ausgabe haengt
+nur von den Eingaengen ab. Und Schaltwerke haben auf der anderen Hand
+einen inneren Zustand und die Ausgabe haengt auch von ihm ab.
+
++ *Schaltnetz* - eine Funktionseinheit, ein nach Aufgabe oder Wirkung
+  abgrenzbares Gebilde, die eine oder mehrere Schaltfunktionen
+  realisiert.
+  
++ *Schaltwerk* - eine Funktionseinheit mit $m$ Eingaengen und $r$
+  Ausgaengen, wobei es zu mindestens einem Eingangswert mehr als einen
+  zugehoerigen Ausgangswert gibt.
