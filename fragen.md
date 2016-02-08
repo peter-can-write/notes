@@ -131,7 +131,8 @@ struct { uint16_t x; uint32_t y[10]; } *eax;
 
 int ebx = foo();
 
-eax->y[ebx] = 5; ```
+eax->y[ebx] = 5; 
+```
 
 Wie kann ein Compiler durch Verwendung von Displacement und Skalierung bei der
 Adressierung den Zugriff effizient uebersetzen?
@@ -334,14 +335,14 @@ Backend (Synthese):
 
 1. Benutzerprogramm-Schicht
 
-In höherer Programmiersprache definiert: Variablen, verschiedenen, eventuell
+In höherer Programmiersprache definiert: Variablen, verschiedenen, eventuell
 selbstdefinierten Typs. Oftmals weitere Schichten (Betriebssystemsschicht,
 Awenderschicht etc.)
 
 2. Von-Neumann-Schicht
 
 Definiert durch Maschinenbefehlssatz und die Objekte, auf denen dieser arbeitet:
-Wörter, Adressen, Speicherzellen, Register. Durch Mikroprogrammierung
+Wörter, Adressen, Speicherzellen, Register. Durch Mikroprogrammierung
 interagiert die Von-Neumann-Schicht mit der Mikroarchtektur-Schicht.
 
 
@@ -362,7 +363,7 @@ Schalter durch Bausteine realisiert werden.
 
 5. Bauelemente-Schicht
 
-Definiert durch idealisierte Bauelemente, z.B Widerstände, Kondensatoren,
+Definiert durch idealisierte Bauelemente, z.B Widerstände, Kondensatoren,
 Transistoren, Leitungen etc.
 
 6. Physikalische-Schicht (Silicium, Metal-Oxid etc.)
@@ -384,7 +385,7 @@ Transistoren, Leitungen etc.
 1. Befehl adressieren
 2. Lesezyklus im Speicher
 3. Befehl einlesen
-4. Befehl dekodieren und ausführen
+4. Befehl dekodieren und ausführen
 
 ## 24. Wie ist die Hauptspeicheranbindung bei Rechnern auf Basis des 8085
    realisiert?
@@ -422,7 +423,7 @@ Dauer: 3 Maschinenzyklen und 10 Taktzyklen
 ## 27. Wann werden Unterbrechungswuensche (Interrupt-Anforderungen) im 8085
    abgefragt?
 
-Im letzten Maschinenzyklus eines Befehls werden Unterbrechungswünsche
+Im letzten Maschinenzyklus eines Befehls werden Unterbrechungswünsche
 abgefragt. (Seite 42)
 
 ## 28. Welche Adressierungsarten gibt es im Instruktionssatz des 8085?
