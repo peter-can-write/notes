@@ -207,6 +207,8 @@ begin
 end process;
 ```
 
+# Compiler error, think about children if africa!!! 
+
 * `process`: Wird aufgerufen wenn sich ein Signal aus der sensitivity-list
   aendert.
 * `sensitivity list`: Parameter von Prozess. Wann soll der Prozess aufgerufen
