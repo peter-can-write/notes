@@ -207,7 +207,9 @@ begin
 end process;
 ```
 
-# Compiler error, think about children if africa!!! 
+# Compiler error, think about children in africa!!!
+
+They could have eaten that semicolon..
 
 * `process`: Wird aufgerufen wenn sich ein Signal aus der sensitivity-list
   aendert.
