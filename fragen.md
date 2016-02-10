@@ -131,7 +131,8 @@ struct { uint16_t x; uint32_t y[10]; } *eax;
 
 int ebx = foo();
 
-eax->y[ebx] = 5; ```
+eax->y[ebx] = 5; 
+```
 
 Wie kann ein Compiler durch Verwendung von Displacement und Skalierung bei der
 Adressierung den Zugriff effizient uebersetzen?
@@ -334,14 +335,14 @@ Backend (Synthese):
 
 1. Benutzerprogramm-Schicht
 
-In höherer Programmiersprache definiert: Variablen, verschiedenen, eventuell
+In höherer Programmiersprache definiert: Variablen, verschiedenen, eventuell
 selbstdefinierten Typs. Oftmals weitere Schichten (Betriebssystemsschicht,
 Awenderschicht etc.)
 
 2. Von-Neumann-Schicht
 
 Definiert durch Maschinenbefehlssatz und die Objekte, auf denen dieser arbeitet:
-Wörter, Adressen, Speicherzellen, Register. Durch Mikroprogrammierung
+Wörter, Adressen, Speicherzellen, Register. Durch Mikroprogrammierung
 interagiert die Von-Neumann-Schicht mit der Mikroarchtektur-Schicht.
 
 
@@ -362,7 +363,7 @@ Schalter durch Bausteine realisiert werden.
 
 5. Bauelemente-Schicht
 
-Definiert durch idealisierte Bauelemente, z.B Widerstände, Kondensatoren,
+Definiert durch idealisierte Bauelemente, z.B Widerstände, Kondensatoren,
 Transistoren, Leitungen etc.
 
 6. Physikalische-Schicht (Silicium, Metal-Oxid etc.)
@@ -384,7 +385,7 @@ Transistoren, Leitungen etc.
 1. Befehl adressieren
 2. Lesezyklus im Speicher
 3. Befehl einlesen
-4. Befehl dekodieren und ausführen
+4. Befehl dekodieren und ausführen
 
 ## 24. Wie ist die Hauptspeicheranbindung bei Rechnern auf Basis des 8085
    realisiert?
@@ -422,7 +423,7 @@ Dauer: 3 Maschinenzyklen und 10 Taktzyklen
 ## 27. Wann werden Unterbrechungswuensche (Interrupt-Anforderungen) im 8085
    abgefragt?
 
-Im letzten Maschinenzyklus eines Befehls werden Unterbrechungswünsche
+Im letzten Maschinenzyklus eines Befehls werden Unterbrechungswünsche
 abgefragt. (Seite 42)
 
 ## 28. Welche Adressierungsarten gibt es im Instruktionssatz des 8085?
@@ -564,4 +565,329 @@ Ja es ist moeglich. Die Eigenschaft ist, dass man bei der Registereinheit zwei
 mal das selbe Register adressieren kann, welches separat aus den beiden
 Datenausgaengen $A$ und $B$ ausgegeben wird.
 
-##
+## 44. Welche Rolle spielt das Am2902(Carry Lookahead)
+
+Die Volladdierer sind in der Reihe geschaltet und deshalb braucht der
+n-te Addierer den Carry Bit von dem vorherigen und das Am2902 versucht
+noch am Anfang der Addition zu erraten ob die Carry bits gesetzt sind
+oder nicht. 
+
+Noch dazu: er verarbeitet Carry-Generate- und Carry-Propagate-Signale
+der ALUs sowie ein Carry-In-Signal und generiert daraus die Carry
+Eingaenge der ALUs.
+
+## 45. Wieso laesst die Quellensteuerung des Am2901 die Kombination DB
+nicht zu?
+
+Da wir nur drei Bits zur Auswahl der Quellen zur Verfuegung haben,
+gibt es nur 8 moegliche Kombinationen und sie sind alle schon
+ausgenutzt. Und es lohnt sich nicht noch ein Bit einzufuehren.
+
+## 46. Kann der Am2901 die Funktion gdw. nativ berechnen?
+
+Ja, mit XNOR. (Alle anderen Funktionen werden wir auf den
+Merkblaettern sehen koennen, so chill)
+
+
+## 47. Welche Statusregister besitzt Am2904 (Wortrandlogik)?
+
+Er besitzt zwei: Mikrostatus- und Maschinenstatusregister. Der erste
+ist fuer den Mikroprogrammierer gedacht, um komplexere Mikroprogramme
+zu schreiben und der andere wird quasi dem Assemblerprogrammierer exportiert.
+
+
+## 48. Welche Bits des Mikrinstruktionsformats sind fuer die Absadresse?
+
+BAR: MI_6..17 (koennte man aus dem Merkblatt ablesen)
+
+## 49. Zeichnen sie einen 2:1 Multiplexer. (AND, OR, NOT)
+
+You're the master in drawing with the help of the keyboard, I leave it
+to you. Fck this shit!
+
+## 50. Was versteht man unter einem Hazard in einer Schaltung?
+
+Ein kurzzeitig falscher Wert einer boolschen Funktion, der bei der
+Aenderung der Eingaegen dadurch entsteht, dass der Strom sich mit einer
+endlichen Geschwindigkeit ausbreitet und deshalb koennen durch
+unterschiedliche Leitungslaengen unerwartete Verzoegerungen entstehen.
+
+## 51. Unterschied zwischen einem Schaltnetz und Schaltwerk?
+
+Ein Schaltnetz ist ein Buendel von Funktionen und die Ausgabe haengt
+nur von den Eingaengen ab. Und Schaltwerke haben auf der anderen Hand
+einen inneren Zustand und die Ausgabe haengt auch von ihm ab.
+
++ *Schaltnetz* - eine Funktionseinheit, ein nach Aufgabe oder Wirkung
+  abgrenzbares Gebilde, die eine oder mehrere Schaltfunktionen
+  realisiert.
+  
++ *Schaltwerk* - eine Funktionseinheit mit $m$ Eingaengen und $r$
+  Ausgaengen, wobei es zu mindestens einem Eingangswert mehr als einen
+  zugehoerigen Ausgangswert gibt.
+
+## 52. Wie ist es moeglich fuer komm. Prozesse funkt. zu sein?
+
+Wenn die kommunizierte Werte nicht in das Ergebnis kommen oder der
+lokale Wert mit demselben Wert ueberschrieben wird.
+
+## 53. Einschrittige Zustandsueberagaenge?
+
+Der Hammingabstand zwischen den Zustanden 1 ist, also sie die
+Zustandsnummern unterscheiden sich in nur einem Bit. Wenn die so
+kodiert werden, wie es oben beschrieben wurde, dann koennen die
+Hazards vermieden werden. (bei 10 -> 01 koennte ein Hazard entstehen,
+z.B. 10 -> 00 -> 01)
+
+## 54. Raeumliche Lokalitaet?
+
+Wenn gemeinsam genutzte Daten im Speicher raeumlich beieinander
+liegen, sind Optimierungen im Cache und beim Transfer der Daten ueber
+den Bus zum Prozessor moeglich.
+
++ *Raeumliche Lokalitaet*
+  * Die Daten, die neben einander in dem
+	Speicher liegen, werden oft gemeinsam genutzt.
+  * Wenn ein Programm auf die Adresse x zugreift ist es warscheinlich,
+    dass es auch auf die Adressen in der naehe von x zugreift.
+	
++ *Zeitliche Lokalitaet*
+  * Wenn ein Programm auf die Adresse x zugreift, ist es
+    warscheinlich, dass es bald wieder darauf zugreifen wird.
+	
+## 55. Unterschiede der drei Cache-Organisationsformen?
+
++ *Direkt* - jede Adresse im HS wird auf eine bestimmte Zeile im Cache
+  abgebildet, deshalb kann oft nicht der ganze Cachespeicher
+  ausgenutzt werden.
+  
++ *Vollassoziativ* - keine Zuordnung der Adresse einer Zeile im Cache,
+  schwerer zu implementieren, der ganze Cache genutzt.
+  
++ *Mengenassoziativ* - Zuordnung der Adresse in eine Menge, innerhalb
+  der Menge vollassoziativ.
+  
+## 56. Was ist der Index in der Adresse eines Datenzugriffs?
+
+Die Zeile im Cache.
+
+* *<Tag><Index><Offset>*
+
+## 57. Wie wird die Verwendung des virtuellen Speichers in Hardware
+unterstuetzt?
+
+Durch die Verwendung eines speziellen Cachespeichers TLB (Translation
+Lookahead Buffer), in dem haefig verwendete paare aus virtueller und
+physischer Adresser gespeichert werden.
+
+Zur Wiederholung: 
+* MMU Register speichert die Adresse die page directory
+* Page Directory speichert die Verweise auf die Page Table, also die
+  Umsetzungstabellen
+
+MMU Register wird immer neugeladen, beim Wechsel des Programms.
+
+In der Tabellen wird nur die Anfangsadresse zugewiesen und der Offset
+bleibt gleich,
+
+Es koennen fuer solche Umsetzung Segmente oder Pages verwendet
+werden. Segmente haben keine feste groesse (z.B. Code-, Daten-,
+Kellersegment). Und bei Paging bleibt die groesse konstant.
+
+MMU prueft auch die Zugriffsrechte.
+
+## 58. Beispiele, wo Caches eingesetzt werden?
+
+L1, L2, L3, TLB, I/O Geraeten
+
+## 59. Kann jede Schaltfunktion durch Boolsche-Normalformen
+augedrueckt werden?
+
+Ja. //Ich weiss es nicht, was man hier noch sonst hinschreiben kann.
+
+Jede n-Stellige boolsche Funktion ist eindeutig in DNF und KNF
+darstellbar.
+
+*Schaltfunktion* - ein Funktion der Form {0,1}^n -> {0,1}
+
+Noch etwas zum Thema boolsche Algebra:
+Die Einsmenge einer n-Stelligen Funktion ist die Menge aller
+n-Tupel(Eingangwoerter), fuer die die Schaltfunktion den Wert 1
+ausgibt.
+
+## 60. In welcher Normalform wird ein Minterm verwendet?
+
+Minterme werden in DNF verwendet(z.B. $abc+\overline{a,b},c$)
+
+Ein *Minterm* ist die Konjunktion aller n Argumente einer
+Schaltfunktion. Die Argumente koennen negiert werden und jeder Minterm
+liefert nur genau fuer eine Belegung den Wahrheitswert 1.
+
+Ein *Maxterm* ist genau das umgekehrte.
+
+## 61. Liefert eine Schaltfunktion bei gleichen Eingaben immer die
+gleichen Ausgaben?
+
+Ja, die Ausgaben haengen nur von der Eingabe ab; eine Schlatfunktion
+hat keinen internen Zustand, der die Ausgabe irgendwie beeinfluessen
+koennte.
+
+## 62. Laesst sich mit einer Schlatfunktion ein Speicher realisieren?
+
+Nein, keinen internen Zustand. Einen ROM kann man doch mit einem
+Encoder und Decoder realisieren.
+
+## 63. Was ist eine Verschmelzungsmenge?
+
+Ist die Menge aller n-stelligen Minterme, die sich durch
+Distributivitaets- und Neutralitaetsregeln zu einem k-Stelligen Monom
+umformen laesst. (abc+not(a)bc=bc)
+
+*Monom* - (konjunktives) ist die Konjunktion k-Variablen einer
+n-stelligen Schaltfunktion.
+
+## 64. Wie funktioniert ein KV-Diagramm fuer 4 vars?
+
+Drawing.. not my thing. Fck this shit.
+
+Hierbei werden 2^n Felder fuer n Variablen verwendet, um jeden
+moeglichen Minterm darzustellen.
+
+## 65. Welche Ziele werden bei der Minimierung von Schaltnetzen
+verfolgt?
+
+* Weniger Schaltglieder
+* Weniger Eingaenge und Leitungen
+* Weniger Stufen
+* Kuerzere Leitungen
+* Billigere Schaltglieder
+
+## 66. Welches Schaltnetz hat genau einen Ausgang(MUX/DEMUX)?
+
+MUX //nope I'm not gonna draw it
+
+## 67. Wie kann man ein ROM bauen?
+
+n -> Decoder -> 1 aus 2^n -> Encoder -> m
+
+## 68. Wodurch blahblah Gatter sparen bein nem Funkbuendel?
+
+Gemeinsame Nutzung von Mintermen, die von mehreren Funktion ueberdeckt
+werden.
+
+## 69. Was eignet sich besser fuer die Umformung in NOR-Gattern?
+(konjunktives oder disjunktives Polynom)
+
+Konjunktives Polynom - ist doch trivial
+
+## 70. Mealy- und Moore-Automaten
+
+Beim Moore die Ausgabe nur vom inneren Zustand, beim Mealy noch von
+der Eingaengen. Bei der Zusammenschaltung von mehreren Mealy Automaten
+kann eine endlosschleife passieren.
+
+## 71. Prozess
+
+Zeitlich zergliederbare Handlung
+
+## 72. Warum Synchrone Schaltwerke?
+
+Um die Funktionalitaet des Computers sicherzustellen, Hazards zu
+vermeiden, verschiedene Elemente miteinander zu synchronisieren.
+
+## 73. Warum ein Hazard in nem And-Gatter kein Gegenbeispiel fuer die
+Funktionalitaet?
+
+Weil nach kuerzer Zeit wieder der korrekte Wert einstellt.
+
+## 74. Welche Zahlen benachbart?
+
+trivial
+
+## 75. Welchen Vorteil bringen sie?
+
+Vermeidung von "critical races"
+
+*Critical Race* - Abhaengigkeit des Folgezustands eines Rechenweks von
+Zeitbedingungen im Rueckkopplungsweg und das ist endgueltig.
+
+## 76. Was wird durch die Taktung erreicht?
+
+Hazards koennen abklingen bevor die Daten weiterverarbeitet werden und
+Synchrnonization des Schaltwerks mit anderen Teilen der Maschine.
+
+## 77. Welche Aussagen sind korrekt ueber D-FlipFlops?
+
+kein Lust
+
+## 78. Warum wird der Pegel, der am Eingang eines MS-Flipflops liegt
+##nicht sofort in den Ausgang uebernommen?
+
+Weil eines der beiden FlipFlops immer blockiert. (einer wird von dem
+low-Pegel aktiviert und der andere bei dem umgekehrten)
+
+## 79. Was bringt das?
+
+Die Synchronisation kann auf den Takt erreicht werden, also
+Flankengesteuert.
+
+## 80. Zeitliche Lokalitaet
+
+## 81. Prefetching
+
+Die Daten werden in den Cache geladen noch bevor sie benoetigt werden.
+
+Hardware und Software Prefetching
+
+Bei Hardware prefetching wird meisten der naechste auszufuehrende
+Befehl in den Stream Buffer geladen und beim Software Prefetching
+setzt der Compiler explizit Befehle rein, um die entsprechenden Daten
+im Voraus zu fetchen und das kann auch von dem Programmierer
+kontrolliert werden.
+
+## 82. Geschiechte der Computern in 2 seconds?
+
+Prozessoren sind deutlich schneller geworden und die
+Speichergeschwindigkeit hinkt deutlich hinterher.
+
+## 83. Transparenz von Caches?
+
+Caches werden automatisch von der Hardware gesteuert.
+
+## 84. Vorteile vom virtuellen Speicher in Kombination mit Paging?
+
+Transparente Auslagerung von unbenutzten Speicherseiten auf HSpeicher,
+Speicherschutz, verminderte Fragmentierung, beim Linkervorgang stehen
+virtuelle Adressen von Symbolen bereits fest.
+
+## 85. TLB? Wieso oft vollassoziativ?
+
+Wird benutzt, um die Uebersetzungstabellen von virtuellen Adressen auf
+die Physische zu speichern und wird bei jedem Speicherzugriff
+benoetigt, also ist sehr wichtig, dass er sehr effizient implementiert
+wird und voll ausgenutzt wird, deshalb ist die vollasoziative
+Implementierungen genau das richtige fuers TLB.
+
+## 86. Warum setzt man Controller mit IO ein?
+
+Zur Entlastung der CPU und Realisierung zeitkritischer Aufgaben.
+
+## 87. Cache misses
+* Compulsory miss
+* Capacty miss
+* Conflict miss
+
+Die Erklaerungen zu allen drei sind trivial.
+
+## 88. Welche Eigenschaften stehen bei Speicherhierarchie im
+##Gegensatz?
+
+Kapazitaet und Geschwindigeit.
+
+## 89. Verfahren fuer den HSpeicher?
+
+* Magnetisches - Festplatte
+* Optisches - CD-ROM, CD-RW, DVD
+* Elektrisches - Flash/SSD
+
+
