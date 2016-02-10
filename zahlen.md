@@ -5,7 +5,7 @@
 Das Binaersystem hat nur zwei Ziffern: $0$ und $1$. Von $0$ weg hat der $n$-te
 Bit also den Wert $2^n$.
 
-### Umrechnung Dezimal => Binaer
+### Dezimal $\Rightarrow$ Binaer
 
 Um eine Dezimalzahl in das Binaersystem zu ueberfuehren, sucht man sich
 kontinuerlich die groesste Zweierpotenz, die noch in die Zahl passt. Man setzt
@@ -30,9 +30,9 @@ Zweierpotenz. $2^{26} = 2^{16} \cdot 2^{10} = 65636 \cdot 1024 = 65536000 + 2
 \cdot 655360 + 4 \cdot 65536$. Fuer Dezimalmultiplikation: zuerst
 multiplizieren, dann Rest addieren.
 
-Binaer: $1001001100101100000001011010010$
+Binaer: $1001001100101100000001011010010_2$
 
-### Umrechnung Binaer => Dezimal
+### Binaer $\Rightarrow$ Dezimal
 
 Um von Binaer auf Dezimal umzurechnen, addiert man einfach sukzessive die
 vorkommenden Zweierpotenzen.
@@ -42,7 +42,7 @@ Beispiel: $1010_2$
 Hier ist der dritte Bit (von $0$ weg) gesetzt, also zaehlen wir $2^3 = 8$ und
 dann $2^1 = 2$, also $8 + 2 = 10$.
 
-Beispiel: $0101 1101 1111 0111 1001 0011$
+Beispiel: $0101 1101 1111 0111 1001 0011_2$
 
 Potenzen: $2^0 + 2^1 + 2^4 + 2^7 + 2^9 + 2^{10} + 2^{12} + 2^{13} + 2^{14} +
 2^{15} + 2^{16} + 2^{18} + 2^{19} + 2^{20} + 2^{22} = 6157971_{10}$
@@ -58,7 +58,7 @@ genau wenn man $1$ und $1$ addiert. Generell die Regeln:
 2. $0 + 1 = 1 + 0 = 1$
 3. $1 + 1 = 0, \text{ Carry} = 1$
 
-__ Bei der Addition wird das Resultat maximal um einen Bit groesser als der
+__Bei der Addition wird das Resultat maximal um einen Bit groesser als der
 groesste Summand.__
 
 Beispiel: $123_{10} + 456_{10} = 01111011_2 + 111001000_2$
@@ -87,9 +87,9 @@ ist es wichtig anzumerken, dass eine Multiplikation mit einem Bit bzw. allgemein
 mit einer Zweierpotenz aequivaelent zu einem Shift von $k$ Bits nach links ist,
 wo $k$ die Position des Bits im Multiplikator ist.
 
-__ Bei der Multiplikation einer $n$-stelligen Binaerzahl mit einer $m$-stelligen
-kann das Resultat maximal $m + n$ viele Bits haben. __ Fuer *signed* Werte sind
-es $(m - 1) + (n - 1)$, da der Sign-Bit nicht zum Wert zaehlt.
+__Bei der Multiplikation einer $n$-stelligen Binaerzahl mit einer $m$-stelligen
+kann das Resultat maximal $m + n$ viele Bits haben.__ Fuer *signed* Werte sind
+es $(m - 1) + (n - 1) + 1$. $m-1$ und $n-1$ sind die Stellen der Zahlen (ohne dem jeweiligen Sign Bit), und $+ 1$ dann fuer den Sign-Bit des Resultats.
 
 $25_{10} \cdot 13_{10} = 0001 1001_2 \cdot 0000 1101_2$
 
@@ -117,12 +117,12 @@ Subtraktion mit binaeren Zahlen kann auf zwei Weisen durchgefuehrt werden:
    2. $1 - 0 = 1$
    3. $1 - 1 = 0$
    4. $10 - 1 = 1$. Dies ist die einzige etwas "anspruchsvollere" Regel. Wenn
-      man im Dezimalsystem eine groessere von einer kleineren Zahl abzieht
+      man im Dezimalsystem eine kleinere von einer groesseren Zahl abzieht
       (waehrend einer manuellen Subtraktion), zieht man bekanntlich $9$-en nach:
       $1000 - 1 = 0999$. $9$ ist hierbei die groesste Ziffer im
       Dezimalsystem. Somit erhaelt man eine Zahl, die am naechsten zur
       vorherigen war. Das selbe macht man nun auch im Binaersystem, nur ist eben
-      $1$ die hoechste Ziffer: $10 - 0 = 01$, $10000 - 1 = 01111$ etc.
+      $1$ die hoechste Ziffer: $10 - 1 = 01$, $10000 - 1 = 01111$ etc.
 
 $1234_{10} - 567_{10} = 0100 1101 0010_2 - 0010 0011 0111_2$
 
@@ -162,7 +162,7 @@ $10000...$ mit nur Nullen ist ja der kleinste negative Wert, und jeder gesetzte
 Bit ist sozusagen eine Addition zu diesem negativen Wert. Also wenn man diesen
 negativen Wert erweitern will, sollten die hoeheren Bits $1$ gesetzt werden,
 weil sie dadurch nicht den Wert veraendern (sie werden zu der entstandenen
-groesseren Breite also wieder hinzuaddiert; dadurch der negative Wert wird
+groesseren Breite also wieder hinzuaddiert; dadurch wird der negative Wert
 kleiner bzw. gleich dem gewuenschten Wert).
 
 ## Hexadezimal
@@ -181,12 +181,12 @@ Hexadezimalsystem.
 
 Oftmals schreibt man Hexadezimalzahlen mit einem `0x` Praefix.
 
-### Umrechnung Dezimal => Hexadezimal
+### Dezimal $\Rightarrow$ Hexadezimal
 
 Hierbei kann man die Dezimalzahl entweder zuerst in eine Binaerzahl nach
 bekannter Methode verwandeln, und dann ganz einfach je $4$ Bits
 komprimieren. Oder man subtrahiert eben den groessten Wert $k \cdot 16^n < x$ wo
-$x$ die umzurechnende Zahl und $k$ ein beliebiger Koeffizent.
+$x$ die umzurechnende Zahl und $k$ ein beliebiger Koeffizent zwischen $0$ und $15$ ist.
 
 $123456_{10} = ?_{16}$
 
@@ -220,8 +220,8 @@ der Divisionswert ohne Rest wird mit in die naechste Addition getragen.
 
 Wichtig ist es einfach, nicht zu vergessen, modulo $16$ zu rechnen, und nicht
 modulo $10$. Z.b. Wenn man in einer Spalte $A + E$ rechnet und sich im Kopf "$24_{10}$"
-denkt, dann ist das Resultat nicht $4$, $2$ Rest sondern $24 \mod 16 = 8$ und
-$\lfloor 24/16 \rfloor = 1$ Rest.
+denkt, dann ist das Resultat nicht $4$, $2$ Rest sondern $24 \mod 16 = 8$ Rest und
+geht $\lfloor 24/16 \rfloor = 1$ mal rein.
 
 Bei der Addition kann wieder maximal eine neue Ziffer hinzukommen.
 

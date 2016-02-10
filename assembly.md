@@ -8,7 +8,7 @@ Begriff *Assembly* fuer die Sprache und den Compiler.
 
 Der Assembler selbst kann dabei eine eigene Syntax haben (NASM vs GAS), jedoch
 hat ein Prozessor nur eine einzige Maschinensprache. Also muessen alle
-Assemblierer letztendlich dasselbe Maschinenprogramm erzeugen.
+Assemblierer letztendlich dasselbe Maschinenprogramm erzeugen (auf dem selben Rechner).
 
 Die Programmierung in Assembler ist wegen der niedrigen Abstraktion sehr
 aufwaendig, aber es gibt dennoch gute Gruende, darin zu programmieren:
@@ -38,7 +38,7 @@ niedrigster Speicheradresse). Konstanten (*Immediates*) sind daher auch 32-Bit.
 
 ## Register
 
-Es gibt in modernen x86 Prozessoren 8 32-Bit "Allzweck" Register, von denen zwei
+Es gibt in modernen x86 Prozessoren acht 32-Bit "Allzweck" Register, von denen zwei
 aber fuer Stack-Operationen reserviert sind:
 
 'E' steht hier immer fuer "Extended".
@@ -87,7 +87,7 @@ Operationen im Zusammenhang mit dem Stack, wie `PUSH`, `POP`, `CALL`, `RET`.
 ### EBP
 
 Der Base-Pointer wird bei Funktionsaufrufen dafuer genutzt, die Startadresse des
-momentanen *Stack-Frames* zu speichern. Wird eine Funktion aufgerufen,
+letzten *Stack-Frames* zu speichern (siehe Calling Conventions).
 
 http://www.swansontec.com/sregisters.html
 
@@ -121,7 +121,7 @@ Gesamtblockbild:
 [         |   DI    ] <-- EDI
 [                   ] <-- ESP (stack pointer)
 [         |   BP    ] <-- EBP (base pointer)
-<----- 32 Bit ----->
+<----- 32 Bit ------>
 ```
 
 ### Status Register
@@ -131,14 +131,14 @@ mit bestimmer Bedeutung enthaelt. Diese Bits werden in Abhaengigkeit des
 Ergebnisses einer arithmetischen oder logischen Operation gesetzt, und koennen
 z.B. zum Ueberprufen von Bedingungen genutzt werden. Die Flags sind:
 
-1. `CF`: Carry. Gesetzt, wenn bei einer *unsigned* Addition ein Uebertrag vom
+1. `CF`: Carry. Gesetzt, wenn bei einer *unsigned* Addition/Subtraktion ein Uebertrag vom
    MSB (ins nichts) passiert ist.
 2. `OF`: Overflow. Gesetzt wenn man bei einer *signed* Addition zwei positive
    Zahlen addiert un das Resultat negativ ist, oder zwei negative Zahlen addiert
    und das Resultat positiv ist.
 3. `ZF`: Zero. Gesetzt, wenn das Ergebnis null ist.
 4. `SF`: Sign. Gesetzt, wenn das (*signed*) Ergebnis negativ ist.
-5. `PF`: Parity. Gesetzt, wenn die Anzahl an Bits im LSB (byte) gerade ist.
+5. `PF`: Parity. Gesetzt, wenn die Anzahl an gesetzten Bits im LSB (byte) gerade ist.
 
 https://en.wikipedia.org/wiki/Parity_flagB
 
@@ -160,17 +160,19 @@ wird. Addiert man z.B. im 8-Bit Register `AL` den Wert `0b00000001` auf
 `0b11111111`, so passt der uebertragene MSB nicht mehr in den vorgesehenen
 Speicherraum von 8-Bit. Also wird das Carry Flag gesetzt.
 
-Auch wird das Carry gesetzt, wenn bei einer Subtraktion ein Borrow "ins nichts"
-passieren muss, also ausserhalb der Breite des Datentyps bzw. wenn der MSB also
-auch $0$ ist. Dies passiert immer, wenn man eine groessere Zahl von einer
-kleineren subtrahiert! Z.B. bei `0000 - 00001 = 1111` wird `OF = 1` weil man aus
-"dem nichts" borrow-en musste. Das Sign Bit muss dann aber nicht immer eins
-sein, weil hoehere Bits den geborrowed Bit wieder loeschen koennen.
+Auch wird das Carry gesetzt, wenn bei einer Subtraktion ein Borrow "aus dem
+nichts" passieren muss, also ausserhalb der Breite des Datentyps bzw. wenn der
+MSB also auch $0$ ist. Dies passiert immer, wenn man eine groessere Zahl von
+einer kleineren subtrahiert! Z.B. bei `0000 - 00001 = 1111` wird `CF = 1` weil
+man aus "dem nichts" borrow-en musste. Das Sign Bit muss dann aber nicht immer
+eins sein, weil hoehere Bits den geborrowed Bit wieder loeschen koennen.
 
 Fuer *signed* Werte hat das Carry Flag ueberhaupt keine Bedeutung.
 
 Fuer *unsigned* Werte bedeutet ein Setzen des Carry Flags, dass bei der letzten
 arithmetischen Operation ein Fehler passiert ist.
+
+Das Carry Bit wird auch bei einem Uebertrag bei der Multiplikation gesetzt, sowie wenn der MSB bei einem logischem Schiebebefehl nach draussen geschoben wird.
 
 ##### Overflow
 
@@ -233,7 +235,7 @@ Interpretiert man diese Addition nun als *unsigned*, dann ist $127 + 1 = 128$,
 und dieser Wert passt perfekt in einen 8-Bit unsigned Wert. Also das Carry Flag
 wird nicht gesetzt.
 
-Interpretiert man diese Addition nun als *signed, dann ist $127_{10} + 1_{19} =
+Interpretiert man diese Addition nun als *signed*, dann ist $127_{10} + 1_{19} =
 01111111_2 + 00000001_2 = 10000000_2$. Hierbei hat sich also bei der Addition
 von zwei positiven Zahlen das Sign Bit gesetzt (wegen dem Uebertrag) bzw. eine
 negative Zahl ergeben, also wird das Overflow Bit gesetzt.
@@ -241,8 +243,8 @@ negative Zahl ergeben, also wird das Overflow Bit gesetzt.
 Ein weiteres Beispiel:
 
 ```
-mov eax, 100
-sub eax, 200
+mov al, 100
+sub al, 200
 ```
 
 Zuerst unsigned: Hier sieht man gleich, dass eine groessere Zahl von einer
@@ -256,7 +258,7 @@ also muss man sehen, welche negative Zahl es ist (binaer aufschreiben, 2-er
 Komplement bilden, es ist dann -diese Zahl). Hier also $-56$. Nun ist $100 -
 (-56) = 100 + 56 = 156$. Hier hat man eine Addition zweier positiver Zahlen, die
 zu einer negativen Zahl fuehrt, weil $156$ passt nicht mehr in den positiven
-Raum von $1$ bis $127$ fuer 8-Bit.
+Raum von $1$ bis $127$ fuer 8-Bit. Also wird die Overflow Flag gesetzt.
 
 http://teaching.idallen.com/dat2343/10f/notes/040_overflow.txt
 
@@ -292,7 +294,7 @@ werden. Z.b. uebersetzt der Assembler `ADD EAX, 0x1000` in `05 00 10 00 00`
 Im allgemeinen Fall kann die Groesse eines Operanden bzw. eines Datums aus der
 Groesse des Registers bzw. der Assembler Instruktion geschlossen werden. Laedt
 man beispielsweise ein 32-Bit Register (z.B. `EAX`) aus dem Speicher, so
-schliesst der Assembler dass man einen 4-Byte grossen Addressraum adressieren
+schliesst der Assembler, dass man einen 4-Byte grossen Addressraum adressieren
 moechte. Oder addiert man zwei Extended Register, schliest der Assembler dass es
 sich um eine 32-Bit Addition handelt. In manchen Faellen ist die Groesse des
 angesprochenen Datums jedoch nicht eindeutig, dann muss man es *typisieren*,
@@ -335,7 +337,7 @@ konstante1:
 adresse1:
 	EQU 0x123
 
-MOV EBX, konstante1+2
+MOV EBX, konstante1
 ```
 
 #### `D<X>`
@@ -419,26 +421,32 @@ nicht: `[DL]`!!!
 Es ist klueger, Speicherzugriffe wenn moeglich immer zu typisieren, sonst
 vergisst man es manchmal.
 
+#### Direct
+
+Unter direct bzw. direkter Adressierung versteht man das zugreifen auf eine konstatne Speicheradresse. Der Operand ist also eine 32-Bit Immediate, in eckigen Klammern:
+
+```asm
+MOV EBX, [0]   ; ptr = 0x0; EBX = *ptr
+```
+
 #### Register Indirect
 
-Die einfachste Moeglichkeit eine Speicheradresse anzugeben ist mit einem
-*Register Indirect*. Hierbei kann die Adresse durch ein Register oder einer
-Konstante angegeben werden. Bei einem Register bestimmt der Wert, der im
+Eine weitere Moeglichkeit eine Speicheradresse anzugeben ist mit einem
+*Register Indirect*. Hierbei kann die Adresse durch ein Register angegeben werden. Bei einem Register bestimmt der Wert, der im
 Register gespeichert ist, die Adresse. Ein solches Register ist also Quasi ein
 Pointer auf eine Speichadresse, und mit eckigen Klammern dereferenziert man
 diesen Pointer.
 
 ```asm
 MOV EBX, [EAX] ; EBX = *EAX
-
-MOV EBX, [0]   ; ptr = 0x0; EBX = *ptr
 ```
 
 #### Based Mode
 
-Beim Based Mode wird die Adresse relativ zu einem *Base-Pointer* (einem
-Register) angegeben. Der Offset ist dann eine *Konstante*. Der Base-Pointer
-selbst darf keine weitere Konstante sein. Kein Whitespace zwischen dem `+`.
+Beim Based Mode (Registerindirekt mit Displacement) wird die Adresse relativ zu
+einem *Base-Pointer* (einem Register) angegeben. Der Offset ist dann eine
+*Konstante*. Der Base-Pointer selbst darf keine weitere Konstante sein. Kein
+Whitespace zwischen dem `+`.
 
 ```asm
 MOV EBX, [EAX+4] ; EBX = *(EAX + 4)
@@ -451,8 +459,8 @@ Note: ein Label ist auch eine Konstante, also sowas geht nicht: `MOV EBX,
 
 #### Based-Indexed Mode
 
-Base-Indexed Mode ist wie Based Mode, aber das Displacement ist ein weiteres
-Register.
+Based-Indexed Mode (Indizierte Adressierung) ist wie Based Mode, aber das
+Displacement ist ein weiteres Register.
 
 ```asm
 MOV EBX, [EAX+EBX]
@@ -532,7 +540,7 @@ SUB [0x0], [0x123] ; Error!
 
 #### NEG
 
-`NEG` bildet das Zweierkomplement (!), also flipped die Bits und addiert
+`NEG` bildet das Zweierkomplement (nicht `NOT`!), also flipped die Bits und addiert
 eins. Der Befehl hat nur einen Operanden, muss also in bestimmten Faellen
 typisiert werden. Der Operand muss ein Register oder eine Speicheradresse sein,
 keine Konstante (da der negierte Werte ja zurueckgespeichert wird).
@@ -550,7 +558,7 @@ INC EAX
 ```
 
 ```asm
-MOV AL, 0 ; AL = 0b00000001
+MOV AL, 1 ; AL = 0b00000001
 
 NEG AL    ; AL = 0b11111111
 ```
@@ -562,7 +570,7 @@ also (als Instruktion) weniger Speicher und war deswegen (frueher) schneller als
 `ADD` mit eins.
 
 Eine wichtige bzw. interessante Eigenschaft von `INC` ist, dass `INC` nie das
-Carry Flag (CF). Es kann also gut als (zyklischer) Counter verwendet werden,
+Carry Flag (CF) setzt. Es kann also gut als (zyklischer) Counter verwendet werden,
 ohne dass Flags gesetzt werden. Mit der Zero Flag (ZF) kann man trotzdem auf
 Overflow reagieren. __Die Overflow Flag (OF) und Sign Flag (SF) werden trotzdem
 ganz normal behandelt!__
@@ -582,7 +590,7 @@ INC WORD [0x0] ; OK
 #### DEC
 
 `DEC` dekrementiert einen Wert um eins. Es hat auch eine implizite Konstante
-und braucht daher (als Instruktion) weniger Speicher.
+und braucht daher (als Instruktion) weniger Speicher. Es setzt auch das Carry Flag nicht, Overflow und Sign Bit aber schon.
 
 
 ```asm
@@ -594,15 +602,13 @@ DEC AH  ; --AH
 #### MUL
 
 `MUL` ist der einfachste Befehl zum *unsigned* multiplizieren von Werten. Der
-Befehl hat nur einen Operanden: eine Quelle als Multiplikator fuer EAX. EAX ist
-also implizit der andere Operand und auch das Ziel der Operation. Der Operand
-muss ein Register oder eine Speicheradresse sein. __Keine Konstante!!!___
-Wichtig ist, dass die Multiplikation meist 64-Bit ist, da bei einer
-Multiplikation von zwei 32-Bit Werten maximal ein 64-Bit Wert rauskommen
+Befehl hat nur einen Operanden: ein Quell*register* als Multiplikator fuer EAX.
+EAX ist also implizit der andere Operand und auch das Ziel der Operation. Der
+Operand muss ein Register oder eine Speicheradresse sein. __Keine
+Konstante!!!___ Wichtig ist, dass die Multiplikation meist 64-Bit ist, da bei
+einer Multiplikation von zwei 32-Bit Werten maximal ein 64-Bit Wert rauskommen
 kann. Die unteren 32-Bit bleiben in EAX gespeichert, die oberen 32-Bit
-__ueberschreiben__
-
-Generell aber:
+__ueberschreiben__ ein anderes Register. Welches haengt von der Breite des Operanden ab:
 
 * Multiplikation mit einem 32-Bit Operanden: EDX:EAX
 * Multiplikation mit einem 16-Bit Operanden: __DX:AX__
@@ -610,8 +616,8 @@ Generell aber:
 
 Wobei in X:Y die oberen 32/16/8 Bit immer in X landen und die unteren in Y.
 
-Overflowen die Bits nach EDX, wird die OF (Overflow Flag) gesetzt. Ist EDX nach
-der Multiplikation null, wird die Flag nicht gesetzt.
+Overflowen die Bits nach EDX, wird die __OF und die CF__ (Overflow und Carry
+Flag) gesetzt. Ist EDX nach der Multiplikation null, werden beide Flags nicht gesetzt.
 
 ```asm
 MOV EAX, 5
@@ -650,16 +656,15 @@ Sei X:Y das Paar an Registern in Abhaengigkeit der Operandenlaenge. Bei einer
 Division mit einem Operanden wird X und Y konkateniert als der Dividend
 betrachtet. Also:
 
-* `DIV BX` = $DX:AX / BX$
-* `DIV CH` = $AH:AL / CH$
-* `DIV EDX` = $EDX:EAX / EDX$
+* `DIV BX` = (DX:AX) / BX
+* `DIV CH` = (AH:AL) / CH
+* `DIV EDX` = (EDX:EAX) / EDX
 
 Das Resultat wird hierbei wieder aufgeteilt, naemlich in den ganzzahligen Wert
 des Ergebnisses und dem Rest. Der ganzzahlige Teil wird in Y (z.B. EAX)
 gespeichert und der Rest in X (z.B. EDX).
 
-Also unbedingt darauf achten, dass der X Teil leer ist, wenn man Y dividieren
-durch einen Wert will.
+Also unbedingt darauf achten, dass der X Teil leer ist, wenn man nur Y durch einen Wert dividieren will.
 
 ```asm
 MOV EAX, 5
@@ -673,6 +678,8 @@ XOR EDX, EDX
 MOV EBX, 5
 DIV EBX     ; EAX = 1, EDX = 0
 ```
+
+Die Flags sind nach einer Division *undefiniert*.
 
 #### IMUL
 
@@ -690,17 +697,17 @@ $-16 \cdot 5 = -80$ und nicht (unsigned) $-16 \cdot 5 = 1200$.
 Instruktionsgroesse hat. Die Operanden des Befehls koennen sein:
 
 1. `REGISTER`
-2. `ZIEL, REGISTER/SPEICHER`
+2. `ZIEL, REGISTER/SPEICHER/KONSTANTE`
 3. `ZIEL, REGISTER/SPEICHER KONSTANTE`
 
 Ziel und Multiplikator duerfen also beide Register oder __eine__ Speicheradresse
 sein. Im ersten Fall ist EAX/AX/AL der implizite zweite Operand.
 
-Anders als bei `MUL` werden nicht immer die oberen Bits nach EDX
+__Anders als bei `MUL` werden nicht immer die oberen Bits nach EDX
 geschrieben. Die Operation ist einfach begrenzt durch die Groesse des Registers,
 also wenn bei `IMUL BL, AL` das Ergebnis groesser 255 ist, overflowed der Wert
-in BL. Die Overflow Flag wird dann gesetzt und die oberen Bits gehen also
-verloren.
+in BL. Die Overflow und Carry Flags werden dann gesetzt und die oberen Bits gehen also
+verloren.__
 
 ```asm
 IMUL, EBX  ; EAX *= EBX
@@ -708,15 +715,6 @@ IMUL, EBX  ; EAX *= EBX
 IMUL EAX, EBX      ; EAX *= EBX
 IMUL EAX, EBX, 3   ; EAX = EBX * 3
 IMUL [0x3], EAX, 4 ; ptr = 0x3; *ptr = EAX * 4
-
-; Mit MUL: 5 * 10 nach ESI
-MOV EAX, 5
-MOV EBX, 10
-MUL EBX
-MOV ESI, EAX
-
-; Mit IMUL
-IMUL ESI, EAX, 10
 ```
 
 #### IDIV
@@ -780,7 +778,7 @@ AND EAX, 0xFB
 
 ; Oder
 
-AND EAX, 0b11110111
+AND EAX, 11110111b
 ```
 
 Um einen einzigen Bit in einem Wert zu checken, kann man ihn auch mit einer
@@ -815,14 +813,18 @@ Eine weitere Anwendung von AND ist eine Modulo Operation mit einer 2-er
 Potenz. Man will also eine Zahl $\mod n$ berechnen wo $n = 2^k, k \in
 \mathcal{N}_0$. Hierbei muss man bedenken, dass z.B. wenn $n = 4$ die unteren
 zwei Bits (also $k$ in $n^k$) die Werte $0, 1, 2, 3$ annehmen koenen, also genau
-die Restklassen. Dies gilt auch fuer alle andern Zweierpotenzen. Also:
+die Restklassen. Dies gilt auch fuer alle anderen Zweierpotenzen. Also:
 
-$x \mod 2^k$ = `AND x, k-Einsen`.
+$x \mod 2^k =$ `AND x, k-Einsen`.
+
+bzw. da $2^k - 1$ genau diese $k$ Einsen sind, gitl auch:
+
+$x \mod 2^k =$ `AND x, (2^k)-1`
 
 ```asm
 AND EAX, 11111b ; Modulo 32
 
-AND EAx, 127 ; Modulo 128
+AND EAX, 127 ; Modulo 128
 ```
 
 #### OR
@@ -852,12 +854,12 @@ OR ECX, 0x80
 
 ; Oder
 
-OR ECX, 0b10000000
+OR ECX, 10000000b
 ```
 
 #### XOR
 
-`XOR` fuehrt die logische Operation AND wie `&` in C durch. Die Operanden
+`XOR` fuehrt die logische Operation XOR wie `^` in C durch. Die Operanden
 duerfen dabei beide Register sein, oder eine Konstante oder eine
 Speicheradresse.
 
@@ -877,8 +879,7 @@ XOR AL, 6 ; AL ^= 0b00000110 (= 0b00000011)
 
 `TEST` ist zu `AND` wie `CMP` zu `SUB`: es bestimmt, ob im Operanden bestimmte
 Bits gesetzt sind, indem es einfach ein `AND` mit der gegebenen Maske (zweiter
-Operand) macht. Wird dabei die Zero Flag (ZF) gesetzt, so war zumindest einer
-der in der Maske spezifizierten Bits nicht gesetzt.
+Operand) macht. Wird dabei die Zero Flag (ZF) gesetzt, so war keiner der Bits gesetzt.
 
 Ebenso wie `XOR EAX, EAX` effizienter ist als `MOV EAX, 0`, weil die Konstante
 die Instruktion langsamer macht, ist auch `TEST EAX, EAX` gefolgt von `JE/JZ`
@@ -899,7 +900,7 @@ effiziente Weise, __eine unsigned Zahl mit $2^n$ zu multiplizieren__. Freie
 Stellen (rechts) werden mit $0$ aufgefuellt.
 
 Schiebt man einen Bit ausserhalb der Breite des Operanden, wird das Carry Bit
-gesetzt.
+gesetzt (Overflow Flag wird nicht beeinflusst).
 
 ```
 MOV AL, 1 ; AL = 0b00000001
@@ -931,9 +932,9 @@ Schiebt man einen Bit ausserhalb der Breite des Operanden, wird das Carry Bit
 gesetzt.
 
 ```
-MOV AL, 1 ; AL = 0b00000001
+MOV AL, 0x80 ; AL = 0b10000000
 
-SHL AL, 5 ; AL <<= 5 (= 0b00100000)
+SHR AL, 5 ; AL >>= 5 (= 0b00000100)
 ```
 
 #### SAL
@@ -969,9 +970,9 @@ Schiebt man einen Bit ausserhalb der Breite des Operanden, wird das Carry Bit
 gesetzt.
 
 ```ASM
-MOV EAX, -5
+MOV EAX, -12
 
-SAL EAX, 3 ; -5 * 2^3 = -40
+SAR EAX, 2 ; -12 / 2^2 = -3
 ```
 
 #### ROL
@@ -1054,7 +1055,7 @@ ohne `EAX` zu veraendern. `CMP` hat dabei als zwei Operanden entweder Register,
 oder __eine Konstante__ oder __eine Speicheradresse__ und ein Register/eine
 Konstante.
 
-`CMP` funktioniert fuer negative Werte wie erwartet. Also man kann $CMP EAX, 0$
+`CMP` funktioniert fuer negative Werte wie erwartet. Also man kann `CMP EAX, 0`
 machen und dann checken, ob der Wert negativ ist (`JL`) oder nicht.
 
 ```
@@ -1098,20 +1099,21 @@ Es reicht fuer `G`/`NLE` nicht aus nur das Sign Bit zu betrachten. Es ist zwar
 ausreichend, wenn man nur mit positiven Zahlen arbeitet, z.B. $5$ mit $127$
 vergleicht. Aber, man nehme den Vergleich zwischen $5$ und $-127$, also `CMP 5,
 -127`. $5$ ist natuerlich groesser, aber wenn man $5 - (-127) = 5 + 127 = 133$
-rechnet, wird das Sign Bit gesetzt, was bei $5 - 127$ darauf hindeuten wuerde,
-dass $5 < 127$. Da bei einer *signed* Interpretation des Ergebnisses aber
-auch ein Overflow passiert (Addition zweier positiver Zahlen die eine negative
-Zahl ergibt), kann man hier sagen, dass $5 > -127$. Umgekehrt, wuerde ein
-Overflow passieren, aber das Sign Bit nicht gesetzt werden.
+rechnet, wird das Sign Bit gesetzt (passt nicht mehr in die signed Range), was
+bei $5 - 127$ darauf hindeuten wuerde, dass $5 < 127$. Da bei einer *signed*
+Interpretation des Ergebnisses aber auch ein Overflow passiert (Addition zweier
+positiver Zahlen die eine negative Zahl ergibt), kann man hier sagen, dass $5 >
+-127$. Umgekehrt, wuerde ein Overflow passieren, aber das Sign Bit nicht gesetzt
+werden.
 
 Flags werden immer in Abhaengigkeit des Ergebnisses der letzten Operation
 veraendert (oder nicht).
 
 Befehle, die die Flags meistens veraendern:
-`ADD`, `SUB`, `MUL`, `DIV`, `INC, `DEC`,` NEG`, `CMP`, `TEST`, `AND`, `OR`, `XOR`
+`ADD`, `SUB`, `MUL`, `NEG`, `CMP`, `TEST`, `AND`, `OR`, `XOR`
 
 Befehle, die die Flags meistens *nicht* veraendern:
-`MOV`, `PUSH`, `POP`, `JMP`, `CALL, `RET`
+`MOV`, `PUSH`, `POP`, `JMP`, `CALL`, `RET`
 
 Da Transportbefehle die Flags nicht veraendern kann es sein, dass eine Operation
 die normalerweise keine Flag setzten wuerde, schon eine Flag setzt weil sie
@@ -1130,7 +1132,7 @@ IP), der auf die Adresse der gerade ausgefuehrten Instruktion im Speicher zeigt
 manipulieren, das geht nuer ueber *Spruenge* -- Veraenderungen im sequentiellen
 Ablauf.
 
-Spruenge koenen bedingt oder unbedingt sein. Bedingte Spruenge springen nur,
+Spruenge koennen bedingt oder unbedingt sein. Bedingte Spruenge springen nur,
 wenn eine Bedingung erfuellt ist. Unbedingte Spruenge manipulieren den
 Befehlszaehler immer.
 
@@ -1162,7 +1164,7 @@ MOV IP, label
 Neben unbedingten Spruengen gibt es noch jene, die nur springen, wenn eine
 bestimmte Bedingung erfuellt ist. Diese Bedingung wird immer in Verbindung mit
 den *Status-Flags* ueberprueft. Die einzelnen Status-Codes stehen oben in einer
-Tabelle. Bedingte Spruenge koennen nur zu Labels sein.
+Tabelle. Bedingte Spruenge koennen nur zu Labels sein, nie zu Registern.
 
 Wenn man nun also einen bedingten Sprung durchfuehren will, macht man zuerst
 einen Vergleich mit `CMP` und dann ein `J<CC>` wo `<CC>` eben einer der oben
@@ -1389,17 +1391,17 @@ for (i = 0; i < 10; ++x)
 mov EBX, 5
 
 ; setup
-mov EAX, 0
+mov ECX, 0
 
 condition:
-cmp EAX, 10
+cmp ECX, 10
 jnl end
 
 ; code
 add EBX, EAX
 
 ; increment
-inc EAX
+inc ECX
 jmp condition
 
 end:
@@ -1436,7 +1438,7 @@ ist. Der einzige Operand des Commands ist das Label, zu welchem es springen
 soll.
 
 Um also $n$ mal zu loopen, muss man in ECX oder CX $n$ schreiben, und ruft dann
-am Ende seines Blockes `LOOP`:
+am Ende seines Blockes `LOOP`. Schreibt man in ECX $0$ oder einen negativen Wert, geht der Loop die ganze negative Range durch.
 
 ```asm
 mov ecx, n
@@ -1490,8 +1492,15 @@ man alles vom Stack runterloescht) auf Adresse $7F_{16} = 128_{10}$. Da
 Speicheradressen $0$-indiziert sind, also nur von $0$ bis $127$ gehen, ist der
 ESP anfangs also ungueltig, man darf also keinen Wert zu diesem Zeitpunkt lesen.
 
+Ein Grund, wieso der Stack nach unten waechst, koennte sein, dass dadurch im
+Little-Endian Format Daten leichter abzulegen sind. Denn so kann man ein Datum
+vom Stack Pointer aufwaerts ohne Probleme im Little-Endian Format ablegen.
+Wuerde der Stack von niedrigeren zu hoeheren Adressen wachsen, wuerde der ESP
+immer an der oberen Byte-Grenze eines Wortes stehen. Ein Datum muesste dann also
+rueckwaerts vom ESP abwaerts in den Stack geschrieben werden.
+
 Der Stack erlaubt zwei (und nur zwei) Operationen, um den ESP sowie die Werte
-auf dem Stack zu manipulieren:
+auf dem Stack zu manipulieren: `PUSH` und `POP`.
 
 __Es ist essentiell genau so oft zu `PUSH`en wie man `POP`ed und umgekehrt!__
 
@@ -1499,7 +1508,7 @@ Vorallem in Unterprogrammen ist es nuetzlich, Register auf dem Stack zu
 sichern. Z.B. will man in einem Unterprogramm EAX nuetzen, dern Caller aber
 nicht veraergern, dass seine Daten nach dem Unterprogramm weg sind, so `PUSH`ed
 man EAX am Anfang des Unterprogramms auf den Stack ("sichern") und `POP`ed es am
-Ende wieder nach EAX. Dann ist EAX relativ zum Unterprogramm unveraendert.
+Ende wieder nach EAX. Dann ist EAX relativ zum vorherigen Programm unveraendert.
 
 #### PUSH
 
@@ -1509,9 +1518,13 @@ gelegt werden soll. Der Operand muss 16-Bit/2-Byte oder 32-Bit/4-Byte breit
 sein. Die Groesse wird aus dem Operanden geschlossen (z.B. EAX = 4 Byte, AX = 2
 Byte), oder kann z.B. fuer Konstanten auch durch Typisieren festgelegt werden.
 
-Es koenenn nur 16/32-Bit Adressen geschrieben werden, und nicht 8-Bit, weil
+Es koennen nur 16/32-Bit Adressen geschrieben werden, und nicht 8-Bit, weil
 sonst alignment Probleme passieren koennten. Schreibt man z.B. einen Byte auf
 den Stack, sind danach alle weiteren 2/4-Byte werde misaligned.
+
+In x86 sind Konstanten normalerweise immer 32-Bit, aber `PUSH` interpretiert
+eine Konstante by default als 16-Bit. Man muss also mit `dword` typisieren, wenn
+man eine 32-Bit Konstante will.
 
 ```
 PUSH EAX ; push 4-bytes of EAX onto stack
@@ -1519,6 +1532,8 @@ PUSH EAX ; push 4-bytes of EAX onto stack
 PUSH 123 ; push 123 as 2-byte constant onto stack
 
 PUSH DWORD 123 ; push 123 as 4-byte constant onto stack
+
+PUSH AL ; Error! Must be 16 or 32-Bit
 ```
 
 Eine `PUSH` Operation ist aequivalent (und kann auch so ausgefuehrt werden)
@@ -1538,7 +1553,7 @@ MOV [ESP], EAX  ; *ESP = EAX
 #### POP
 
 Eine `POP` Operation macht das Gegenteil von `PUSH`: es liest einen Wert vom
-Stapel und dekrementiert den `ESP`. Der einzige Operand von `POP` ist die/das
+Stapel und inkrementiert den `ESP`. Der einzige Operand von `POP` ist die/das
 Speicheradresse/Register, in welches der Befehl den Wert am Stack schreiben
 soll. Es koennen wieder nur 16-Bit oder 32-Bit Adressen gelesen werden.
 
@@ -1593,8 +1608,8 @@ aehnlich wie `PUSH` und `POP` und machen vom Stack auch Gebrauch.
 
 #### `CALL`
 
-`CALL` wird benutzt, um den Kontrollfluss des Programms zu einem Unterprogramm
-zu lenken. Der einzige Operand ist gleich wie fuer `JMP` eine Konstante Adresse
+`CALL` wird benutzt, um den Kontrollfluss des Programms *zu* einem Unterprogramm
+zu lenken. Der einzige Operand ist gleich wie fuer `JMP` eine konstante Adresse
 wie `0x123`, ein Register wie `EAX`, oder ein Label. CALL fuehrt dabei zwei
 Operationen durch:
 
@@ -1662,7 +1677,7 @@ Um ein Unterprogramm aufzurufen, sollte ein *Aufrufer* (*Callee*):
    Art der Parameteruebergabe nennt sich *cdecl*, fuer "C Declaration", und hat
    den Vorteil, dass die Parameterzahl dynamisch sein kann. Der erste Parameter
    wird vom Base Pointer aus naemlich immer acht Bytes (Ruecksprungadresse
-   dazwischen) darunter sein, und dann kann man variabel den Stack hoch
+   dazwischen) darueber sein, und dann kann man variabel den Stack hoch
    gehen. Umgekehrt wuesste man nicht, wo der erste Parameter ist, wenn man
    nicht weiss, wieviele es gibt.
 3. Um die Funktion zu rufen, benutze `CALL`. Diese Instruktion legt die
@@ -1687,17 +1702,14 @@ push eax
 push ecx
 push edx
 
-push [0x123] ; last parameter y  (32-Bit value)
+push dword [0x123] ; last parameter y  (32-Bit value)
 push dword 55      ; first parameter x (32-Bit value)
 
 call foo     ; puts return address on stack and jumps to foo
 
-add esp, 8   ; discard the 2 * 4 Byte parameters
-
-
 ; return value is in EAX
 
-; remove parameters
+; remove parameters (2 * 4 Bytes)
 add esp, 8
 
 ; restore registers
@@ -1751,7 +1763,7 @@ lokalen Variablen benutzt:
 ```
 
 Nachdem dieser *Prologue* der Funktion ausgefuehrt wurde, darf der
-Funktionskoerpert ausgefuehrt werden. Danach folgt der (relativ symmetrische)
+Funktionskoerper ausgefuehrt werden. Danach folgt der (relativ symmetrische)
 *Epilogue*.
 
 Um die Funktion zu verlassen, muss der Callee:
@@ -1974,5 +1986,9 @@ Extrem wichtige, gerne vergessene Dinge.
 * Zwischen Aufrufen von Prozeduren und Anspringen von Marken unterscheiden!
 * `CMP` ist unnoetig nach einer arithmetischen Operation!
 * Werte vom Speicher werden rueckwaerts ins Register gelegt!
-* Shiften geht variabel nur mit CL
-* Am besten einfach alle Register die man nicht veraendern darf pushen/popen.
+* Shiften geht variabel nur mit CL.
+* Am besten einfach alle Register die man nicht veraendern darf pushen/poppen.
+* Keine Konstante fuer MUL (Nur Register oder Speicherzugriff)! Zuerst in ein Register. Oder IMUL!
+* Bei `IMUL` gibt es keine hoeheren Bits, die Operation ist begrenzt durch die Groesse der Operandenregister (overflowed einfach).
+* `PUSH <Konstante>` pushed 16-Bit Konstante (obwohl Konstanten in x86 32-Bit sind)! Also fuer 32-Bit: `PUSH dword <Konstante>`
+* `CALL` und `JMP` koennen zu 32/16/8-Bit Registern springen.

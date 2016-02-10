@@ -21,7 +21,7 @@ In diesem Architekturkonzept besteht der Rechner aus vier verschiedenen Werken:
    Anschluss) kommuniziert.
 
 Das Leitwerk beeinhaltet hierbei noch (nach kanonischem Konzept) drei
-verschieden Register:
+verschiedene Register:
 
 * Ein *Befehlszaehler-Register*, dass die Adresse der momentan (oder als
   naechstes) ausgefuehrten Instruktion im Hauptspeicher enthaelt.
@@ -56,11 +56,11 @@ Des Weiteren hat John von Neumann einige Prinzipien festgelegt:
   nacheinander, also *sequentiell*, ausgefuehrt werden.
 
 * Von dieser sequentiellen Fortschaltung kann durch bedingte oder unbedingte
-  Sprunbefehle abgewichen werden, die die Programmfortsetuzng aus einer anderen
-  Zelle bewirken. Beidngte Spruenge sind hierbei von gespeicherten Werten
+  Sprungbefehle abgewichen werden, die die Programmfortsetzung aus einer anderen
+  Zelle bewirken. Bedingte Spruenge sind hierbei von gespeicherten Werten
   (z.B. dem Statusregister) abhaengig.
 
-* Die Maschine benutzt Binaercodes, Zahlen werden also dual dargestellt.
+* Die Maschine benutzt Binaercodes. Zahlen werden also dual dargestellt.
 
 ## Unterschiede Heute
 
@@ -78,7 +78,7 @@ Heutige Rechner weisen einige Unterschiede zum Von-Neumann Konzept auf:
 * Auch Interrupts verletzten das Prinzip der Seriellitaet der Instruktionen.
 * Rechner haben immer mehr als nur ein Akkumulator Register.
 
-Unter *Superskalaritaet* bzw. dem *Superskalaprinzip* versteht man die
+Unter *Superskalaritaet* bzw. dem *Superskalarprinzip* versteht man die
 Eigenschaft eines Prozessors, mehrere Befehle aus einem Befehlsstrom
 gleichzeitig mit mehreren parallel arbeitenden Funktionseinheiten zu
 verarbeiten. (https://de.wikipedia.org/wiki/Superskalarität)
@@ -86,7 +86,7 @@ verarbeiten. (https://de.wikipedia.org/wiki/Superskalarität)
 Speicher bestehen auch heute noch aus Zellen fester Wortlaenge, was aber auch zu
 Kritik fuehrt. So waehre es beispielsweise einfacher Konsistenz und Sicherheit
 zu ueberwachen, wenn durch die Groesse der Zellen Datentypinformationen
-*mitgespeichert* (kodiert) werden, quasy "strongly-typed memory".
+*mitgespeichert* (kodiert) werden, quasi "strongly-typed memory".
 
 Man hat auch gemerkt, dass gerade die Verbindung zwischen Leit- bzw. Rechnewerk
 und dem Hauptspeicher der Haupt-Flaschenhals in der Von-Neumann Architektur

@@ -7,8 +7,8 @@ Formal ist ein Schaltwerk ("sequential network") eine Funktionseinheit mit $m$
 Binaereingaengen und $r$ Binaerausgaengen, wobei es zu mindestens einem
 Eingangswert *mehr als einen* zugehoerigen Ausgangswert gibt. Es handelt sich
 also nicht mehr um eine reine (Schalt)Funktion. Es gibt also zumindest einen
-zweiten zugehoerigen Wert, welcher von der bisherigen Folge von Eingangswoertern
-abhaengt.
+zweiten zugehoerigen Wert, welcher __von der bisherigen Folge von
+Eingangswoertern abhaengt__.
 
 Es gibt folglich eine *innere Groesse* -- genannt der *Zustand* des
 Schaltwerkes -- die von der bisherigen Folge von Eingaengen abhaengt und die
@@ -39,9 +39,9 @@ keiner fixen Abfolge von Schritten in diesen Prozessen sprechen kann. Man kann
 also nicht sagen, dass $P_1$ nur in Schritt $i$ uebergeht, wenn $P_2$ mit
 Schritt $j$ abgeschlossen ist.
 
-Kommunizierende asynchrone Prozesse koennen jedoch trotzdem funktional sein,
+__Kommunizierende asynchrone Prozesse koennen jedoch trotzdem funktional sein,
 wenn der kommunizierte Wert nicht in das Ergebnis eingeht oder wenn der Wert
-einer Variablen zweimal mit demselben Wert beschrieben wird.
+einer Variablen zweimal mit demselben Wert beschrieben wird.__
 
 ### Synchronisation
 
@@ -106,7 +106,7 @@ geben kann.
 
 Ein Hazard ist in einem Schalt*netz* ein momentan auftretender, laut Bool'scher
 Schaltfunktion ungueltiger Ausgangswert beim Uebergang zwischen zwei gueltigen
-Schaltfunktionswerten, aufgrund von Verzoegerungen von Signalen bzw. deren
+Schaltfunktionseingaengen, aufgrund von Verzoegerungen von Signalen bzw. deren
 Ausbreitung mit endlicher Geschwindigkeit in Leitungen.
 
 In einem Schalt*werk* nennt man so einen Hazard nun *Race*, also wenn der

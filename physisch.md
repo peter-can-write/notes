@@ -19,11 +19,11 @@ fuehren.
 
 Loest sich ein Elektron von einem Silizium Atom, hinterlaesst es ein positiv
 geladenes *Loch*. Da dieses Loesen jedoch nicht schnell genug passiert,
-*verunreinigt* man de Silizium Kristall mit anderen Atomen, z.B. Arsen oder
-Phosphor. Diese Verunreinigung nennt man *Dotierung*. Dieses enthaelt fuenf
-Elektronen, von welchen vier zur Bindung im Gitter benoetigt werden, das letzte
-sich aber leicht loest. Wenn es sich loest, hinterlaesst es ein positiv
-geladenes Arsen-Ion.
+*verunreinigt* man den Silizium Kristall mit anderen Atomen, z.B. Arsen oder
+Phosphor. Diese Verunreinigung nennt man *Dotierung*. Diese anderen Atome
+enthalten fuenf Elektronen, von welchen vier zur Bindung im Gitter benoetigt
+werden, das letzte sich aber leicht loest. Wenn es sich loest, hinterlaesst es
+ein positiv geladenes Arsen-/Phosphor-Ion.
 
 Wenn sich ein Elektron von einem Atom loest, und in ein vorher entstandenes Loch
 eines anderen Atoms faellt, nennt man das *Rekombination*.
@@ -53,7 +53,7 @@ Mit Halbleitern kann man Dioden realisieren, welche Strom nur in eine Richtung
 fliessen lassen. Mit diesen kann man wiederum Transistoren entwickeln, welche
 Strom zwischen zwei Kanaelen nur fliessen lassen, wenn ein Eingangsstrom da ist,
 oder nicht. Sie sind also perfekt als *Schalter* geeignet. Hierbei gibt es noch
-eine Unterscheidungz wischen Bipolar-Junction-Transistoren (BJT) und
+eine Unterscheidung zwischen Bipolar-Junction-Transistoren (BJT) und
 Field-Effekt-Transistoren (FET). BJTs sind Strom-gesteuert (current), FETs sind
 Spannung-gesteuert (voltage). FETs werden in digitalen Schaltkreisen eher
 verwendet. Im Weiteren ist mit "Transistor" die FET-Variante gemeint.
@@ -75,7 +75,7 @@ Es gibt hierbei zwei Arten dieser Transistoren:
 1. NPN: Welche, die leiten, wenn das Eingangssignal HIGH ($P$) ist.
 2. PNP: Welche, die leiten, wenn das Eingangssignal LOW ($N$) ist.
 
-Typ (1) nennt man auch Arbeitskontakt-Typ, Typ (2) auch Ruehekontakt-Typ.
+Typ (1) nennt man auch Arbeitskontakt-Typ, Typ (2) auch Ruhekontakt-Typ.
 
 Strom fliesst also von $S$ (Source) nach $D$ (Drain), wenn Strom am $G$ (Gate)
 anliegt (NPN), oder nicht (PNP). Der Strom am Gate ist dabei nicht binaer,
@@ -87,8 +87,8 @@ Zur Herstellung von Transistoren wird heutzutage meist eine Mischung aus
 Metall-Oxid und Silizium verwendet. Oftmals kommt noch Carbon (Kohlenstoff)
 hinzu.
 
-MOS = Metall-Oxid-Silizium (metal-oxide-semiconductor)
-CMOS = Carbon-Metall-Oxid-Silizium (carbon-metal-oxide-semiconductor)
+MOS = metal-oxide-semiconductor
+CMOS = complementary-metal-oxide-semiconductor
 
 Hierfuer werden Silizium-Kristalle mittels dem Czochralski-Prozess
 gezuechtet. Dann werden auf *Wavern* (Siliziumplatten) viele Transistoren
@@ -109,4 +109,4 @@ geschlossen.
 
 Integrierte Schaltkreise ("integrated circuits"; IC) sind Bausteine mit bis zu
 $10^{10}$ Transistoren. Sie sind aufgebaut auf Siliziumplaettchen von circa
-$1x1\, cm^2$.
+$1\times1\, cm^2$.

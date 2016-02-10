@@ -6,14 +6,13 @@ zusammenfassen, um den Bindevorgang zu beschleunigen. Es gibt drei Klassen von
 Bibliotheken:
 
 * Statische Bibliotheken
-* Dynamische Bibliotheken
 * Gemeinsame Bibliotheken
 
 ## Statische Bibliotheken
 
 Eine statische Bibliothek (*static library*; `.a` auf UNIX, `.lib` auf Windows)
 ist eine Bibliothek, die schon zu Compile-Time in die resultierende,
-ausfuehrbare Datei eines Programms geladen wird. Es besteht also keine
+ausfuehrbare Datei eines Programms gebunden wird. Es besteht also keine
 Abhaengigkeit von der Bibliothek zur Laufzeit, weil jeglicher verwendeter Code
 schon zur Kompilierungszeit in die Datei eingeschrieben wurde.
 
@@ -25,13 +24,12 @@ Nachteile:
 - Hoehere Groesse der Binaries (ausfuehrbare Dateien)
 - Code-Duplikation in mehreren Dateien
 
-
 ## Gemeinsame Bibliotheken
 
 Gemeinsame Bibliotheken (*shared library*) sind eine allgemeine Klasse von
 Bibliotheken, wobei der Bibliotheks-Code nicht statisch in die Datei kompiliert
 und somit eine *monolitische* ausfuehrbare Datei erstellt wird, sondern erst
-beim Laden (vor dem Ausfuehren) oder sogar erst zur Laufzeit die Referenzen
+beim Laden (vor dem Ausfuehren) *oder* sogar erst zur Laufzeit die Referenzen
 bzw. Symbole im Code aufgeloest werden.
 
 Das Programm macht also nur Referenzen zu Symbolen (zu den *Deklarationen*). Die

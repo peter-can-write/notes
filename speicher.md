@@ -1,14 +1,14 @@
 # Speicher
 
 Bei Speichern stehen Kapazitaet (wie viel kann gespeichert werden?) und
-Schnelligkeit oft im Gegensatz.
+Schnelligkeit (wie schnell koennen Daten geholt werden?) oft im Gegensatz.
 
 Speicher haben ein Problem:
 
 * grosse Speicher sind langsam
 * kleine Speicher sind schnell
 
-Um dieses Problem zu adressieren, gibt es in Rechnern eine *Hierarchie* an
+Um dieses Problem zu adressieren, gibt es in Rechnern eine *Hierarchie* von
 Speichern, wo kleinere, schnellere Register naeher am Prozessor sind und
 groessere, langsamerere Speicher weiter weg:
 
@@ -22,12 +22,14 @@ Grundidee ist es, haeufig benoetigte Daten in kleinen, schnellen Speichern zu
 halten, um sie nicht immer vom Hauptspeicher holen zu muessen.
 
 Ein Cache enthaelt immer einen Ausschnitt (Cache Line) des Hauptspeichers und
-alle Daten im Cache sind auch im Hauptspeicher enthalten. Natuerlich moechte
+alle Daten im Cache sind auch im Hauptspeicher enthalten. Natuerlich man moechte
 immer jene Daten im Cache haben, die aktuell verwendet werden.
 
-Definition: "Ein *Cache* ist ein schneller, fuer die Answendung nicht
-sichtbarer, automatisch verwalteter Pufferspeicher der einen Auschnitt eines
+Definition: "Ein *Cache* ist ein schneller, __fuer die Anwendung nicht
+sichtbarer__, automatisch verwalteter Pufferspeicher der einen Auschnitt eines
 groesseren Speichers entahelt."
+
+Man nennt Caches *transparent*. Transparenz bedeutet hier, dass der Cache automatisch und im Hintergrund arbeitet und nicht explizit gesteuert werden muss (aber auch nur schwer explizit beeinflusst werden kann).
 
 ### Lokalitaet
 
@@ -38,7 +40,7 @@ beruecksichten. Es gibt zwei Arten von Lokalitaet:
   wahrscheinlich dass es kurz darauf wieder auf die selbe Adresse zugreifen
   wird.
 
-* Raeumliche Lokalitaet: Es wahrscheinlich, dass nahe Adressen oft zusammen
+* Raeumliche Lokalitaet: Es ist wahrscheinlich, dass nahe Adressen oft zusammen
   gebraucht werden.
 
 ### Aufbau
@@ -52,12 +54,13 @@ muss es aus dem Hauptspeicher geholt und im Cache abgelegt werden.
 
 Ein Cache ist meist in *Zeilen* (Cache-Lines) organisiert. Die Groesse dieser
 einzelnen Lines ist hierbei meist ein Vielfaches der Wortgroesse, z.B. zwischen
-$32$ und $128$ Bytes. In diese Lines werden, wenn ein Datum vom Speiche geholt
-werden muss, mit einem ganzen Datenblock aus dem Speicher gefuellt. Der Grund
-ist, dass das Laden von groesseren Datenbloecken im Vergleich zu einzelnen Daten
-(z.B. Bytes oder Wortern) sehr billig ist. Auf Grund der raeumlichen Lokalitaet
-ist es auch wahrscheinlich, dass Daten in diesem Block zusammen angefragt werden
-(wenn auch zeitversetzt).
+$32$ und $128$ Bytes, und haengt oft auch von der Zeilengroesse des Speichers
+ab. Diese Lines werden, wenn ein Datum vom Speicher geholt werden muss, mit
+einem ganzen Datenblock aus dem Speicher gefuellt. Der Grund ist, dass das Laden
+von groesseren Datenbloecken im Vergleich zu einzelnen Daten (z.B. Bytes oder
+Wortern) sehr billig ist. Auf Grund der *raeumlichen Lokalitaet* ist es auch
+wahrscheinlich, dass Daten in diesem Block zusammen angefragt werden (wenn auch
+zeitversetzt).
 
 *Tags* identifizieren dabei eine Cache Line bezueglich dem Ausschnitt des
  Hauptspeichers, den sie enthalten. So kann die Vergleicherlogik bestimmen, ob
@@ -70,7 +73,7 @@ Es gibt meistens mehrere Cache-Level, die sich in ihrere Naehe zum Prozessor
 bzw. Groesse (also auch Schnelligkeit) unterscheiden. Oftmals gibt es drei
 Level:
 
-* Level 1 (L1) Cache: Der kleinste, naehste und schnellste.
+* Level 1 (L1) Cache: Der kleinste, nahste und schnellste.
 * Level 2 (L2) Cache: Der mittlere.
 * Level 3 (L3) Cache: Der groesste, am weitesten entfernteste und langsamste.
 
@@ -82,7 +85,7 @@ Entwurfsueberlegung fuer Cache Implementierungen beinhalten:
 
 ##### Die Platzierungs- und Ersetzungsstrategie:
 
-+ In welche Cache-Zeilen wird ein Speicherbock eingetragen?
++ In welche Cache-Zeilen wird ein Speicherblock eingetragen?
 + Welcher Speicherblock muss zur Platzierung aus dem Cache entfernt werden?
 
 ##### Die Aktualisierungsstrategie
@@ -109,7 +112,7 @@ Dann gibt es noch zwei Formen von Schreib-Strategien, die adressiert werden
 muessen:
 
 1. Eine Durchschreibe-Strategie (Write-Through). Fuer diese Strategie wird
-   grundsaetzlich der Hauptspeicher beschriebn. Dann:
+   grundsaetzlich der Hauptspeicher beschrieben. Dann:
 
    * Bei Write-Hits wird auch der Cache aktualisiert. Wenn also
      ein Datum im Hauptspeicher veraendert wird, dann auch im Cache (sonst
@@ -151,14 +154,14 @@ abgelegt werden.
 Hat der Cache beispielsweise $512$ Zeilen, so z.B. koennte ein
 direkt-abbildender Cache Speicheradressen $0, 512, 1024, ...$ auf die erste
 Zeile abbilden, Adressen $1, 512, 1025, ...$ auf die zweite Adresse usw. Es kann
-also Kollisionen zwischen Zeilen geben -- das nennt man dan Cache *Thrashing*.
+also Kollisionen zwischen Zeilen geben. Dann muss die Zeile ueberschrieben werden. Wenn das oft hintereinander fuer viele Datenbloecke, die alle auf die selbe Adresse abbilden, passiert, nennt man das Cache *Thrashing*.
 
-Um dies zu implementeiren, wird eine Speicheradresse in drei Teile geteilt:
+Um dies zu implementieren, wird eine Speicheradresse in drei Teile geteilt:
 
-1. Einen *Index* in den Cache. Dieser Index gibt also die Zeile des Cache fuer
+1. Einen *Index* in den Cache. Dieser Index gibt die Zeile im Cache fuer
    einen Datenblock an. Mehrere Datenbloecke koennen den selben Index haben, es
    gibt also moegliche Kollisionen.
-2. Einen *Tag*, der die Speicheradrese unter jenen, die in einer Zeile
+2. Einen *Tag*, der die Speicheradresse unter jenen, die in einer Zeile
    kollidieren koennen, eindeutig identifiziert. Ist der Index also z.B. das
    Resultat der Hash-Funktion in einen Separate-Chaining-Hash-Table, so ist der
    Tag dann der Key, ueber welchen in einer Chain verglichen wird. Nur ist die
@@ -170,8 +173,8 @@ Es wird nun also z.B. nach einem Datum gesucht, dessen 32-Bit Adresse bekannt
 ist. Nun sind (als Beispiel!) die oberen $17$ Bit der Tag, danach weitere $9$
 Bit der Index und letztlich weitere $6$ Bit der Offset. Zuerst wird der Index
 durch einen Dekoder gegeben, um die Zeile zu identifizieren. Dann wird der Tag
-des Datums gegen den gespeicherten Tag (dieser wird mit dem Daten in der Zeile
-gespeichet) gematched. Ist er gleich, ist der gespeicherte Datenblock der
+des Datums gegen den gespeicherten Tag (dieser wird mit den Daten in der Zeile
+gespeichert) gematched. Ist er gleich, ist der gespeicherte Datenblock der
 gesuchte -- ein Cache-Hit. Das Datum kann also am Offset im Datenblock geholt
 werden. Ist der Tag aber ein anderer, so muss es sein, dass der Datenblock zu
 einem der anderen Adressen gehoert, die zu diesem Index mappen -- ein Cache
@@ -265,7 +268,7 @@ Voll-Assozitiver bezueglich der Schaltlogik.
 
 Fazit: Set-Assoziative Caches sind ein guter Mittelweg zwischen schnellem
 Mapping aber niedriger Kapazitaetsausnutzung auf der einen Seite, und
-hoher Kapazitaetsausnutzung verbudnen mit hoher Komplexizitaet auf der anderen
+hoher Kapazitaetsausnutzung verbunden mit hoher Komplexizitaet auf der anderen
 Seite. Vor Allem ist es moeglich, in vielen, vielen Simulationen alle moeglichen
 Verhalten von Speicherzugriffen zu beobachten und solche Caches perfekt auf den
 Durchschnittsfall oder manchmal auf einen bestimmten Fall zu tunen. Man kann
@@ -289,7 +292,7 @@ abgelegt, um diesen nicht zu verschmutzen.
 Wenn aber ein Datenblock im Cache nicht gefunden wird, wird im Stream Buffer
 noch nachgeguckt. Ist der Datenblock dort gefunden (Stream-Hit), kann er sehr
 schnell, in einem Taktzyklus, in den Cache geladen werden. Dann wird auch schon
-die naechste Instruktion parallel pre-gefetched um den Stream-Buffer zu fuellen.
+der naechste Datenblock parallel pre-gefetched um den Stream-Buffer zu fuellen.
 
 Geschieht aber ein Cache-Miss und auch ein Stream-Miss, wird der Stream
 geflushed und mit den nachffolgenden Datenbloecken des gerade nicht im Cache
@@ -309,7 +312,7 @@ Jede Cache Line hat zwei Statusbits:
    nicht. Es koennen beim Start-Up des Rechners z.B. irgendwelche Garbage Werte
    dort enthalten. Dann sind also alle Cache Lines *invalid* und erst durch
    beschreiben mit Daten aus dem Hauptspeicher koennen sie *valid* gemacht
-   werden. Durch die informationslosen Bytefolgen kann ja sonst nicht eruiert
+   werden. Durch die informationslosen Bytefolgen kann ja sonst nicht erruiert
    werden, ob nun wirklich Daten enthalten sind, oder nicht.
 
 ### Cache Misses
@@ -317,15 +320,16 @@ Jede Cache Line hat zwei Statusbits:
 Three C's:
 
 * Compulsory (cold) misses:
-  * Erster Zugriff auf eine Adresse.
-  * Wuerden auch in unendlich grossen Caches passieren.
+  + Der Cache ist noch leer bzw. invalid.
+  + Erster Zugriff auf eine Adresse.
+  + Wuerden auch in unendlich grossen Caches passieren.
 
 * Capacity Misses:
-  * Capacity Misses erfolgen, wenn die Daten, auf welche man zugreift, groesser
-    sind als der Cache.
+  + Capacity Misses erfolgen, wenn die Daten, auf welche man zugreift, groesser
+    sind als der Cache. Zum Beispiel, wenn man auf ein $1\, GiB$ Array zugreifen will, aber der Cache nur $128\, KiB$ gross ist. Die Daten koennen einfach nicht reinpassen, also wird es sicher Misses geben.
 
 * Conflict Misses
-  * Conflict Misses passieren bei Cache Organisationen, die direkt abbilden oder
+  + Conflict Misses passieren bei Cache Organisationen, die direkt abbilden oder
     mengen-assoziativ sind. Hierbei hat man einen Miss, weil gerade ein anderer
     Datenblock, der auf die selbe Zeile mapped, gerade dort vorhanden ist. Sowas
     kann natuerlich nur bei Set-Assoziativen und Direct-Mapped Caches der Fall
@@ -337,9 +341,9 @@ http://stackoverflow.com/questions/33314115/whats-the-difference-between-conflic
 
 	* Compulsory Miss: Das Hotel ist leer und der erste Gast ist noch nicht
       angekommen.
-	* Capacity Miss: Im Hotel ist kein Platz mehr.
+	* Capacity Miss: Im Hotel ist kein Platz mehr. Nicht jeder Gast wird dort    also gefunden werden.
 	* Conflict Miss: Zwei Gaeste haben beide das selbe Stammzimmer. Der erste
-      Gast besetzt das Zimmer, jetzt hat der zweite keinen Platz mehr.
+      Gast besetzt das Zimmer, jetzt hat der Zweite keinen Platz mehr.
 
 https://courses.cs.washington.edu/courses/cse378/02sp/sections/section9-2.html
 
@@ -465,7 +469,7 @@ https://en.wikipedia.org/wiki/Programmable_read-only_memory
 #### EPROM
 
 EPROM steht fuer erasable-read-only-memory. Es ist wie PROM eine Variante eines
-__non-volatile__ Memory Chip -- die Daten bleiben also nach ausschalten der
+__non-volatile__ Memory Chip -- die Daten bleiben also nach Ausschalten der
 Stromquelle erhalten. Hierbei aber werden die Daten in Transistoren auf dem Chip
 eingebrannt. Sie koennen dann wieder geloescht werden (*eraseable*-PROM), indem
 sie einer sehr starken *UV-Quelle* ausgesetzt werden. Deswegen haben EPROM Chips
@@ -626,7 +630,7 @@ gewaehrleisten. Ein Prozess braucht nicht immer den gesamten moglichen Speicher,
 und oftmals brauchen alle Prozesse zusammen auch mehr Speicher, als im
 Hauptspeicher verfuegbar ist. Deswegen muss das Betriebssystem nicht benoetigte
 Teile des Adressraums auf dem Hintergrundspeicher auslagern, um so Platz zu
-schaffen.
+schaffen. Zur effizienten Speichernutzung zaehlt hier auch verminderte Fragmentierung.
 
 Das Prinzip der *virtuellen Adressierung* ist eine Methode, um all diese
 Aufgaben zu ermoeglichen. Das Grundkonzept hierbei ist, dass Programme mit
@@ -638,7 +642,7 @@ Adresse umgesetzt. Jeder Prozess in einem Betriebssystem besitzt also seinen
 eigenen virtuellen Adressraum und wenn ein Prozess ein Datum adressiert,
 uebersetzt die MMU diese Adresse in die wirkliche Adresse.
 
-Eine weitere Aufgabe der MMU ist die Ueberprufung der Zugriffsrechte eines
+Eine weitere Aufgabe der MMU ist die __Ueberprufung der Zugriffsrechte__ eines
 Prozesses fuer ein Datum. hat ein Prozess nicht die Rechte, auf ein Datum
 zuzugreifen, erzeugt die MMU eine *Ausnahme*.
 
@@ -667,10 +671,10 @@ Prozess fortgefuehrt werden.
 
 https://www.quora.com/What-is-the-difference-between-paging-and-segment-in-memory-management
 
-#### Segementierung
+#### Segmentierung
 
-Bei der Segmentierung wird er Adressraum eines jeden Prozesses in logisch
-zusammengehoerige Bloecke, sogennante *Segemente*, gegliedert. Beispielsweise
+Bei der Segmentierung wird der Adressraum eines jeden Prozesses in logisch
+zusammengehoerige Bloecke, sogennante *Segmente*, gegliedert. Beispielsweise
 kann es Code-, Daten- und Kellersegmente geben.
 
 Es gibt dann also eine Tabelle, welche die virtuellen Segmente in die physischen
@@ -688,17 +692,17 @@ Benutzermodus der CPU adressiert werden koennen.
 Will man nun auf ein Segment zugreifen, wird der Segmentindex (aus den oberen
 Bits einer Adresse) gegen die Tabelle gemapped, und die Anfangsadresse
 geholt. Diese wird dann auf den Offset dazuaddiert, um somit die physische
-Adrese zu geben. Die Laenge des Segements ist dazu da, zu ueberpruefen, ob der
+Adrese zu geben. Die Laenge des Segments ist dazu da, zu ueberpruefen, ob der
 Offset nicht ausserhalb der Laenge liegt.
 
-Die meisten moderenen Betriebssystem verwenden anstatt Segmentierung jedoch eher
+Die meisten modernen Betriebssystem verwenden anstatt Segmentierung jedoch eher
 Paging.
 
 https://www.quora.com/Paging-versus-segmentation-why-are-they-two-separate-methods-and-why-would-I-chose-one-over-the-other
 
 #### Paging
 
-Neben der Segementierung gibt es noch die Moeglichkeit der *seitenbasierten*
+Neben der Segmentierung gibt es noch die Moeglichkeit der *seitenbasierten*
 Speicherverwaltung, dem sogenannten *Paging*. Hierbei wird der virtuelle
 Adressraum in Bloecke gleicher Groesse aufgeteilt, wobei eine solcher Block dann
 als Seite (page) bezeichnet wird. Eine typische Seitengroesse ist $4\, KiB$.
@@ -732,7 +736,7 @@ Kacheladresse schon gleich durch diesen Cache gewinnen, ohne vorher noch
 zusaetzlich zum Hauptspeicher gehen zu muessen.
 
 Translation-Lookaside-Buffers sind meist voll- oder mengenassoziativ und halten
-typischerweise $32$ bis $512$ Eintraege. Auch gibt es oft getrennte TLBs fuer
+typischerweise $32$ bis $512$ (also relativ wenige, weswegen voll-assoziativitaet OK ist) Eintraege. Auch gibt es oft getrennte TLBs fuer
 Daten und Code.
 
 https://www.quora.com/What-is-the-difference-between-paging-and-segment-in-memory-management
@@ -750,5 +754,5 @@ groesser. Wann ist was besser?
 
 * Gruende fuer kleinere Seiten:
   + Weniger Fragmentierung (effizientere/flexiblere Speichernutzung)
-  + Aufwand zum Star von kleinen Prozessen ist niedrieger (brauchen nicht so
+  + Aufwand zum Start von kleinen Prozessen ist niedrieger (brauchen nicht so
     einen grossen Addressraum)

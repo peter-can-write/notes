@@ -19,7 +19,7 @@ Negation rauszieht, also $A \land B \Rightarrow \neg A \land \neg B \Rightarrow
 \neg (A \lor B)$. Die Ausgangswerte sind hierbei nun zwar nicht mehr die selben,
 aber man kann ja selbst definieren was 0 oder 1 bedeutet.
 
-Den urspruenglichen Dateneingang nennt man nun $S$(et) und wird zum setzten des
+Den urspruenglichen Dateneingang nennt man nun $S$(et) und wird zum setzen des
 Bits im Speicherelement genutzt. Das neue Steuersignal zum Loeschen des Bits
 nennt man $R$(eset).
 
@@ -31,7 +31,6 @@ Flip-Flop, weil es flankengesteuert ist, aber Master und Slave selbst sind
 Latches, weil sie pegelgesteuert sind.
 
 https://www.youtube.com/watch?v=m1QBxTeVaNs
-
 
 #### NOR Latch
 
@@ -66,7 +65,7 @@ R --[OR]!-- Q
 
 #### NAND-Latch
 
-Eine andere Variante des Latch ist das sogenannte *NAND-Latch* (NAND-Latch),
+Eine andere Variante des Latch ist das sogenannte *NAND-Latch*,
 welches an Stelle von NOR-Bausteinen NANDs benutzt. Dazu muessen die Eingaenge
 und Ausgaenge *beide negiert* werden. Also sind die Verbindungen beim NOR-Latch
 $S \rightarrow \overline{Q}, R \rightarrow Q$, sind sie beim NAND-Latch:
@@ -99,14 +98,13 @@ ungueltigen Zustand $Q = \overline{Q} = 1$, und nicht $0$.
 
 Hazards sind in einem Schaltnetz momentan auftretende, laut Schaltfunktion
 ungueltige Ausgangswerte beim Uebergang zwischen zwei gueltigen
-Schaltfunktionswerten, aufgrund von Verzoegerungen von Signalen in
+Schaltfunktioneingaengen, aufgrund von Verzoegerungen von Signalen in
 Leitungen. Hazards treten also auf, wenn eine Schaltfunktion aufgrund von
-physikalischen Effekten wie die endliche Geschwindigkeit bzw. Ausbreitung von
+physikalischen Effekten wie der endlichen Geschwindigkeit bzw. Ausbreitung von
 Signalen durch Leitungen und Schaltglieder, ungueltige Zustaende annehmen.
 
 Dies passiert oftmals, wenn man zwischen Bitmustern wechselt, dessen
-Hamming-Abstand groesser eins ist. Beispiel: Moechte man bei einem RS-Latch
-der beliebiger Art von $RS$ zu $\overline{R}\overline{S}$ wechseln, kann es
+Hamming-Abstand groesser eins ist. Beispiel: Moechte man bei einem RS-Latch beliebiger Art von $RS$ zu $\overline{R}\overline{S}$ wechseln, kann es
 sein, dass beim Uebergang zwischen diesen Eingangsworten momentan die Eingaenge
 auf $R\overline{S}$ (oder umgekehrt) gestellt sind. Wenn sich der Ausgang dann
 noch nicht umgestellt hat (fuer einen sehr kleinen Zeitraum), ist die
@@ -167,6 +165,16 @@ Daten die bei Q und nicht Q gelegen sind neutral.
 
 https://www.youtube.com/watch?v=5ykewHgHYBI
 
+```
+D-----------[AND]!--[AND]!---Q
+|            |     \     /
+|      CLK---|	    -----
+|            |	   /     \
+\----[ ]!--[AND]!--[AND]!-- !Q
+      ^
+	 NOT
+```
+
 ### Master-Slave Flip-Flop
 
 Bei regulaeren Flip-Flops gibt es das Problem der sogenannten *Glitches*. Ein
@@ -213,9 +221,9 @@ Takte verzoegert, wobei $i = 0$ fuer den ganz ersten FF.
 ### JK-Flip-Flop
 
 Der JK-FF ist eine Moeglichkeit, das vierte Eingangswort $R = S = 1$ sinnvoll zu
-nutzen: zum togglen. $J$ fuer "Jump" und $K$ fuer "Kill". Dabei hat man noch
-bevor die Signale $R$ und $S$ an die NANDs/NORs oder an die ANDs mit der CLK
-kommen zwei weitere AND-Gatter. In ein so ein AND-Gatter kommt also das $J$
+nutzen: zum togglen. $J$ steht fuer "Jump" und $K$ fuer "Kill". Dabei hat man
+noch bevor die Signale $R$ und $S$ an die NANDs/NORs oder an die ANDs mit der
+CLK kommen zwei weitere AND-Gatter. In ein so ein AND-Gatter kommt also das $J$
 Signal, und als zweiter Eingang die Rueckkopplung von $\neg Q$. Der Punkt ist,
 dass $J = \text{ "Jump"}$ nur durchgelassen wird, wenn $\neg Q$ gilt, also dass
 man nur SET-en kann wenn der gespeicherte Wert auch $0$/LOW ist -- sonst bleibt
@@ -238,7 +246,7 @@ Zustand also getogglet (was auch nicht immer gut ist => race-around).
 | 0 | 1 | 0  | 1  |
 | 1 | 1 | !Q | Q  |
 
-JK-FFs haben folgende Gleichung: $Q_{next} = J\overline{Q} + \overline{K}Q$
+JK-FFs haben folgende Gleichung: $Q_{next} = J\overline{Q} + \overline{K}Q$. Der Zustand $Q_{next}$ ist also $1$, wenn ein Jump-Signal kommt und der Zustand $Q$ momentan $0$ ist, oder wenn kein Kill Signal kommt und der Zustand momentan $1$ ist.
 
 JK-FFs koennen nur mit NORs implementiert werden.
 

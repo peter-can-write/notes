@@ -1,6 +1,6 @@
 # ISA
 
-Die Instruction Set Architecture eines Rechners beschreibt die grundlegende
+Die Instruction Set Architecture (ISA) eines Rechners beschreibt die grundlegende
 Architektur, zum Beispiel:
 
 * Die unterstuetzten Maschinenbefehle, genauer:
@@ -55,8 +55,8 @@ aber meist der Compiler vor einem verdeckt.
 ## Datentypen
 
 Eine ISA legt auch die erlaubten Datentypen fuer ein Maschinenprogramm fest
-(z.B. `byte`, `word`, `dword`). Somit legt also die Arten von Informationen
-fest, die mit dem Befehlssatz direkt bearbeitet werden koennen.
+(z.B. `byte`, `word`, `dword`). Somit legt sie also die Arten von Informationen
+fest, die mit dem Befehlssatz *direkt* bearbeitet werden koennen.
 
 Hierbei sei jedoch angemerkt, dass im Hautpspeicher keinerlie Typinformation
 gespeichert ist. Im Hauptspeicher findet man nur untypisierte Bytefolgen. Das
@@ -180,7 +180,7 @@ Ein Vorteil von unausgerichteten Daten ist offensichtlich, dass sie weniger
 Speicherplatz verschwenden, da man z.B. Padding nicht braucht. Aber der
 Hardware-Aufwand ist eben groesser.
 
-Die Intel IA-32 Architektur den Zugriff auf beliebig ausgerichtete Daten im
+Die Intel IA-32 Architektur erlaubt den Zugriff auf beliebig ausgerichtete Daten im
 Word-, Doubleword- und Quadword-Format. Solch ein Zugriff erfordert aber
 zusaetzliche Zyklen, wenn das Datum ein Word- oder Doubleword ist, und eine
 4-Byte Grenze ueberschreitet.
@@ -194,18 +194,18 @@ Es gibt zwei Moeglichkeiten, Daten im Hauptspeicher zu speichern:
 
 Der Unterschied ist, wie *Woerter* im Speicher abgelegt werden. Gegeben zum
 Beispiel das 32-Bit Wort $0xDEADBEEF$. Wir nehmen an, wir arbeiten auf einem
-Rechner mit 32-Bit Wortrgroesse, sodass diese Zahl ebene genau ein Wort ist. Nun
+Rechner mit 32-Bit Wortgroesse, sodass diese Zahl eben genau ein Wort ist. Nun
 muessen wir festlegen, wo das *Ende* dieser Zahl ist. Da Zahlen jeglicher Basis
 immer nach links groesser werden, ist das Ende also links. Jetzt kommt eben der
 Unterschied zwischen Little- und Big-Endian:
 
 * Im Little-Endian Format werden die *kleineren* Ziffern am Ende (also links)
   abgelegt. Das Wort $0xDEADBEEF$ laege also genau verkehrt herum im Speicher,
-  mit kleineren Werten an kleineren Adressen:
+  mit kleineren Werten an kleineren Adressen (2 Hex Ziffern sind ein Byte, also werden die Ziffern selbst nicht umgedreht, nur die Bytes):
 
   ```
     0    1    2    3
-  [FE] [EB] [DA] [ED]
+  [EF] [BE] [AD] [DE]
   ```
 
 * Im Big-Endian Format werden die *groesseren* Ziffern am Ende (also links)
@@ -218,7 +218,7 @@ Unterschied zwischen Little- und Big-Endian:
   ```
 
 Das Little-Endian Format ist typisch fuer Intel, das Big-Endian Format eher fuer
-Grossrechner oder Motorola. Grundsaetzlich hat keines der Formate einen
+Grossrechner (IBM) oder Motorola. Grundsaetzlich hat keines der Formate einen
 wirklich grossen Vorteil oder Nachteil.
 
 Die Eigenschaft der Byte-Reihenfolge nennt man in Englisch *Endianness*.
@@ -226,9 +226,9 @@ Die Eigenschaft der Byte-Reihenfolge nennt man in Englisch *Endianness*.
 ### Register
 
 Register sind Speicherplaetze innerhalb des Prozessors, auf die er sehr schnell
-zugreifen kann. Es gibt meist nur wenige von ihnen (zwischen einem und $~
+zugreifen kann. Es gibt meist nur wenige von ihnen (zwischen einem und $\sim
 64$). Sie sind in der gesamten Speicherhierarchie die Speicherlemente mit der
-schnellsten Zugriffszeit, weil sie eben so nahe am Prozessor sind.
+schnellsten Zugriffszeit, weil sie eben so nahe am Prozessor sind (2-4ns).
 
 Es gibt hierbei jedoch meist eine Unterscheidung bezueglich dem Zweck der
 Register. Es gibt:
@@ -246,8 +246,8 @@ Die Adressierungmodi einer ISA legen fest, auf welche Weise Operanden fuer
 Befehle spezifiziert werden koenen. Operanden fallen dabei grundsaetzlich in
 drei Klassen:
 
-* Konstanten (*Immedaites*)
-* Register, die den Operandenwerte enthalten.
+* Konstanten (*Immediates*)
+* Register, die den Operandenwert enthalten.
 * Speicherzugriffe, die eine Adresse fuer einen Operanden im Speicher angeben.
 
 Diese drei Klassen koennen noch auf verschiedene Weisen vereint werden, wie es
@@ -283,7 +283,7 @@ Beispiel: `inc eax`
 Bei der Speicheradressierung ist der Operand eine Speicheradresse, an dessen
 Stelle im Hauptspeicher der Operand steht. Meist wird die Speicheradresse vorher
 noch vom Betriebssystem etwas veraendert, wenn es eine bestimmte
-Speicherverwaltung betreibt. Es gibt hier wieder mehrere Arte von
+Speicherverwaltung betreibt. Es gibt hier wieder mehrere Arten von
 Speicheradressierung, die sehr flexible und dynamische Adressierung erlauben.
 
 ##### Direkte Adressierung
@@ -326,10 +326,10 @@ Registerwert.
 ```
 [Befehl | Registeradresse]
                 |
-			  ++/--
-			    |
 	    [Speicheradresse] <-- Register
-		        |
+				|
+			  ++/--
+				|
 			[Operand] <-- Speicher
 ```
 
@@ -337,7 +337,7 @@ Kein Beispiel in x86 Assembly.
 
 ##### Registerindirekte Adressierung mit Displacement
 
-Hierbei wird dem Registerwert noch ein konstanter Subtrahen oder Summand
+Hierbei wird dem Registerwert noch ein konstanter Subtrahend oder Summand
 hinzugegeben. Diese Art der Adressierung nennt man auch Basisrelative
 Adressierung, oder *Based Index* in Englisch.
 
@@ -400,9 +400,9 @@ Aber wie viele Operanden soll ein Befehl haben?
 ### Nulladressform
 
 Bei der Nulladressform werden -- wie der Name schon sagt -- gar keine Operanden
-angegeben. Sie sind naemlich implizit die obersten Elemente des Stacks. Sind
+angegeben. Sie sind naemlich implizit die __obersten Elemente des Stacks__. Sind
 beispielsweise zwei Werte $x, y$ auf den obersten zwei Adressen des Stacks,
-wuerde der Nuladressform-Befehl `ADD` diese beiden addieren, und wieder auf den
+wuerde der Nulladressform-Befehl `ADD` diese beiden addieren, und wieder auf den
 Stack legen.
 
 Diese Variante der Operanspezifizierung ist beispielsweise bei der JVM ueblich.
@@ -411,12 +411,12 @@ Diese Variante der Operanspezifizierung ist beispielsweise bei der JVM ueblich.
 
 Bei der Einadressform ist ein Operand immer ein spezielles Register, meistens
 der Akkumulator. Das war beispielsweise im Von-Neumann Architekturkonzept so
-geplatn. Das Ergebnis wird hierbei wieder im selben speziellen Register
+geplant. Das Ergebnis wird hierbei wieder im selben speziellen Register
 abgelegt.
 
 Der Nachteil davon ist, dass diese Adressform sehr unflexibel ist und oftmaliges
 Laden und Speichern des Akkumulators erfordert, um den gewuenschten Wert, der
-moeglicherweise zuvor wo ander gespeichert ist, mit dem Akkumulator zu tauschen
+moeglicherweise zuvor wo anders gespeichert ist, mit dem Akkumulator zu tauschen
 oder ihn zu ueberschreiben.
 
 In x86 Assembly ist beispielsweise `MUL` so ein Befehl.
@@ -425,7 +425,7 @@ In x86 Assembly ist beispielsweise `MUL` so ein Befehl.
 
 Die Zweiadressform ist wohl die gaengiste Variante, zumindest bei x86. Hierbei
 ist der erste Operand sowohl Operand der Operation als auch Ziel fuer das
-Ergebnis.
+Ergebnis. Der zweite Operand ist ein anderes (oder dasselbe) Quellregister.
 
 Meistens kann nur einer der beiden Operanden ein Speicherzugriff sein. Das nennt
 man dann das *Register-Speicher-Modell*. Die Intel IA-32 ISA ist ein Beispiel
@@ -508,7 +508,7 @@ Architekturen. Einige Vor- und Nachteile sind hier gelistet:
 ### Betriebssystem-Unterstuetzung
 
 Rechner sind heutzutage meist Mehrbenutzersysteme. Also sollten
-Benutzerprogramme nicht direkt auf gemeinsame Hardwareresourcen und
+Benutzerprogramme nicht direkt auf gemeinsame Hardwareressourcen und
 Sytemkonfigurationen zugreifen duerfen. Das erfordert wiederum Koordination
 durch eine externe Macht: das Betriebssystem. Die technische Basis fuer eine
 Betriebssystem sind die *Ausfuehrungsmodi* einer ISA.
@@ -518,13 +518,13 @@ Es gibt grundsaetzlich zwei Ausfuehrungsmodi:
 * Den *Systemmodus*, der vollen Zugriff auf alle Rechnerkomponenten hat. Dieser
   Modus ist fuer das Betriebssystem gedacht.
 
-* Den *Benutzermodus*, welcher nur eingeschraenkter Zugriff auf das System
+* Den *Benutzermodus*, welcher nur eingeschraenkten Zugriff auf das System
   hat. Speicherzugriffe werden vorher durch das Betriebssystem abgebildet. Es
   hat auch keine priviligierten Befehle um Zugriffe auf die Ein-/Ausgabe zu
   machen oder auf Konfigurationsregister.
 
 Die Ausfuehrung einer unzulaessigen Operation fuehrt zu einer *Ausnahme*
-(*Exeption*). Eine unzulaessige Operation kann sein:
+(*Exception*). Eine unzulaessige Operation kann sein:
 
 * Der Versuch, einen priviligierten Befehl im Benutzermodus auszufuehren.
 * Ein arithmetischer Fehler (z.B. Division durch Null)
@@ -549,14 +549,14 @@ Programm fuer bestimmte Ausnahmen springen soll.
 
 Interrupts (Unterbrechungen) erlauben es dem Prozessor auf __externe,
 asynchrone__ Ereignisse zu reagieren. Die externe Quelle (z.B. E/A-Geraet)
-sendet dabei ein spezielles Signal, eine sogenannte *Unterbrechungsanforderung*,
-an den Prozessor. Dieses Signal wird am Ende eines Befehlszyklus vom Prozessor
-abgefragt und wenn es eine solches Signal gibt, muss der Prozessor die
-Unterbrechung bearbeiten.
+sendet dabei ein spezielles Signal, eine sogenannte *Unterbrechungsanforderung*
+(interrupt request), an den Prozessor. Dieses Signal wird *am Ende eines
+Befehlszyklus* vom Prozessor abgefragt und wenn es ein solches Signal gibt, muss
+der Prozessor die Unterbrechung (bald) bearbeiten.
 
 Um das zu tun, sichert der Prozessor zuerst den Programmstatus und schaltet dann
 in den Systemmodus. Dort springt er dann an eine vordefinierte Adresse im
-Betriebssystem, so die Unterbrechungsbehandlungsroutine (interrupt handler)
+Betriebssystem, wo die Unterbrechungsbehandlungsroutine (interrupt handler)
 liegt.
 
 Interrupts sind vor Allem fuer Ein- und Ausgabegerate wie Tastaturen, Maeuse
@@ -567,7 +567,7 @@ oder bestimmte Sensoren notwendig.
 Natuerlich muss es auch moeglich sein, zwischen dem priviligierten Systemmodus
 und dem Benutzermodus zu wechseln:
 
-* Vom System- in den Benutermodus. Dies wird mit einem priviligierten Befehl
+* Vom System- in den Benutzermodus. Dies wird mit einem priviligierten Befehl
   realisiert.
 
 * Wechsel vom Benutzer- in den Systemmodus. Dieser Wechsel geht nur fuer einen

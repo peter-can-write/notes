@@ -1,7 +1,7 @@
 # Bool'sche Algebra
 
 Fast alle Rechner benutzten heutzutage ein Darstellungssystem auf Basis von
-binaeren Zeichen an Stelle einer Darstellung als Funktion der Zeit oder des
+binaeren Zeichen anstelle einer Darstellung als Funktion der Zeit oder des
 Raums. Dies hat mehrere Vorteile:
 
 * Keine prinzipiellen Genauigkeitsschranken.
@@ -22,7 +22,7 @@ Operatoren:
 Dann enthaelt die Bool'sche Algebra noch einige Axiome (siehe unten).
 
 Fuer digitale Schaltungen ist die Traegermenge $S$ der Bool'schen Algebra nun
-definiert als $\{0, 1\} :\leftrightarrow \{false, true\} :\leftrightarrow \{LOW,
+definiert als $\{0, 1\} := \{false, true\} := \{LOW,
 HIGH\}$. Diese bestimmte Auspraegung der Bool'schen Algebra nennt man
 "Schaltalgebra".
 
@@ -37,24 +37,31 @@ Operatoren bzw. Ausdruecke.
 
 ## Axiome
 
-Sei $\theta$ stellvertretend fuer alle Operatoren $\in \{\lor, \land\}$. Sei
-dann $\phi$ der jeweils andere Operator $\in \{\lor, \land\}$.
+Sei $\circ$ stellvertretend fuer alle Operatoren $\in \{\lor, \land\}$. Sei
+dann $\odot$ der jeweils andere Operator $\in \{\lor, \land\}$.
 
 1.  Involution: $\overline{\overline{F}} = F$
-2.  Kommutativitaet: $A \theta B = B \theta A$
-3.  Assoziativiatet: $(A \theta B) \theta C = A \theta (B \theta C)$
-4.  Idempotenz: $A \theta A = A$
-5.  Absorption: $A \theta (B \phi A) = A$
-6.  Distributivitaet: $A \theta (B \phi C) = (A \theta B) \phi (A \theta C)$
-7.  DeMorgan: $\overline{(A \theta B)} = \overline{A} \phi \overline{B}$
+2.  Kommutativitaet: $A \circ B = B \circ A$
+3.  Assoziativiatet: $(A \circ B) \circ C = A \circ (B \circ C)$
+4.  Idempotenz: $A \circ A = A$
+5.  Absorption: $A \circ (B \odot A) = A$
+6.  Distributivitaet: $A \circ (B \odot C) = (A \circ B) \odot (A \circ C)$
+7.  DeMorgan: $\overline{(A \circ B)} = \overline{A} \odot \overline{B}$
 8.  Identitaet: $A \land true = A, A \lor false = A$
 9.  Triviale Tautologie: $A \lor \overline{A} = true$
 10. Trivialer Widerspruch: $A \land \overline{A} = false$
 11. Neutralitaet: $A \lor \text{Trivialer Widerspruch}, A \land \text{Triviale
     Tautologie}$
 
-Hat keinen Namen aber $A \lor BA = A \lor B$, weil $A \lor BA = (A \lor B) \land
-(A \lor \overline{A})$
+Hat keinen Namen aber:
+
+12. $A \circ (B \odot \overline{A}) = A \circ B$
+
+Denn:
+* $A \land (B \lor \overline{A}) = (A \land B) \lor (A \land \overline{A}) = (A \land B) \lor false = A \land B$
+* $A \lor (B \land \overline{A}) = (A \lor B) \land (A \lor \overline{A}) = (A \lor B) \land true = A \lor B$
+
+### Dualitaet
 
 Bemerkenswert an den Regeln der booleschen Algebra ist eine eigenartige
 Symmetrie, die als Dualitaet bezeichnet wird. Es gilt naemlich stets, dass man
@@ -87,7 +94,7 @@ $2^{2^n}$ verschiedene Schaltfunktionen mit $n$ Eingaengen.
 ### Einsmenge und Nullmenge
 
 Die *Einsmenge* $f^{-1}(1)$ einer $n$-stelligen Schaltfunktion $f$ ist die Menge
-aller binaeren $n$-Tupel (Eingangswoerter) fuer die Schaltfunktion den
+aller binaeren $n$-Tupel (Eingangswoerter) fuer die die Schaltfunktion den
 Funktionswert $1$ ausgibt.
 
 Beispiele:
@@ -104,7 +111,7 @@ oder Wirkung abgrenzbares Gebilde, die eine oder mehrere Schaltfunktionen (ein
 Es muss nicht nur einen Ausgang haben, sondern kann $m$ Ausgaenge haben, von
 denen jeder Ausgang also eine separate Schaltfunktion ist. Somit ist es
 allgemein eine Funktion $\{0, 1\}^n \rightarrow \{0, 1\}^m \text{ mit } m, n \in
-\mathcal{N}$.
+\mathbb{N}$.
 
 ### Gatter
 
@@ -113,15 +120,17 @@ Schaltnetz realisiert also nur eine Schaltfunktion fuer den einen Ausgang).
 
 Beispiele:
 
-* Konjunktionsgatter $f: \{0, 1}^n \mapsto \bigwedge_{i \in \{0, 1\}^n}
-  i$. Sie werden in einer Schaltung mit einem Ampersand $&$ dargestellt.
+* Konjunktionsgatter $f: \{0, 1\}^n \mapsto \bigwedge_{i \in \{0, 1\}^n}
+  i$. Sie werden in einer Schaltung mit einem Ampersand $\&$ dargestellt.
 
-* Disjunktionsgatter: $f: \{0, 1}^n \mapsto \bigvee_{i \in \{0, 1\}^n}$. Sie
+* Disjunktionsgatter: $f: \{0, 1\}^n \mapsto \bigvee_{i \in \{0, 1\}^n} i$. Sie
   werden in einer Schaltung als $\geq 1$ dargestellt.
 
 * Negationsgatter: $f: x \mapsto \neg x, x \in \{0, 1\}$. Sie hat nur einen
   Eingang und nur einen Ausgang. In einer Schaltung wird dieses Gatter als leere
   Kiste mit einem Kreis am Ausgang dargestellt.
+
+* XOR-Gatter: $f: x \mapsto \oplus_{i \in \{0,1\}^n} i$. Sie werden in einer Schaltung als $= 1$ dargestellt.
 
 ## Darstellungen
 
@@ -143,7 +152,7 @@ der Funktion, die nur Disjunktionen ($\lor$) von Konjunktionen ($\land$)
 enthaelt.
 
 Anders definiert ist sie eine Disjunktion von *Mintermen*. Ein Minterm ist
-hierbei die Konjunktion aller $n$ Argumente (Eingaenge) der
+hierbei die Konjunktion __aller $n$__ Argumente (Eingaenge) der
 Schaltfunktion. Diese Bool'schen Variablen koennen hierbei negiert sein, oder
 nicht. Ein Beispiel fuer einen Minterm ist $\overline{a}bc\overline{d}$. Jeder
 Minterm liefert fuer genau eine bestimmte Belegung der $n$ Argumente den Wert
@@ -153,7 +162,7 @@ Eselsbruecke: Eine Konjunktion wird sehr schnell $0$, also minimal $\rightarrow$
 Minterm.
 
 Konkret waehlt man fuer die DNF einer Schaltfunktion immer die Einsmenge, also
-man verknuepft alle jene Minterme (Eingangsworte), die den Wert $true$
+man verknuepft alle jene Minterme (Eingangsworte), die den Wert $true$ bzw. $1$
 liefern:
 
 $DNF(f) = \bigvee_{min \in f^{-1}(1)} min$
@@ -162,16 +171,16 @@ Somit kann man sagen, dass die Funktion $f$ den Funktionswert $true$ ausgibt,
 wenn das Eingangswort "so ist, oder so ist, oder so ist, oder so ist, ..."
 
 Gegeben eine Funktionstafel (Wertetabelle) bildet man die DNF also dadurch, dass
-man sich alle Eingangswoerter raussucht, die den Wert $true$ liefern. Dann
-verknuepft man die einzelnen Eingangsbits mit Konjunktionen zu einem Minterm,
-und verknuepft dann alle Minterme mit Disjunktionen.
+man sich alle Eingangswoerter raussucht, die den Wert $true$ bzw. $1$ liefern.
+Dann verknuepft man die einzelnen Eingangsbits mit Konjunktionen zu einem
+Minterm, und verknuepft dann alle Minterme mit Disjunktionen.
 
 #### Konjunktive Normalform (KNF)
 
 Gegensaetzlich zur DNF ist die KNF jene Darstellung einer Bool'schen Funktion,
 die nur Konjunktionen ($\land$) von Disjunktionen ($\lor$) enthaelt.
 
-Ein *Maxterm* ist nun die Disjunktion aller $n$ Argumente (Eingaenge) zur
+Ein *Maxterm* ist nun die Disjunktion __aller $n$__ Argumente (Eingaenge) zur
 Schaltfunktion. Wieder koennen die Bool'schen Variablen negiert sein, oder
 nicht. War $\overline{a}bc\overline{d}$ vorher ein Minterm, so ist nun also $a +
 \overline{b} + \overline{c} + d$ ein Beispiel fuer einen Maxterm. Jeder Maxterm
@@ -186,8 +195,8 @@ Eingangswoerter ist, die den Wert $false$ liefern. Man nehme beispielsweise die
 zweistellige Bool'sche Funktion $\oplus$ (XOR). Diese liefert genau dann den
 Funktionswert $false$, wenn beide Eingaenge gleich sind ($00 \lor 11$). Also
 liefert diese Funktion fuer ein Eingangswort $xy$ genau dann den Wert $true$,
-wenn gilt $\overline{\overline{x} \land \overline{y}} \land \overline{x \land
-y}$, also wenn es nicht $00$ ist und nicht $11$. Mittels DeMorgan wird nun jeder
+wenn gilt $\overline{(\overline{x} \land \overline{y})} \land \overline{(x \land
+y)}$, also wenn es nicht $00$ ist und nicht $11$. Mittels DeMorgan wird nun jeder
 negierte Minterm zu einem Maxterm. Genau dadurch entsteht die KNF.
 
 Intuitiv bzw. konzeptuell vermittelt die KNF also fuer eine Funktion, dass sie
@@ -196,9 +205,9 @@ Negationen fuehren dann eben zu Maxtermen.
 
 Formal ist die KNF nun also definiert als:
 
-$KNF(f): \bigwedge{min \in f^{-1}(0)} \overline{min}$
+$KNF(f): \bigwedge_{min \in f^{-1}(0)} \overline{min}$
 
-Wobei $\overline{min} = max$
+Also die Konjunktion aller negierten Minterme aus der Nullmenge. Wobei dann $\overline{min} = max$.
 
 #### Umwandlungen zwischen KNF und DNF
 
@@ -211,6 +220,8 @@ c) (b + c) (a + d) (b + d)$
 
 KNF: $(a + c) (b + c) (a + d) (b + d) = (a + cd) (b + cd) = ab + cd$
 
+Schon bei drei Variablen kann eine Wahrheitstabelle oder ein KV-Diagramm aber schon schneller sein. Vor Allem, da man bei einer DNF schon die Zeilen der Wahrheitstabelle aufgelistet hat, die $1$ ergeben. Bei der KNF muss man die Maxterme zuerst negieren, und die entstandenen Minterme sind dann die Nullmenge der Formel.
+
 #### Umwandlung zu NAND/NOR Form
 
 NOR/NAND sind oft guenstiger herzustellen als andere Bausteine. Daher kann es
@@ -218,18 +229,18 @@ Sinn machen, eine DNF/KNF in NOR/NAND Form zu bringen. Eine DNF kann durch
 doppelte Negation in eine NAND Form gebracht werden und eine KNF durch doppelte
 Negation in NOR Form.
 
-DNF -> NAND: $ab \lor cd \equiv \overline{\overline{ab \lor cd}}$
+$DNF \Rightarrow NAND: ab + cd \equiv \overline{\overline{ab + cd}}$
 
 Wegen Involution ist diese Umformung korrekt. Jetzt zieht man die innere
 Negation einfach mit deMorgan ueber alle Terme und erhaelt so eine NAND Form!
 
-$\overline{\overline{ab} \land \overline{cd}})$
+$\overline{\overline{ab} \cdot \overline{cd}})$
 
 Hier ist jede einzelne innere Konjunktion ein NAND-Gatter und die auessere
 Konjunktion ist auch ein NAND-Gatter.
 
-Also: KNF -> NOR: $(a+b) \land (c+d) \equiv \overline{\overline{(a+b) \land
-(c+d)}} \equiv \overline{\overline{a+b} \lor \overline{c+d}}$
+$KNF \Rightarrow NOR: (a+b) \cdot (c+d) \equiv \overline{\overline{(a+b) \cdot
+(c+d)}} \equiv \overline{\overline{a+b} + \overline{c+d}}$
 
 Hier hat man nun also eine KNF in eine Form mit drei NOR Gattern umgewandelt.
 
@@ -262,7 +273,7 @@ Der Grundgedanke der Minimierung ist dass Bool'sche Formeln der Form $xyz +
 xy\overline{z}$ durch Distributivitaet und trivialer Tautologie
 bzw. Neutralitaet umgeformt werden koennen:
 
-$xyz + xy\overline{z} = xy(z + \overline{z}) = xy (true) = xy$
+$xyz + xy\overline{z} = xy \cdot (z + \overline{z}) = xy \cdot (true) = xy$
 
 Hier haette man z.B. eine Schaltung mit zwei Stufen und drei Gattern (zwei
 Konjunktionen geschalten in eine Disjunktion) in eine Schaltung mit nur einer
@@ -276,7 +287,7 @@ Schaltungen in kanonischer DNF ergeben, aber einfacher, heisst oft langsamer,
 wenn man mehr Stufen hat. Beispiel: $abcd + abef$. Hier braucht man drei Gatter
 in zwei Stufen. Hebt man nun $ab$ heraus, erhaelt man mit $ab \cdot (cd + ef)$
 zwar einen einfachereren algebraischen Ausdruck, aber Nun braucht man fuenf
-Gatter und drei Stufen.
+Gatter und drei Stufen. Mehr Stufen bedeuten, dass mehr Gatter auf die Ergebnisse anderer Gatter warten muessen. Es geht also das Element der Parallelitaet verloren.
 
 ### Definitionen
 
@@ -314,19 +325,19 @@ Es ist anzumerken, dass die Verschmelzungsmenge nur die Menge der Minterme ist,
 und nicht das Resultat der Minimierung! Fuer $abc + ab\overline{c}$ waere also
 die Verschmelzungsmenge $\{abc, ab\overline{c}\}$, nicht $ab$.
 
-Allgemein gilt: $2^k$ $n$-stellige *verschiedene* Minterme sind genau dann zu
+Allgemein gilt: $2^k$ $n$-stellige *verschiedene* Monome sind genau dann zu
 einem $n-k$-stelligen Monom verschmelzbar, wenn sie sich in $k$ Stellen
 unterscheiden.
 
-Besser ausgedrueckt: findet man $2^k$ *verschiedene* Minterme die sich in $n -
-k$ Stellen uebereinstimmen, dann muss es fuer die $k$-anderen Stellen alle
+Besser ausgedrueckt: findet man $2^k$ *verschiedene* Monome die sich in $n -
+k$ Stellen uebereinstimmen, dann muss es fuer die $k$ anderen Stellen alle
 Moeglichkeiten geben, und die Variablen koennen eliminiert werden.
 
 Beispiel: $k = 2, n = 3$
 
 $a(bc), a(b\overline{c}), a(\overline{b}c), a(\overline{b}\overline{c})$
 
-Diese $2^2$ Minterme der Variablen $a, b, c$ unterscheiden sich in genau
+Diese $2^2$ Monome der Variablen $a, b, c$ unterscheiden sich in genau
 $k$-Stellen. Da sie alle verschieden sind und es $2^k$ davon gibt, muss jede
 Moeglichkeit fuer diese Variablen einmal vorkommen. Somit haengt der
 Funktionswert in jedem Fall von den anderen $n - k = 3 - 2 = 1$ Variablen ab,
@@ -334,8 +345,8 @@ hier naemlich genau $a$.
 
 #### Primimplikant
 
-Ein Primimplikant ist ein minimaler Minterm, der sich nicht weiter nach oben
-genannte Regeln minimieren laesst.
+Ein Primimplikant ist ein minimales Monom, das sich nicht weiter nach oben
+genannten Regeln minimieren laesst.
 
 #### Karnaugh-Veitch-Diagramme
 
@@ -366,7 +377,7 @@ immer mit dem ganz unteren.
 Moechte man nun von einem KV-Diagramm fuer $n$ Variablen auf eines fuer $n + 1$
 Variablen kommen, so muss man das ganze Diagramm einfach nach unten oder nach
 rechts spiegeln. Wichtig ist, dass alle moeglichen $2^n$ Schnitte ein eigenes
-Feld haben.
+Feld haben und das Felder weiterhin benachbart bleiben.
 
 Fuer $n = 3$
 
@@ -437,7 +448,7 @@ Felder sind moeglichst gross (= weniger Variablen).
      b   b  !b   !b
 ````
 
-Hier sein nun zuerst angemerkt, dass eine aus einem KV-Diagramm resultierende
+Hier sei nun zuerst angemerkt, dass eine aus einem KV-Diagramm resultierende
 DNF nicht eindeutig ist. Sie haengt einfach davon ab, wie man die Felder
 waehlt.
 
@@ -460,12 +471,12 @@ Nun also:
 
 1. Zeile: Ganz $a$ und ganz $!d$, also: $a!d$
 
-Linke Spalte ohne unteres Feld: $b$ geschnitten $!c$, geschnitten $d$: $b!cd$
+Linke Spalte ohne unteres Feld: $b$ geschnitten $c$, geschnitten $d$: $bcd$
 
 Nun kann man diese einzelnen Primimplikanten in einer minmalen DNF durch
 Disjunktionen vereinen:
 
-$ab \lor \overline{a}\overline{b}$
+$ab + \overline{a}\overline{b} + a\overline{d} + bcd$
 
 ## Gotchas
 
@@ -474,4 +485,4 @@ $ab \lor \overline{a}\overline{b}$
 * Beim algebraischen Vereinfachen von DNF kann es auch hilfreich sein, einen
   Term zu verdoppeln, damit man ihn mit einem anderen verschmelzen kann.
 * Zuerst sehen, welche Variable am oeftesten vorkommt, nicht einfach die erste
-  nehemen, die oft vorkomm!
+  nehmen, die oft vorkomm!

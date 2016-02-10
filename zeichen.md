@@ -19,7 +19,7 @@ z.B. *Latin-1*, offiziell *ISO-8859-1*, eine beliebte Erweiterung.
 ## Unicode
 
 Unicode ist eine viel komplexere und fortgeschrittenere Kodierung von Zeichen im
-Vergleich zu ASCII. Unicode representiert dabei Zeichen also sogenannte
+Vergleich zu ASCII. Unicode repraesentiert dabei Zeichen also sogenannte
 *Code-Points* in einer 16-Bit/2-Byte Darstellung. Die Werte $0$ bis $255$
 entsprechen dabei Latin-1. Da es aber weit mehr als $2^{16}$ Zeichen gibt
 (z.B. fuer asiatische Sprachen, auch tote Sprachen), muessen Unicode Zeichen oft
@@ -81,13 +81,15 @@ dieser nicht mehr in ASCII, werden mehrere Bytes benoetigt. Dann werden die
 einzelnen Bytes von rechts nach links sequentiell (die Unicode Kodierungen
 beachtend) mit dem Binaerwerts des Unicode-Punkts aufgefuellt.
 
+```
 Ä = 0xc4 = 0b1100.0100
 
 110(00011) 10(000100) = 0xC3 0xA4
 ^^          ^
 ||          naechster Byte
-|ein folgender Bit
+|ein folgender Byte
 nicht ascii
+```
 
 ∂ = 8706_10 = 0x2202 = 0b0010.001000.000010
 

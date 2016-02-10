@@ -34,7 +34,7 @@ ein Befehl vervollstaendigt.
 Pipelining liegt in einer Maschine dann vor, wenn die Bearbeitung eines Objekts
 in Teilschritte zerlegt und diese in einer sequentiellen Folge (die *Phasen der
 Pipeline*) abgearbeitet werden kann, wobei aber die Phasen der Pipeline fuer
-verschieden Befehle __ueberlappt__.
+verschiedene Befehle __ueberlappt__.
 
 Die *Pipeline* ist dabei die Gesamtheit der Verarbeitungseinheiten. Eine
 Pipeline-*Stufe* beschreibt nun eine einzige Verarbeitungseinheit im
@@ -61,11 +61,11 @@ Laden der Pipeline-Register eine Weile. Auch muss die Stufenlaufzeit nicht immer
 genau einen Takt sein, sondern kann auch weniger sein. Am Anfang dauert es auch
 ein wenig, um die Pipeline zu fuellen.
 
-Auch nehmen wir im idealisierten Modell an, dass jede Pipeline-Stufe verschieden
-Ressourcen aufnimmt. Das ist aber nicht immer der Fall. Beispielsweise greifen
-instruction-fetch (IF) und memory-access (MA) beide auf den Hauptspeicher
-zu. Das kann zu Pipeline-Konflikten fuehren. Konflikte und Spruenge fuehren auch
-dazu, dass die Pipeline nicht immer voll gefuellt ist.
+Auch nehmen wir im idealisierten Modell an, dass jede Pipeline-Stufe
+verschiedene Ressourcen aufnimmt. Das ist aber nicht immer der Fall.
+Beispielsweise greifen instruction-fetch (IF) und memory-access (MA) beide auf
+den Hauptspeicher zu. Das kann zu Pipeline-Konflikten fuehren. Konflikte und
+Spruenge fuehren auch dazu, dass die Pipeline nicht immer voll gefuellt ist.
 
 ### Konflikte
 
@@ -92,11 +92,11 @@ Zugriffe auf ein Datum fuehrt.
 
 Beispiel: `add r1, r1, r2` und `mul r1, r1, r2`.
 
-Man bemerke hier, dass die Instruction-Decode und Write-Back Phasen an
-gegenueberliegenden Enden des Befehlzyklus stehen. Das bedeutet, dass `add`
-zuerst `r1` liesst, und danach gleich auch `mul`. *Danach* erst wird `add` den
-Wert von `r1` veraendern und am Ende zurueckschreiben. `mul` wird dann noch mit
-dem Alten wert rechnen und ein voellig falsches Ergebnis zurueckschreiben.
+Man bemerke hier, dass die Execute und Write-Back Phasen fast hintereinander
+im Befehlzyklus stehen. Das bedeutet, dass `add` zuerst `r1` liesst, und danach
+gleich auch `mul`. *Danach* erst wird `add` den Wert von `r1` veraendern und am
+Ende zurueckschreiben. `mul` wird dann noch mit dem Alten Wert rechnen und ein
+voellig falsches Ergebnis zurueckschreiben.
 
 Um dieses Problem zu loesen, muss die Hardware einen solchen Konflikt loesen und
 den ersten Befehl erst durch die Pipeline schleussen, damit der andere Befehl
@@ -109,14 +109,14 @@ Sprungbefehlen und allen anderen Befehle auf, die den Befehlszaehler explizit
 veraendern.
 
 Wahrend nun aber eine Sprungbedingung ausgefuehrt wird, was eine Zeit dauert,
-kann das System schon die sogenannte Branch-Prediktion (Sprungvorhersage)
+kann das System schon die sogenannte Branch-Prediction (Sprungvorhersage)
 durchfuehren. Das System versucht also herauszufinden, schon bevor eine
 Bedingung wirklich ueberprueft wurde, ob sie gelten wird, oder nicht. Je nach
 Spekulation werden dann waehrend die Bedingung echt ueberprueft wird (was
 z.B. wieder Speicherzugriffe, also Zeit, erfordert) schon neue Befehl in die
 Pipeline gestossen.
 
-Wenn da System spekuliert, die Bedingung wird gelten, so ladet es Befehle vom
+Wenn das System spekuliert, die Bedingung wird gelten, so ladet es Befehle vom
 Sprungziel. Wenn es meint, das Programm wird nicht springen, sondern sequentiell
 fortschalten, ladet es Befehle, die nach der Sprunginstruktion (also ohne
 Sprung) stehen.
@@ -127,8 +127,8 @@ nicht, werden die geholten Befehle verworfen.
 
 ##### Statische Sprungvorhersage
 
-Eine Technik der Sprungvorhersage nennt man *statisch*. Das ist dann, wenn ein
-fuer einen bestimmten Befehl immer das selbe vorhergesagt wird.
+Eine Technik der Sprungvorhersage nennt man *statisch*. Das ist dann, wenn
+fuer einen bestimmten Befehl immer dasselbe vorhergesagt wird.
 
 ##### Dynamische Sprungvorhersage
 
@@ -145,7 +145,7 @@ sind. Die Idee des dynamischen Schedulings ist es jetzt. Diese Befehle
 Ein *superskalarer* Prozessor verfuegt im Vergleich zu einem Prozessor mit
 sequentieller Pipeline ueber die $n$-fache Anzahl von Funktionseinheiten,
 Datenpfaden, Dekodern usw. Somit kann man mehrere Pipelines gleichzeitig haben,
-und mehrere Befehle koenen gleichzeitig in einer bestimmten Pipeline-Stufe
+und mehrere Befehle koennen gleichzeitig in einer bestimmten Pipeline-Stufe
 (z.B. IF) sein.
 
 ### Threading
@@ -174,13 +174,13 @@ Threads also Takt-fuer-Takt (cycle-by-cycle) "parallel" ausgefuehrt.
 
 Der Gedanke bei dieser Methode ist es, einen Thread so lange zu behandeln, bis
 er einen Befehl mit langer Latenzzeit benoetigt (bis er blockiert). Dann,
-waehren der blockiert, wechselt er zum naechsten Thread.
+waehrend er blockiert, wechselt er zum naechsten Thread.
 
 #### Simultaenous Multithreading
 
-Bei dieser Variante werden wirklich mehrere Thread gleichzeitig bearbeitet. Also
-in jedem der Kerne des superskalaren Prozessors wird gleichzeitig ein anderer
-Thread in einer bestimmten Stufe bearbeitet. Es gibt dann also mehrere
-Befehlpuffer, wobei jeder Befehlspuffer den Befehlsstrom eines anderen Threads
+Bei dieser Variante werden wirklich mehrere Threads gleichzeitig bearbeitet.
+Also in jedem der Kerne des superskalaren Prozessors wird gleichzeitig ein
+anderer Thread in einer bestimmten Stufe bearbeitet. Es gibt dann also mehrere
+Befehlspuffer, wobei jeder Befehlspuffer den Befehlsstrom eines anderen Threads
 enthaelt, welche ein Kern dann behandeln kann. Jeder Befehlsstrom hat also auch
-einene eigenen Registesatz.
+einen eigenen Registesatz.

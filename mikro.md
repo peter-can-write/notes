@@ -10,7 +10,7 @@ einer sogenannten "Mikrooperation".
 ## Mikroprogrammierbare Rechner
 
 Allgemein ist nicht jeder Rechner mikroprogrammierbar. Es gibt naemlich zwei
-arten von Rechnern bzw. spezifischer Leitwerken (auf die es letztendlich
+Arten von Rechnern bzw. spezifischer Leitwerken (auf die es letztendlich
 ankommt): festverdrahtete und mikroprogrammierbare.
 
 Hierzu ist es nuetzlich, den Rechner als eine endlichen Moore-Automaten $M = (E,
@@ -83,7 +83,7 @@ Mikrooperationen:
 
 ### Kodierung
 
-Eine Mikroinstruktion kann auf verschieden Weisen kodiert werden, um etwa
+Eine Mikroinstruktion kann auf verschiedene Weisen kodiert werden, um etwa
 Speicher im Mikrospeicher zu sparen, oder um Zeit fuer Dekodierung zu sparen. Es
 gibt hier drei Klassen von Kodierung:
 
@@ -132,14 +132,14 @@ Dekoder, und andere Bereiche sind horizontal verschluesselt.
 ## Mikroprogrammierbarer Beispielrechner
 
 Der mikroprogrammierbare Beispielrechner in ERA besteht hauptsaechlich aus einem
-Hauptspeicher, Leitwerkaustein (Am2910), einem Rechnwerkbaustein (Am2901), einem
+Hauptspeicher, Leitwerkbaustein (Am2910), einem Rechnwerkbaustein (Am2901), einem
 Carry-Lookahead Baustein und einer Wortrandlogik (Am2904).
 
 Dieser Rechner ist 16-Bit. Daten- und Adressleitungen im Rechner sind also alle
 16-Bit breit, somit auch der Daten- und Adressbus. Auch das Instruktionsregister
-bzw. saemtliche Maschinenbefehle sind im Instruktionsregister sind
+bzw. saemtliche Maschinenbefehle im Instruktionsregister sind
 16-Bit. Konstanten muessen bei Maschinenbefehlen daher separat im Hauptspeicher
-gespeichert werden, solche Maschinenbefehle sind also 32-Bit.
+gespeichert werden, solche Maschinenbefehle sind also 32-Bit. Der Hauptspeicher und Mikrospeicher selbst sind auch 16-Bit adressiert. Das heisst, dass eine Adresse im Speicher immer 16 Bit okkupiert.
 
 Allgemein besteht ein Von-Neumann Rechner bekanntlich aus drei Teilen, diese
 sind auch hier zu finden:
@@ -154,7 +154,7 @@ Das Leitwerk besteht bei der MI-Maschine aus:
 
 * Dem Instruktionsregister fuer Maschinenbefehle (Assembler)
 * Dem Mapping-PROM
-* Dem eigentlichen Mikroleitwerk, dass fuer die Adressfortschaltung in
+* Dem eigentlichen Mikroleitwerk, das fuer die Adressfortschaltung in
   Abhaengigkeit von den Adressfortschaltbefehlen und anderen Daten im Adressteil
   der Mikroinstruktion zustaendig ist, auch in Abhaengigkeit von Bedingungen,
   die im Rechnwerk entstehen. Es enthaelt auch den __Mikrobefehlszaehler__.
@@ -168,7 +168,7 @@ Das Leitwerk besteht bei der MI-Maschine aus:
 #### Instruktionsregister
 
 Im Instruktionsregister speichert das Leitwerk die einzelnen
-*Maschinen*befehle. Jeder Maschinenbefehl besteht aus zwei Teilen:
+*Maschinen*-Befehle. Jeder Maschinenbefehl besteht aus zwei Teilen:
 
 1. Einem 8-Bit OpCode (Operation Code); belegt Bits 8 - 15.
 2. Zwei Register-Operanden; belegen Bits 0 - 7
@@ -180,7 +180,7 @@ Maschinenprogrammierer so aus, also haette er/sie nur $2^3 = 8$ Register (man
 kann mit drei Bits 0 - 2 nur Register 0 - 7 adressieren).
 
 Der Grund dafuer ist, dass man somit 8 Register nur fuer den Mikroprogrammierer
-zur Implementierun von Maschinenbefehlen reservieren kann. Diese 8 Register sind
+zur Implementierung von Maschinenbefehlen reservieren kann. Diese 8 Register sind
 im Rechenwerk die oberen 8, da man ja als Mikroprogrammierer nicht durch die
 fixe Null im oberen Bit beschrankt ist.
 
@@ -192,7 +192,7 @@ wird der Befehlszaehler auf den Adressbus gegeben, die Instruktion von der
 Adresse gelesen, in das Instruktionsregister gegeben und der Befehlszaehler
 erhoeht.
 
-Mit dem $\overline{IR_LD}$ Signal in Bit $1$ des Maschineninstruktionsworts kann
+Mit dem $\overline{IR\_LD}$ Signal in Bit $1$ des Maschineninstruktionsworts kann
 man das Datum (eine Instruktion) vom Datenbus in das Instruktionsregister laden.
 
 #### Mapping-PROM
@@ -239,11 +239,11 @@ Fuer diesen Rechner, in mehr Detail:
 1. Instruktionen werden aus dem Hauptspeicher im Instruktionsregister abgelegt.
 2. Der Address-Abbildungs-Speicher (Mapping-PROM) bildet (mapped) dann den
    Opcode Teil der Instrutkion auf die Startadresse eines Mikroprogramms
-3. Diese Startadresse liegt im Mikroprogrammspeicher. Sie ist 12-bit gross.
+3. Diese Startadresse liegt im Mikroprogrammspeicher. Die Adresse ist 12-bit gross.
 4. Der Mikrobefehlszaehler wird auf diese Addresse gestellt.
 5. Und die erste Mikroinstruktion wird dann aus dem Mikroprogrammspeicher
    geholt, vom Mikroleitwerk, und in das Mikroinstruktionsregister gelegt.
-6. Das Mikroleitwerk fuehrt den Maschinenbefehl aus.
+6. Das Mikroleitwerk fuehrt die Mikroinstruktion aus.
 
 #### Eingaenge
 
@@ -263,7 +263,7 @@ Es gibt folgende Eingaenge in den Am2910:
   Befehle (z.B. bedingte Spruenge) einen Sinn.
 
 * Der $D$ (Data) Eingang. Hier werden Adressen uebergeben, die das Leitwerk fuer
-  bestimmte Befehle braucht. Z.B. wird hier die Adresse welche der Mapping-PROM
+  bestimmte Befehle braucht. Z.B. die Adresse welche der Mapping-PROM
   fuer einen OpCode bestimmt, und zu welcher das Leitwerk fuer den `JMAP` Befehl
   springen soll. Oder die Verzweigungsadresse (Branch-Address) fuer einen `CJP`
   (deswegen gibt es eine Verbindung vom D Eingang zum Branch-Address Feld im
@@ -271,7 +271,7 @@ Es gibt folgende Eingaenge in den Am2910:
 
 #### Adressfortschaltbefehle
 
-Die folgenden Adressfortschaltbefehle koenen dem Mikroleitwerk gegeben werden.
+Die folgenden Adressfortschaltbefehle koennen dem Mikroleitwerk gegeben werden.
 
 Allgemein ist anzumerken dass viele Befehle die es in Assembler beispielsweise
 einmal mit und einmal ohne Bedingung gibt (`JMP` vs `Jcc`), fuer die
@@ -284,12 +284,12 @@ unabhaengig von der Bedingung aus").
 Der `JMAP` Befehl ist dafuer zustaendig, den OpCode eines Maschinenbefehls im
 Instruktionsregister auf die Startadresse des zustaendigen Mikroprogramms im
 Mikroprogrammspeicher abzubilden. Dieser Befehl muss nach dem Fetchen (`IFETCH`)
-jeden Maschinebefehls aus dem Hauptspeicher aufgerufen werden.
+jeden Maschinenbefehls aus dem Hauptspeicher aufgerufen werden.
 
 ##### CONT
 
-`CONT` ist sozusagen eine `nop` Instruktionen. Es inkrementeirt den
-Mikrobefehlszaeheler einfach um eins. Dieser Adressfortschaltbefehl ist wohl der
+`CONT` ist sozusagen eine `nop` Instruktion. Es inkrementiert den
+Mikrobefehlszaehler einfach um eins. Dieser Adressfortschaltbefehl ist wohl der
 am haeufigsten gebrauchte.
 
 ##### CJP
@@ -301,10 +301,10 @@ Branch-Address Feld der Mikroinstruktion gesprungen.
 Er wird in zwei Situationen benoetigt:
 
 1. Unbedingter Sprung. Ein unbedingter Sprung ist am einfachsten durch einen
-   bedingten Sprung implementiert, wobei das Signal am $\overline{CC}$ Eingang
-   zum Leitwerk einfach auf `PS` (HIGH) gestellt wird. Dadurch ist die Bedingung
-   "erfuellt" und das Leitwerk fuehrt den Sprung an die gewuenschte Stelle im
-   Mikroprogrammspeicher (steht in Branch-Address) aus.
+bedingten Sprung implementiert, wobei das Signal am $\overline{CCEN}$ Eingang
+zum Leitwerk einfach auf `PS` (HIGH) gestellt wird. Dadurch ist die Bedingung
+"erfuellt" und das Leitwerk fuehrt den Sprung an die gewuenschte Stelle im
+Mikroprogrammspeicher (steht in Branch-Address) aus.
 
 2. Bedingter Sprung. Hierbei wird die Bedingung am $\overline{CC}$ Eingang nicht
    ignoriert. Daher ist $\overline{CCEN}$ auch LOW (Mnemno `C`). Nur wenn die
@@ -317,7 +317,7 @@ Er wird in zwei Situationen benoetigt:
 Mikroprogrammspeicher. Das $\overline{CCEN}$ Signal wird also auf `PS` gesetzt
 und im Branch-Adress Teil der Mikroinstruktion wird eine Null gespeichert.
 
-`JZ` loescht auch zusaetlzlich den Keller. Dieser wird in ERA nicht benutzt,
+`JZ` loescht auch zusaetzlich den Keller. Dieser wird in ERA nicht benutzt,
 also ist es egal, aber dennoch besser `CJP` mit $CCEN = PS$.
 
 ##### Weitere
@@ -326,7 +326,7 @@ Hier sind noch weitere, fuer die Mikroprogrammierung in der Klausur irrelevante
 aber fuer die Fragen zur Vorlesung relevante Fortschaltbefehle:
 
 * `JRP`: Zweiwege-Sprung. Ist die Bedingung wahr, wird zur Adresse in
-  Branch-Address gesprugen, sonst zu einer Adresse die in einem der internen
+  Branch-Address gesprungen, sonst zu einer Adresse die in einem der internen
   Register gespeichert ist.
 
 * `CJS`: Wie `CALL`, aber bedingt. Somit kann man das normale `CALL`
@@ -337,7 +337,7 @@ aber fuer die Fragen zur Vorlesung relevante Fortschaltbefehle:
   unbedingte Form von `RET` moeglich.
 
 Fuer Schleifenbefehle gibt es einige Adressfortschaltbefehle. Grundsaetzlich
-wird ein Zaehler in das Zaehlregister geladen. Dann kann wird die
+wird ein Zaehler in das Zaehlregister geladen. Dann wird die
 Ruecksprungadresse (zum zurueckspringen am Ende der Schleife wenn der Zaehler
 noch nicht null ist) entweder in das Adressfeld der Mikroinstruktion geladen,
 oder auf den internen Stack gegeben.
@@ -442,7 +442,7 @@ des RAM der einzelnen Scheiben z.B. bei Shiftoperationen verschiebt.
 
 ##### ALU
 
-Die arithmetisch-logischen Einheit (ALU) fuehrt die eigentlichen
+Die arithmetisch-logische Einheit (ALU) fuehrt die eigentlichen
 Rechenoperationen auf Daten durch. Sie kann nur addieren und subtrahieren, nicht
 jedoch multiplizieren oder dividieren. Sie kann auch bestimmte logische
 Operationen, wie XOR, AND, OR und NEG (negieren, wie NOT in Assembler).
@@ -468,9 +468,7 @@ werden:
     ALU-Operation Null ist.
 * Das $C$-Bit (*carry flag*) wird bei einem Uebertrag aus dem MSB gesetzt. Also
   dann, wenn der MSB aus den 16-Bit des Datentyps bei einer Addition
-  rausgetragen wird oder dann, wenn bei einer Subtraktion ein groesserer Wert
-  von einem kleineren abgezogen wird (dann muss aus dem "nichts" ein Bit
-  geborrowed werden).
+  rausgetragen wird. Die ALU selbst rechnet Subtraktionen durch Additionen mit dem Zweierkomplement (siehe unten), daher wird bei der MI-Maschine das Carry Bit bei einer Subtraktion immer invertiert relativ zu x86 gesetzt. Also bei einer Subtraktion dann eben genau dann, wenn man eine kleinere von einer groesseren Zahl abzieht.
 * Das $N$-Bit (*negative flag*). Sowie das Sign-Bit in Assembler. Also eine
   Kopie des MSB.
 * Das $OVR$-Bit (*overflow flag*) wird fuer vorzeichenbehaftete Zahlen dann
@@ -502,7 +500,7 @@ Verknuepfung ist.
 Man kann zwar in der ALU keine Multiplikation oder Subtraktion mit einer
 einzigen Operation durchfuehren, aber eben durch Schleifen mit Additionen und
 Subtraktion. Bei einer Multiplikation von zwei $n$-Bit Zahlen entsteht ein
-Ergebnis von maximal $2n$ Bits. Daher braucht man ein temporaere Register fuer
+Ergebnis von maximal $2n$ Bits. Daher braucht man ein temporaeres Register fuer
 die oberen 16-Bit wenn man zwei 16-Bit Werte aus Registern oder Konstanten
 multipliziert. Dieses Register ist das `QREG` (Q-Register, fuer "Quotient").
 
@@ -526,7 +524,7 @@ wird (`Y`-Ausgang). Der ausgegebene Wert kann sein:
 2. Direkt der Wert des $A$-Registers. Hierfuer gibt es die `RAMA` Steuerung. Die
    Werte aus den Registern $A$ und $B$ werden noch immer durch die ALU gegeben,
    verknuepft und wieder zurueck nach $B$ geschrieben. Es wird aber eben immer
-   nur der Wert des $A$-Registers ausgegeben.
+   nur der (vorherige) Wert des $A$-Registers ausgegeben.
 
 ##### RAM Schiebeeinheit
 
@@ -578,7 +576,7 @@ unveraendert.
 ##### Carry Lookahead
 
 Der Carry Lookahead Baustein Am2902 hat die Rolle nachzusehen, ob eine der vier
-Bit-Slices bei der momentanen Addition eineen Uebertrag generieren wird. Der
+Bit-Slices bei der momentanen Addition einen Uebertrag generieren wird. Der
 Sinn ist, dass man bei einer binaeren Addition nicht die oberen Bits addieren
 kann, bevor man nicht den Carry der unteren Bits weiss. Hat man nun also 16
 Bits, muss man somit 16 Zyklen warten, da man fuer jeden Bit auf das Carry der
@@ -714,8 +712,7 @@ wird aber zunaechst das *Einerkomplement* $\overline{S}$ von $S$ gebildet und
 dann die Addition $R + \overline{S}$ durchgefuehrt. Da $\overline{S} = -S - 1$,
 ist diese Addition aber noch keine vollstaendige Subtraktion: $R + \overline{S}
 = R + (-S - 1)$. Deswegen muss der Mikroprogrammierer *manuell* noch das
-Carry-Bit setzten (`CI1`), um somit die Addition $R + \overline{S} + 1 = R + (-S
-- 1) + 1 = R - S$ zu vollenden. Anzumerken ist, dass fuer das Carry Flag bei
+Carry-Bit setzten (`CI1`), um somit die Addition $R + \overline{S} + 1 = R + (-S - 1) + 1 = R - S$ zu vollenden. Anzumerken ist, dass fuer das Carry Flag bei
 der Operation $R + (-S)$ genau das inverse der Carry-Flag fuer $R - S$ (bei
 normaler binarere Subtraktion mit borrow) rauskommt. Daher kommt auch das
 inverse Carry bei der Subtraktion raus (im Vergleich zu x86).
@@ -765,7 +762,7 @@ Es gibt folgende Befehle:
 
 
 (1) ist nuetzlich, um Werte ohne Veraenderung durch die ALU zu
-schleusen. Z.B. fuer das $DB$ Problem eine Moeglichkeite.
+schleusen. Z.B. fuer das $DB$ Problem eine Moeglichkeit.
 
 ### Wortrandlogik (Am2904)
 
@@ -792,14 +789,14 @@ Der Wortrandlogikbaustein Am2904 ist in der ERA-Maschine zustaendig fuer:
 
 Die Wortrandlogik verwaltet zwei Statusregister:
 
-1. Das Mikrostatusregister $\muSR$, fuer den Mikroprogrammierer.
+1. Das Mikrostatusregister $\mu SR$, fuer den Mikroprogrammierer.
 2. Das Maschinenstatusregister $MSR$, fuer den Maschinenprogrammierer.
 
 Diese Differenzierung ist wie jene fuer die fuer den Maschinenprogrammierer
 sichtbaren $8$ Register, und die fuer den Mikroprogrammierer sichtbaren $8$
 Register. Hier kann man nun also bestimmte Flags in das Mikrostatusregister
-laden, um damit z.B. bedingte Spruenge im Leitwerk durchzufuehren. Gleichzeitig
-muessen dabei nicht die Statusflags des Maschinenprogrammiers veraendert werden.
+laden, um damit z.B. bedingte Spruenge im *Mikro*-Leitwerk durchzufuehren. Gleichzeitig
+muessen dabei nicht die Statusflags des Maschinenprogrammierers veraendert werden.
 
 Mit den Signalen $\overline{CE_{\mu}}$ und $\overline{CE_M}$ kann das Laden von
 Flags (siehe unten) fuer eines der Statusregister oder beide verhindert
@@ -915,7 +912,7 @@ Mikroinstruktions geben, der fuer den Am2904 voregesehen ist. Hierbei sollte man
 __immer die Enable-Bits auf `H` setzen__ (also $\overline{CE_{\mu}} = H$ und
 $\overline{CE_M} = H$). Dann muss man zum bedingten Springen im Leitwerk noch
 das Condition-Code-Enable-Bit $\overline{CCEN}$ auf `C` setzen und den bedingten
-Adressfortschaltung (`CJP`, `CJS`, `CRET`, `LOOP` etc.) auch noch eintragen.
+Adressfortschaltung (`CJP`, `CJS`, `CRTN`, `LOOP` etc.) auch noch eintragen.
 
 ##### Uebertragssteuerung
 
@@ -935,19 +932,19 @@ Jede Mikroinstruktion ist 80-Bit breit, und besteht aus den folgenden Bits:
 0: $\overline{MWE}$: Memory-Write-Enable, zum Lesen/Schreiben des
    Hauptspeichers. $W := 0, R := 1$.
 
-1: $\overline{IR_LD}$: Instruction-Register-Load. Laedt eine Instruktion vom
+1: $\overline{IR\_LD}$: Instruction-Register-Load. Laedt eine Instruktion vom
    Datenbus in das Instruktionsregister. $L := 0, H := 1$.
 
-2: $\overline{BZ_EA}$: Befehlszaehler-Enable-Adressbus. Legt den Befehlszaehler
+2: $\overline{BZ\_EA}$: Befehlszaehler-Enable-Adressbus. Legt den Befehlszaehler
    auf den Adressbus. $E := 0, H := 1$
 
-3: $\overline{BZ_INC}$: Befehlszaehler-Increment. Erhoeht den Behlszaehler um
+3: $\overline{BZ\_INC}$: Befehlszaehler-Increment. Erhoeht den Behlszaehler um
    $1$. $I := 0, H := 1$.
 
-4: $\overline{BZ_ED}$: Befehlszaehler-Enable-Datenbus. Legt den Befehlszaehler
+4: $\overline{BZ\_ED}$: Befehlszaehler-Enable-Datenbus. Legt den Befehlszaehler
    auf den Datenbus. $E := 0, H := 1$
 
-5: $\overline{BZ_LD}$: Befehlszaehler-Load. Laedt den Befehlszaehler vom
+5: $\overline{BZ\_LD}$: Befehlszaehler-Load. Laedt den Befehlszaehler vom
    Datenbus (z.B. fuer Spruenge). $L := 0, H := 1$
 
 6..17: $BAR$: Branch-Address. Zum Speichern von Sprungadressen in den MPS fuer
@@ -1024,7 +1021,7 @@ Jede Mikroinstruktion ist 80-Bit breit, und besteht aus den folgenden Bits:
 
 * Bei Subtraktion Carry Bit nicht vergessen (`CI1`)
 * Befehlszaehler laden/inkrementieren und jump zu IFETCH geht im selben Takt.
-* Ruecksprung zu IFETCH am Enden icht vergessen.
+* Ruecksprung zu IFETCH am Ende nicht vergessen.
 * Nach IFETCH zeigt der BZ schon auf die naechste Instruktion/Adresse.
 * Bei Spruengen Befehlszaehler schon im ersten Takt auf den Adressbus geben!
 * Bei Berechnung von Takten/Speicherzugriffen auch IFETCH beachten!!

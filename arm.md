@@ -1,11 +1,11 @@
 # ARM
 
-ARM ist eine englische Technologie Firma, die RISC Prozessoren fuer eingebettete
-System entwickelt. Das besondere an ARM ist, dass es keine eigenen Produkte
+ARM ist eine englische Technologie-Firma, die RISC Prozessoren fuer eingebettete
+Systeme entwickelt. Das besondere an ARM ist, dass es keine eigenen Produkte
 (Prozessoren) *herstellt* bzw. produziert, sondern nur *designed*. Es ist also
 ein Design-Haus.
 
-ARM konzipiert also Prozessoren und deren Befehlssaetze sowie Kerne, und
+ARM konzipiert Prozessoren und deren Befehlssaetze sowie Kerne, und
 verkauft diese Plaene via mehreren Lizenmodellen an Kunden, die diese dann in
 Fabriken herstellen koennen.
 
@@ -39,8 +39,7 @@ Einige Statistiken zu ARM:
 
 Die Instruction Set Architecture (ISA) von ARM ist eine der RISC Variante. RISC
 steht hierbei fuer Reduced Instruction Set Computing und steht im Gegensatz zu
-CISC (Complex Instruction Set Computing), die von Intel bzw. den meisten
-Prozessoren fuer Benutzerrechner verwendet werden.
+CISC (Complex Instruction Set Computing), die von Intel fuer Benutzerrechner verwendet werden.
 
 Der Unterschied zwischen RISC und CISC ist, dass es bei CISC sehr viele, oftmals
 unnoetige Befehle gibt. Bei RISC gibt es hingegen nur wenige ($\sim 32$),
@@ -48,9 +47,11 @@ einfache Befehle. Der Maschinenprogrammierer muss somit also mehr Arbeit
 machen. Der Vorteil von RISC ist dabei die einfache Realisierung mit wenigen
 Transistoren (stromsparend) und schneller Verarbeitung.
 
+Ein Beispiel des RISC Konzept ist, dass es keinen expliziten `INC` Befehl gibt, weil dieser Befehl ja schon mit `ADD` vom Maschinenprogrammierer realisiert werden kann.
+
 ### Befehlsformat
 
-Die ARMv7 Architektur hat 32-Bit Wortgroesse und *normalerweise* ein *festes
+Die ARMv7 Architektur hat __32-Bit__ Wortgroesse und *normalerweise* ein *festes
 Befehlsformat* von vier Byte. Das bedeutet, dass alle Befehle konstant mit
 32-Bit im Speicher abgelegt sind. Die Intel x86 Architektur hat beispielsweise
 ein variables Befehlsformat von 1 und mehr als 6 Byte.
@@ -94,7 +95,7 @@ Instruktion 4-Byte aligned. Das bedeutet wiederum, dass die unteren 5 Bit immer
 null sind (weil die Startadresse immer in Restklasse 0 ist). Von diesen Bits
 werden zwei gewaehlt, um das Befehlsformat des Prozessors festzulegen. Man kann
 also das Befehlsformat dynamisch fuer jede Instruktion veraendern, indem man die
-ersten Bits entsprechend setzt. So kann man beispielsweise Zeitkritischen Code
+ersten Bits entsprechend setzt. So kann man beispielsweise zeitkritischen Code
 nur mit Thumb (16-Bit) ausfuehren, und den Rest mit dem ARM Befehlsformat
 (32-Bit).
 
@@ -106,8 +107,11 @@ Instruktionen fuer Speicherzugriffe gibt. Diese sind `LDR` (load register) und
 arbeiten. Das hat wiederum eine reduzierte Anzahl sowie reduzierte
 Komplexizitaet von Instruktionen zur Folge.
 
-Adressierungsmodi sind hierbei auch nur sehr einfach. Speicheradressen koennen
-via Registern oder direkten Operanden angegeben werden.
+Adressierungsmodi sind hierbei auch nur sehr einfach, weil das
+Instruktionsformat auch mit 32-Bit fest ist und somit keine 32-Bit
+Speicheradressen beinhalten kann. Speicheradressen koennen via Registern
+(register-indirekt) oder direkten Operanden relativ zum momentanen
+Befehlszaehler angegeben werden.
 
 ### Bedingte Ausfuehrung
 
@@ -126,10 +130,10 @@ das in ARM so aus:
 
 ```asm
 cmp r0, #0        ; compare and set flags
-addeq r0, r0, 1   ; increment only if zero flag set
+addeq r0, r0, #1   ; increment only if zero flag set
 ```
 
-Note: es gibt kein `inc` in der ARM ISA (RISC)
+Note: es gibt kein `inc` in der ARM ISA (__RISC__)
 
 Weiteres Beispiel, zuerst ein Stueck C Code:
 
@@ -189,11 +193,11 @@ o
 ## Register
 
 Die ARM Architektur beinhaltet 37 Register, von welchen die $16$ Register $R0$
-bis $R15$ dem Maschinenprogrammierer zur Verguegung stehen. Von diesen $16$ sind
+bis $R15$ dem Maschinenprogrammierer zur Verfuegung stehen. Von diesen $16$ sind
 nun die $13$ Register $R0$ bis $R12$ Allzweckregister, und die anderen
 spezielle:
 
-* $R13$ ist der Stackpointer (ESP.
+* $R13$ ist der Stackpointer (ESP).
 * $R14/LR$ ist das sogenannte "Link Register". Es speichert die
   Ruecksprungadresse bei Unterprogrammaufrufen (nicht auf dem Stack wie bei
   x86).
@@ -218,7 +222,7 @@ Instruktion um den gegeben Wert (den Shifter-Operanden) zu logisch zu schieben.
 
 Ein Befehl hat also folgendes Schema:
 
-`<OpCode>[condition] Ziel [, Quelle 1] [, Quelle 2] [Shifter-Operand]`
+`<OpCode>[condition] Ziel [, Quelle 1 [, Quelle 2]] [Shifter-Operand]`
 
 Zusaetzlich gibt es noch die beiden Load und Store Befehle:
 
@@ -265,8 +269,6 @@ Beispiele:
 * `teq r0, #5 ; equality test without modifying c or v flags`
 * `cmp r0, #5 ; checks equality and modifies all flags (like cmp in x86)`
 
-### Statusregister-Instruktionen
-
 ### Load/Store-Instruktionen
 
 Da ARM eine Load/Store Architektur hat, duerfen alle Operationen (e.g. ADD/MOV)
@@ -302,13 +304,13 @@ ist ein Grund, wieso sie so beliebt fuer eingebettete Systeme sind.
 
 ### Stromspartechniken
 
-* Verringerung unnoetiger Befehlsladeoperationen durch Sprungvorhersage.
+* Verringerung unnoetiger Befehlsladeoperationen durch __Sprungvorhersage__.
 * Verringerung der Cache Flushes (Weiterleitung an naechstes Level in der
   Speicherhierarchie) durch physische Adressen.
-* Reduktion der Speicherzugriffe durch Caches.
-* Kurze Schleifen mit wengier als 64-Byte ohne Zugriff auf Cache.
-* Verschiedene Spannungsbereiche (RAM, Prozessor Logik, FPU etc.)
-* Verschiedene Power Modes (Full Run, Standby, Sthutdown) in denen die
+* __Reduktion der Speicherzugriffe durch Caches__.
+* Kurze Schleifen mit weniger als 64-Byte ohne Zugriff auf Cache.
+* __Verschiedene Spannungsbereiche__ (RAM, Prozessor Logik, FPU etc.)
+* __Verschiedene Power Modes__ (Full Run, Standby, Sthutdown) in denen die
   Stromversorgung oder das Taktsignal fuer bestimmte Bereiche abgeschaltet
   werden koennen.
 
@@ -324,7 +326,7 @@ https://courses.engr.illinois.edu/ece390/archive/spr2002/books/labmanual/inst-re
 ARM hat eine etwas andere Synchronisationsstrategie. Es gibt dafuer zwei
 besondere Befehle:
 
-* `LL` (load-linked): Laedt die Speicherstelle und beobachtet sie
+* `LL` (load-linked): Laedt die Speicherstelle und beobachtet sie.
 * `SR` (store): Speichert einen Wert nur an die Speicherstelle, wenn sie sich
   nicht veraendert hat (wenn sie vorher mit `LL` unter Beobachtung gestellt
   wurde).

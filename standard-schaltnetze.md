@@ -1,41 +1,51 @@
 # Standardschaltnetze
 
- Es gibt einige wichtige Standardschaltnetze die sehr oft verwendet werden und
- dessen Struktur bekannt sein sollte. Grundsaetzlich kann man diese in drei
- funktionale Gruppen unterteilen:
+Es gibt einige wichtige Standardschaltnetze die sehr oft verwendet werden und
+dessen Struktur bekannt sein sollte. Grundsaetzlich kann man diese in drei
+funktionale Gruppen unterteilen:
 
- 1. Funktionen zum Umkodieren (En-/Dekoder)
- 2. Funktionen zum Auswaehlen von Werten (Mux/Demux)
- 3. Arithmetische Funktionen ($+$, $-$, $=$)
+1. Funktionen zum Umkodieren (En-/Dekoder)
+2. Funktionen zum Auswaehlen von Werten (Mux/Demux)
+3. Arithmetische Funktionen ($+$, $-$, $=$)
 
- ## Umkodierende Funktionen
+## Umkodierende Funktionen
 
- ### Enkoder
+### Enkoder
 
- Ein Enkoder (Verschluessler) ist ein Schaltnetz, das ein $n$-stelliges
- Eingangswort auf ein *einduetiges* $m$-stelliges Ausgangswort abbildet. Diese
- Abbildung muss zwar weder injektiv noch surjektiv sein, muss jedoch die
- Grundvoraussetzung einer Funktion erfuellen (dass es fuer jedes Eingangswort
- ein eindeutiges Ausgangswort gibt). Hierbei ist $m$ zwar nicht zwingend, aber
- meistens doch kleiner als $n$.
+Ein Enkoder (Verschluessler) ist ein Schaltnetz, das ein $n$-stelliges
+Eingangswort auf ein *eindeutiges* $m$-stelliges Ausgangswort abbildet. Diese
+Abbildung muss zwar weder injektiv noch surjektiv sein, muss jedoch die
+Grundvoraussetzung einer Funktion erfuellen (dass es fuer jedes Eingangswort
+ein eindeutiges Ausgangswort gibt). Hierbei ist $m$ zwar nicht zwingend, aber
+meistens doch kleiner als $n$.
 
 Am einfachsten stellt man es sich vor, dass nur ein Signal genau einen Code
 (Ausganswort) produziert. Jedoch koennen natuerlich mehrere Signale (die
-zusammen einen eindeutigen Zusatand darstellen) auf einen Code abgebildet werden
+zusammen einen eindeutigen Zustand darstellen) auf einen Code abgebildet werden
 (und nur diesen).
 
 #### Beispiele
 
- Eine einfache Art von Enkodierung ware z.B. eine binaere Kodierung. Ein solcher
- Enkoder haette also $n = 2^m$ Eingaenge und $m$ Ausgaenge. Eine weiteres
- Beispiel fuer einen Enkoder ist jener, der in einer Tastatur einen Tastendruck
- (also ein Signal) in einen Zeichencode (also einer Dezimahlzahl) umwandelt.
+Eine einfache Art von Enkodierung ware z.B. eine binaere Kodierung. Ein solcher
+Enkoder haette also $n = 2^m$ Eingaenge und $m$ Ausgaenge. Ein weiteres
+Beispiel fuer einen Enkoder ist jener, der in einer Tastatur einen Tastendruck
+(also ein Signal) in einen Zeichencode (also einer Dezimahlzahl) umwandelt.
 
 #### Gatterebene
 
- Auf der Gatterebene werden Enkoder so implementiert, dass jedes Ausgangssignal
- (z.B. Bit) durch eine Disjunktion aller jener Eingangssignale erzeugt wird, die
- das Ausgangssignal aktivieren (z.B. $2$ oder $3$ fuer den ersten Bit).
+Auf der Gatterebene werden Enkoder so implementiert, dass jedes Ausgangssignal
+(z.B. jeder Bit) des Codes durch eine Disjunktion aller Eingangssignale, die
+dieses Ausgangssignal aktivieren, erzeugt wird. Beispielsweise gibt es fuer Bit
+$0$ eine Disjunktion, woran alle ungeraden Zahlen (Signale) angeschlossen sind.
+
+```
+
+2----\
+3 ----[>=1] -- Bit 1
+7----/
+  |
+4---[>=1] -- Bit 2
+```
 
 #### VHDL
 
@@ -59,13 +69,13 @@ ab.
 
 Am einfachsten stellt man sich einen Dekoder vor, dass es einen Eingangscode auf
 nur ein einziges Ausgangssignal abbildet. Grundsaetzlich kann ein Eingangscode
-aber wieder mehrere Ausgangssiganle aktivieren, die fuer einen eindeutigen
+aber wieder mehrere Ausgangssignale aktivieren, die fuer einen eindeutigen
 Zustand stehen.
 
 #### Beispiele
 
 Ein Dekoder wuerde nun z.B. einen $n$-stelligen Binaercode auf genau ein
-einziges Signal abbilden, dass diese Zahl represaentiert. Es gaebe also $n$
+einziges Signal abbilden, dass diese Zahl repraesentiert. Es gaebe also $n$
 Eingaenge und $m = 2^n$ Ausgaenge. Ein weiteres Beispiel fuer Dekodierung waere
 der Prozess durch welchen eine IP Adresse auf einen Server abgebildet wird.
 
@@ -84,6 +94,13 @@ c <= "1000" when (e = "00") else
 	 ...
 	 "1000";
 ```
+
+### ROM
+
+Mit einem Decoder und einem Encoder lassen sich sogar auch ein ROM
+(read-only-memory) Speicher implementieren. Der Decoder dekodiert dabei eine
+$n$-stellige Speicheradresse auf ein Datensignal, welches der Decoder wiederum
+in ein Datenwort (z.B. in binaerer Darstellung) umkodiert.
 
 ## Auswaehlende Funktionen
 
@@ -148,7 +165,7 @@ a_n <= e when s_n = '1' else '0';
 
 Ein Multiplexer ist nun ein Datenwegmischer verbunden mit einem Dekoder. Beim
 Datenwegmischer gab es noch das Problem, dass mehrere Steuersignale ein sein
-konnte. Das war letztendlich egal, aber war eben auch unsinnig. Mit dem Dekoder
+konnten. Das war letztendlich egal, aber war eben auch unsinnig. Mit dem Dekoder
 kann man nun nicht nur den Multiplexer steuern, sondern auch sicherstellen, dass
 jedes Eingangswort (Code) auf nur ein Steuersignal abgebildet wird.
 
@@ -192,7 +209,7 @@ Adressbus).
 ```vhdl
 process(c)
 begin
-	a <= x"00";
+	a <= x"00"; -- hex! = 8 x 0 Bits
 	case c is
 		when "000" => a(0) <= e;
 		when "001" => a(1) <= e;

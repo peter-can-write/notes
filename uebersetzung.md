@@ -4,11 +4,11 @@ Compiler sind ein Schritt im Uebersetzungsprozess von einer Sprache in eine
 andere. Der gesamte Prozess umfasst:
 
 1. Ein Quellprogramm.
-2. Wird durch den Preprocessor modifiziert (z.B. Makro-Erweiterung)
+2. Wird durch den Preprocessor modifiziert (z.B. Makro-Erweiterung).
 3. Den Compiler, der entweder sogleich Objektmodule oder zuvor Assembler
    generiert.
 4. Falls der Compiler Assembler generiert, einen Compiler fuer den Assembler.
-5. Einen Linker/Loader, der die Objektmodule sowie statische oder gemeinesame
+5. Einen Linker/Loader, der die Objektmodule sowie statische oder gemeinsame
    Bibliotheken bindet.
 6. Ein fertiges Maschinenprogramm, dass der Prozessor ausfuehren kann.
 
@@ -17,7 +17,7 @@ andere. Der gesamte Prozess umfasst:
 Ein Compiler nimmt ein ganzes Programm als Input und uebersetzt es direkt, bevor
 der Ausfuehrung des Programms in Maschinencode. Ein Interpreter verarbeitet erst
 zur Laufzeit Zeile fuer Zeile das Programm und uebersetzt Zeile fuer Zeile jede
-Insturktion in eine aequivalente Maschineninstruktion fuer den Prozessor.
+Instruktion in eine aequivalente Maschineninstruktion fuer den Prozessor.
 
 ### Compiler
 
@@ -36,7 +36,7 @@ Insturktion in eine aequivalente Maschineninstruktion fuer den Prozessor.
 
 ### Interpreter
 
-* Takes Single instruction as input.
+* Takes Single Instructions as input.
 * It takes less amount of time to analyze the source code but the overall
   execution time is slower.
 * No intermediate object code is generated, hence are memory efficient.
@@ -69,7 +69,7 @@ Code auch gleich beim ersten Mal kompiliert. Jedenfalls wird er erst zur
 Laufzeit unmittelbar vor dem Gebrauch in Maschinencode umgewandelt und nicht
 schon vorher, wie es ein Assemblierer oder C-Compiler tun wuerde.
 
-Durch diess JIT Verhalten kann der Compiler auch zur Ausfuehrungszeit
+Durch dieses JIT Verhalten kann der Compiler auch zur Ausfuehrungszeit
 Optimisierungen z.B. auf Basis der Haufigkeit eines Funktionsaufrufs
 durchfuehren. So kann er beispielsweise eine Funktion inlinen, wenn sie haufig
 aufgerufen wird.
@@ -94,7 +94,7 @@ Objective-C Frontend fuer den *LLVM* Backend. Genauer:
     uebersetzt. Weiters wird eine Symboltabelle angelegt.
   + Syntaktsiche Analyse: Der Token-Stream wird in einen Syntaxbaum
     uebersetzt. Hierbei werden syntaktische Fehler ueberprueft,
-    also die Anordnung der Token.
+    also die Anordnung der Tokens.
   + Semantische Analyse: Hier wird der Token-Stream auf semantische
     Eigenschaften wie korrekte Typisierung analysiert. Auch IDs werden gesammelt
     und es wird sichergestellt, dass z.B. IDs bei der Nutzung schon deklariert
@@ -120,8 +120,7 @@ unterscheiden.
 * Backend:
   + Maschinenunabhaengige Optimierung: Der Zwischencode wird veraendert, sodass
     der Zielcode schneller, kuerzer und energieeffzienter ist.
-  + Code-Generierung: Aus dem optimierten Zwischencode wird Assembler oder
-    direkt Maschinencode generiert. Variablen erhalten dabei Speicheradressen
+  + Code-Generierung: Aus dem optimierten Zwischencode wird direkt Maschinencode    generiert. Variablen erhalten dabei Speicheradressen
     und Register werden zugewiesen.
   + Maschinenabhaengige Optimierung: Hierbei werden Optimierungen des
     Maschinencodes durchgefuehrt, um letztendlich den Zielmaschinencode zu
@@ -172,7 +171,7 @@ nun noch zwei Moeglichkeiten:
 #### Verwaltung des Stacks
 
 Der Stack (Stapel; Keller) dient zuer Verwaltung von Funktionsaufrufen. Fuer
-jedne Funktionsaufruf wird hierbei je nach Konvention (*Calling-Convention*) ein
+jeden Funktionsaufruf wird hierbei je nach Konvention (*Calling-Convention*) ein
 bestimmter Block -- der sogenannte *Aktivierungsblock* -- mit Programmstatus auf
 den Stack gegeben. Fuer die C Calling-Convention umfasst dieser meist (in dieser
 Reihenfolge):

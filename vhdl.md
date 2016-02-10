@@ -1,4 +1,4 @@
-# Rechnerarchitektur - 16.10.2015
+# VHDL
 
 ### Operatoren
 
@@ -17,7 +17,7 @@
 * `ROR` (rotate-right)
 * `=` equality (like `==`, not assignment)
 * `/=` inequality (like `!=`)
-* Conditions: `>`, `<`, `<=`, `>=`, `and`, `or`, `xor`, `nand`, `nor`, `xnor`
+* Conditions: `>`, `<`, `<=`, `>=`
 * __Modulo: `mod` (nicht `%`!!!!)__
 * Abs: `abs`
 * Standard arithmetic operators: `+`, `-`, `/`, `*`, `**` (power)
@@ -59,7 +59,7 @@ x <= 0;
 ```
 
 Fuer solche Faelle gibt es in VHDL einen besonderen Datentyp `std_logic`. Dieser
-kann neben den normalen Werten $0$ und $1$ auch noch anderen spezielle Werte
+kann neben den normalen Werten $0$ und $1$ auch noch andere spezielle Werte
 annehmen. Es hat also intern eine Matrix, die verschiedene Kombinationen von
 Werte zu einem Resultat aufloest. Z.B. gibt es:
 
@@ -96,7 +96,11 @@ a = '1' -- boolean
 
 Man kann Booleans dann auch nicht zu `std_logic` zuweisen!
 
-`a <= (b = `1`) -- Error!`
+`a <= (b = '1') -- Error!`
+
+Man muesste also Fallunterscheidung machen und je nach Wahrheitswert einen anderen `std_logic` Wert zuordnen:
+
+`a <= '1' if b = '1' else '0'` (bzw. hier einfach `a <= b`).
 
 Das ist auch bei Vergleichen von `signed`/`unsigned` wichtig:
 
@@ -126,7 +130,7 @@ end if;
 durchfuehren kann (z.B. `z = z + 1`), sowie auch arithmetische Vergleiche
 (z.B. `z > 1`). Man kann fuer  `unsigned` in der `when <condition>` Klausel
 jedoch keine Vergleiche mit Dezimalzahlen durchfuehren. Auch kann man ihnen nie
-__Dezimahlzahlen__ zuweisen!!!!! Muessen also immer Bit-Vektoren sein.
+__Dezimahlzahlen__ zuweisen!!!!! Muessen also immer Bit-Vektoren sein. Vergleicht man zwei solche `unsigned/signed` Werte, muessen sie dieselbe Breite haben, also eventuell erweitern (mit `&`)!
 
 `std_logic` dagegen kann keine dieser arithmetischen Operationen/Vergleiche, hat
 aber den Vorteil der verschiedenen Zustaende (nicht nur $true$/$false$).
@@ -141,24 +145,14 @@ besser (bzw. die einzig richtige Variante).
 vector1(7 downto 0) -- 8 Bit breit, Bit 7 MSB (little-endian)
 vector1(0 to 7) -- 8 Bit breit, Bit 0 MSB (big-endian)
 ```
-
-Man kann in Realitaet, in Hardware, nie *genau 10ns* warten. Dafuer gibt es zu viele andere Faktoren:
-* Temperatur
-* Betriebsspannung
-* Varianzen beim Prozessor
-
-Asssignment bei Variablen: `a := b`
-Signalzuweisung: `a <= b after 10 ns` # nicht kleiner-gleich, sondern wie Pfeil
-
 ## Entity
-
-^ Nach 10ns soll a den Wert von b haben.
 
 ```vhdl
 entity and_gatter is
-	port (e1, e2: in std_logic   -- comment
-		  ; x:      out std_logic);
-end and_gatter;
+	port (e1, e2: in std_logic;   -- comment
+		  x:      out std_logic
+	);
+end entity;
 ```
 
 * `entity`: So wie `class`, beliebig oft instanziierbares Bauteil
@@ -170,7 +164,7 @@ end and_gatter;
 
 `in/out` sind also "Modi".
 
-__Wichtig__: die Liste von Ports ist ;-separiert, also besser so schreiben:
+__Wichtig__: die Liste von Ports ist ;-separiert. Das heisst, nach der letzten Deklaration kommt kein Strichpunkt! Eine Idee waere es also, so zu schreiben:
 
 ```vhdl
 port (
@@ -181,11 +175,11 @@ port (
 );
 ```
 
-als
+anstatt normal:
 
 ```vhdl
 port (
-		  a, b: in std_logic;
+		a, b: in std_logic;
 		c: in std_logic;
 		d: out std_logic;
 		x: in std_logic
@@ -221,8 +215,6 @@ end process;
 * Letztendlich ist ein Process dann selbst aber ein concurrent-statement, denn
   die gesammelten Assignments werden letztendlich wie ein einziges
   concurrent-statement umgesetzt in einem Simulation "tick" durchgefuehrt.
-* Nur Signale die in der sensitivity-list aufgefuehrt sind, werden auch
-  potentiell veraendert, also unbedingt alle Signale dort auflisten!
 
 The flow is like this: there are "delta-cyles" in VHDL, units of execution
 (units of zero simulated time). At the start of each delta-cycle, the
@@ -233,9 +225,9 @@ the same delta-cycle (no "physical time" has passed yet), the processes are
 evaluated in sequential order, i.e. each assignment in the process is evaluated
 and *scheduled for the start of the next delta-cycle*. Then, when all processes
 have been evaluated and their results have been scheduled, the next delta-cycle
-is initiated ("time moves on"). At the start of this new delta-cycle, the
+is initiated. At the start of this new delta-cycle, the
 results of the processes from the last delta-cycle (that were *scheduled*), are
-now executed simultaneously again, resulting in new process-calls etc.
+assigned to the signals, followed by new concurrent-statement evaluations, resulting in new process-calls etc.
 
 http://www.sigasi.com/content/vhdls-crown-jewel
 https://en.m.wikibooks.org/wiki/Programmable_Logic/VHDL_Processes
@@ -247,13 +239,13 @@ Weitere Konstrukte:
 ### if-then-else
 
 ```vhdl
-IF condition THEN
+if condition then
       sequence_of_statements
-ELSIF condition THEN
+elsif condition then
 	sequence_of_statements -- no separate END IF
-ELSE
+else
 	sequence_of_statements -- no separate END IF
-END IF;
+end if;
 ```
 
 Bedingungen werden auch mit `and` verknuepft:
@@ -264,16 +256,16 @@ Bedingungen werden auch mit `and` verknuepft:
 Wie `switch-case`:
 
 ```vhdl
-CASE expression IS
-      WHEN constant_value => <statements>
-	  WHEN OTHERS => <statements>
-END CASE;
+case signal is
+      when constant_value => <statements>
+	  when others => <statements>
+end case;
 ```
 
-Mit einem Bar kann man den selben Code fuer mehrere Faelle haben (wie leere
-cases ohne break in `C++`): ``when a | b => ...`
+`when others` ist hierbei unbedingt notwendig!!
 
-`WHEN OTHERS =>` ist hierbei `default:`.
+Mit einem Bar kann man den selben Code fuer mehrere Faelle haben (wie leere
+cases ohne break in `C++`): `when a | b => ...`
 
 ### for-loop
 
@@ -297,15 +289,9 @@ WHILE condition LOOP
 END LOOP;
 ```
 
-if-then-else, case-when, for/while-loop nur in Prozessen
-
-Miniprozess / Concurrent-statement: Prozess ohne formale Struktur, bzw. einfach "inline" Prozess:
-
-`a <= c OR d; -- let a be (c OR d)``
-
-a <= c when d="101" else f; -- a = (d == "101") ? c : f;
-
 ### WAIT
+
+In Prozessen:
 
 ```vhdl
 WAIT UNTIL condition;
@@ -370,7 +356,7 @@ http://stackoverflow.com/questions/15205202/clkevent-vs-rising-edge
 ```vhdl
 architecture <name> of <entity> is
 	-- signale
-	signal <signal_name>: <data_type> [:=];
+	signal <signal_name>: <data_type> [:= default value];
 	<component declarations>
 begin
 	<concurrent_statements>
@@ -557,3 +543,4 @@ http://stackoverflow.com/questions/17069939/how-do-i-compile-and-run-a-vhdl-prog
   synchron annehmen, ist leichter!
 * Fuer viele Signalbits Vektor verwenden und ausserhalb des Prozesses dann
   einzeln zuweisen.
+* Um `unsigned/signed` Werte zu vergleichen/verknuepfen, muessen sie die selbe Bitbreite haben!! Also notfalls mit `"000" &` erweiteren (oder "111" wenn signed).

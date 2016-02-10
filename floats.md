@@ -5,7 +5,7 @@
 Bei Festkommazahlen ist die Anzahl an Vorkomma- bzw. Nachkommabits konstant,
 z.B. hat eine Zahl im Format $8.8$ immer konstant 8 Vorkommabits und 8
 Nachkommabits. Mit einer solchen Zahl haette man z.B. einen Wertebereich von
-$2^0 - 2^8 - 1 = 0 - 255$ im Vorkommabereich (8 Bits) und $\frac{1}{2^8} -
+$2^0 - 2^8 - 1 = 0 - 255$ im Vorkommabereich (8 Bits) und $\frac{0}{2^8} -
 \frac{2^8 - 1}{2^8} = \frac{0}{256} - \frac{255}{256}$ im Nachkommabereich.
 
 ### Umwandlung
@@ -143,14 +143,13 @@ $b = 127$
 			* durch Division mit 0 resultiert
 		* Im Signifikant __nicht__ alle Bits $0$, steht die Zahl fuer `NaN`, das
           Resultat von:
-			* Einer Multiplikation von $0$ mit Unendlich
 			* Jeglicher Rechenoperation mit Unendlich
 			* Anwendungsspezifische Werte (kann das Programm festlegen?)
 		* Vergleiche mit `NaN` muessen immer falsch sein, sogar bit-gleiche
           Vergleiche von `NaN` mit `NaN`
 	* Sind im Exponenten alle Bits $0$, koennen damit bestimmte "Subnormale"
       Zahlen dargestellt werden (besonders kleine).
-* Daher verlfauft $e$ fuer Zahlen wirklich zwischen $[1 - 127, 254 - 127] =
+* Daher verlaeuft $e$ fuer Zahlen wirklich zwischen $[1 - 127, 254 - 127] =
   [-126, +127]$ ($0$ und $255$ sind reserviert)
 
 * Der MSB der Mantisse ist immer 1. Das nennt man *normalisiert*.
@@ -159,8 +158,8 @@ da man jede Zahl zwischen $0$ und $1$ mit einem (um $1$) niedrigeren Exponenten
 darstellen kann.  Wichtig hierbei: man arbeitet mit 2-er Potenzen. Wie stellt
 man also $0.5$ dar? Eben $1.0 \cdot 2^{-1}$. Wie $5$? $1.25 \cdot 2^2$
 * Die Zahl bleibt zwischen $1$ und $2$, weil fuer den Signifikant 24-Bit
-  festgelegt sind. Ist der 23. Bit (von 0, links weg) also immer 1, ist die
-  Range nicht mehr $[0, 2^{24} - 1]$, sondern $[2^23, 2^24 - 1]$.
+  festgelegt sind. Ist der 23. Bit (von 0, von rechts weg) also immer 1, ist die
+  Range nicht mehr $[0, 2^{24} - 1]$, sondern $[2^{23}, 2^{24} - 1]$.
 
 * Da die Mantisse normalisiert ist, der $24.$ Bit also immer $1$ ist, kann er
   auch weggelassen werden.
@@ -174,6 +173,8 @@ man also $0.5$ dar? Eben $1.0 \cdot 2^{-1}$. Wie $5$? $1.25 \cdot 2^2$
 * $+0$ und $-0$ sind beide verschieden als Floating-Point Zahlen darstellbar,
   muessen jedoch laut Standard immer zueinander gleich sein.
 
+* Fuer die Zahl $0$ ist sowohl der Exponent als auch der Signifikant null, also ist $0$ sozusagen eine subnormale Zahl.
+
 * Werte:
 	* Groesster: $M = 2^{24} - 1, e = 254 - 127 = 127 \Rightarrow +1 \cdot
       \frac{2^{24} - 1}{2^23} \cdot 2^{127} = +1 \frac{16777215}{8388608} \cdot
@@ -186,9 +187,9 @@ man also $0.5$ dar? Eben $1.0 \cdot 2^{-1}$. Wie $5$? $1.25 \cdot 2^2$
 ### Addition
 
 Zur Addition zweier Fliesskommazahlen muessen zunaechst die Exponenten beider
-Zah- len angepasst werden. Das geht, in dem die absolut kleinere Zahl unter
-Beibehaltung des Wert denormalisiert wird. Das heisst, die Mantisse wird um n
-Stellen nach rechts geschoben und der Exponent um n erhoeht. Dabei wird n so
+Zahlen angepasst werden. Das geht, in dem die absolut kleinere Zahl unter
+Beibehaltung des Wert denormalisiert wird. Das heisst, die Mantisse wird um $n$
+Stellen nach rechts geschoben und der Exponent um $n$ erhoeht. Dabei wird n so
 gewaehlt, dass der neue Exponent dem der groesseren Zahl
 entspricht. Anschließend werden beide Mantissen addiert und das Ergebnis
 normalisiert.  Bei Addition kann durch die Anpassung des Exponenten der
