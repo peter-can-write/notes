@@ -35,7 +35,7 @@ Elektronenstrom. Daher n-dotiert = Elektronenueberschuss. Einen n-dotierten
 Halbleiter nennt man *n-Halbleiter*.
 
 Verunreinigt man einen Kristall mit Indium oder Bor, dessen Atome nur drei
-Elektronen enthalten, muss das Indium/Bor von den Silizium Atomen Elektronen
+Elektronen enthalten, muss das Indium/Bor von den Silizium-Atomen Elektronen
 stehlen. Dabei entstehen mehr Loecher. Setzt man einen solchen Silizium-Indium
 Kristall unter Spannung, wandern freie Elektronen zum Plus-Pol. Wenn sich ein
 Elektron loest und zum Plus-Pol wandert, kann man sagen, dass die Loecher
@@ -84,8 +84,7 @@ sondern steigt von 0 zu *einer als HIGH definierten Stromstaerke* (meist $5V$).
 ### Herstellung
 
 Zur Herstellung von Transistoren wird heutzutage meist eine Mischung aus
-Metall-Oxid und Silizium verwendet. Oftmals kommt noch Carbon (Kohlenstoff)
-hinzu.
+Metall-Oxid und Silizium verwendet.
 
 MOS = metal-oxide-semiconductor
 CMOS = complementary-metal-oxide-semiconductor

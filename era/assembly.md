@@ -1820,7 +1820,7 @@ pop esi
 pop edi
 
 ; discard local variable
-add esp, 4
+mov esp, ebp
 
 ; restore old ebp
 pop ebp
