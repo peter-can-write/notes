@@ -1,8 +1,6 @@
-# R-Tree
+# Mehrdimensionale Indexstrukturen
 
-## Mehrdimensionale Indexstrukturen
-
-### Wieso
+## Wieso
 
 Gegeben also eine Menge von Menschen mit den Attributen ${\text{Alter},
 \text{Geschlecht}, \text{Gehalt}}$, und eine Datenbank aller Menschen auf der
@@ -13,21 +11,21 @@ $100,000$ machen. Mit B-Bauemen ginge das folgendermassen:
 1. Suche ALLE Menschen ($\sim 10^{10}$) mit dem Alter $40$.
 2. Suche ALLE Menschen, die maennlich sind.
 3. Suche ALLE Menschen, die $100K$ verdienen.
-4. Bilde den Durchschnitt aus diesen.
+4. Bilde den Schnitt ($\cap$) aus diesen.
 
 Die Ineffizienz diesen Verfahrens ist eindeutig, wenn jede dieser Queries durch
 einen eigenen B-Baum muss. Zum einen, weil es eben $O(3 \cdot\log_2(10^{10}))$
 Laufzeit hat und zum anderen, weil die Zwischenresultate enorm sind und alle
 zwischengespeichert werden muessen.
 
-Man bedenke das Beispiel einer 2-dimensionalen Laengen-/Breitengradsuche nach Restaurants in
-Garching. Mit B-Baeumen muss man zuerst alle Restaurants auf der Welt auf den
-selben Breitengraden wie Garching suchen und alle Restaurants auf der Welt auf
-den selben Laengengraden wie Garching, und dann den Durchschnitt bilden, anstatt
-einfach die $\sim 5^2 \text{ km}$ abzusuchen. Hierfuer braucht man also
-Datenstrukturen, die geeigneter fuer mehrdimensionale Suche sind.
+Man bedenke das Beispiel einer 2-dimensionalen Laengen-/Breitengradsuche nach
+Restaurants in Garching. Mit B-Baeumen muss man zuerst alle Restaurants auf der
+Welt auf den selben Breitengraden wie Garching suchen und alle Restaurants auf
+der Welt auf den selben Laengengraden wie Garching, und dann den Durchschnitt
+bilden, anstatt einfach die $\sim 5^2 \text{ km}$ abzusuchen. Hierfuer braucht
+man also Datenstrukturen, die geeigneter fuer mehrdimensionale Suche sind.
 
-### Arten von Queries
+## Arten von Queries
 
 Welche Arten von Queries koennte man fuer Daten mit $N$ Dimensionen machen?
 
@@ -38,15 +36,14 @@ Welche Arten von Queries koennte man fuer Daten mit $N$ Dimensionen machen?
 4. Partial-Range-Query: spezifiziert ein Suchintervall fuer *einige* Dimensionen
    (von anderen also *alle* gesucht).
 
-
-### Charakterisierung Mehrdimensionaler Datenstrukturen
+## Charakterisierung Mehrdimensionaler Datenstrukturen
 
 Mehrdimensionale Datenstrukturen koennen nach drei Kriterien charakterisiert
 werden. Sie koennen sein:
 
 1. Atomar: Beschreibbar durch ein Rechteck.
-2. Vollstaendig: Die Vereinigung der Gebite ergibt den gesamten *moeglichen*
-   Datenraum (nicht nur existenten).
+2. Vollstaendig: Die Vereinigung der Gebeite ergibt den gesamten *moeglichen*
+   Datenraum (nicht nur den gespeicherten).
 3. Disjunkt: Die Gebiete uberlappen nicht.
 
 Beispiele:
@@ -97,11 +94,10 @@ Hier nun die Erlaeuterung der Operationen auf einem anfangs leeren
 #### Einfuegen
 
 Wir gehen von einem anfaenglich Datensatz von $2$ Elementen $\{A = (20, 100K), B
-= (33,
-2K)\}$ aus. Nun initialisieren wir die Datenstruktur, indem wir eine Region vom
-Minimum der beiden Dimensionen (links unten) bis zum Maximum der beiden
-Dimensionen (rechts oben) festlegen. Diese Region ist in einem inneren Knoten
-und verweist auf den Bucket, der die beiden Elemente enthaelt.
+= (33, 2K)\}$ aus. Nun initialisieren wir die Datenstruktur, indem wir eine
+Region vom Minimum der beiden Dimensionen (links unten) bis zum Maximum der
+beiden Dimensionen (rechts oben) festlegen. Diese Region ist in einem inneren
+Knoten und verweist auf den Bucket, der die beiden Elemente enthaelt.
 
 ```
 {[(20, 2K), (33, 100K)]}
@@ -120,7 +116,7 @@ __Man muss nie explizit eine neue Region einfuegen, sondern immer nur Regionen
 erweitern!__ (Ausser am Anfang). Das geschieht nur, wenn ein Bucket voll wird.
 
 Es kann sein, dass ein Element in einem inneren Knoten in eine Region faellt,
-aber dann im folgenden innern Knoten in keine Region faellt. Es kann aber auch
+aber dann im folgenden inneren Knoten in keine Region faellt. Es kann aber auch
 sein, dass ein Element schon in der Wurzel in keine Region passt. Wenn ein
 Element nicht in eine Region passt, muss man eine der anderen
 vergroessern. Hierbei gilt es jene Region zu waehlen, die man dabei am wenigsten
@@ -149,7 +145,7 @@ Nun fuegen wir wieder ein Element in Bucket von $\{A, C\}$ um zu zeigen was
 passiert, wenn ein innerer Knoten overflowed. Sei $D = (15, 20K)$ also das neue
 Element. Es passt in keine Region, aber die von $\{A, C\}$ muss am wenigsten
 vergroessert werden. Wir vergroessern diese Region also, wobei das Maximum des
-Gehalts von $17K$ auf $20K$ waechst (die Region waechst also in die Hoehe/Breite).
+Gehalts von $17K$ auf $20K$ waechst (die Region waechst also in die Hoehe).
 
 ```
 {[(10, 2K), (20, 20K)], [(33, 100K), (33, 100K)]}
