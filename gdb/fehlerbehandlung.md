@@ -359,19 +359,54 @@ ist fuer die *Idempotenz* der Wiederherstellung essentiell.
 
 #### Undo
 
+Nachdem wir alle Transaktionen so weit wie moeglich wiederhergestellt haben,
+muessen wir Loser-Transaktionen rueckgaengig machen. Hierfuer verwenden wir die
+Undo-Information der Log-Eintraege der ermittelten Loser-Transaktionen. Fuer die
+Idempotenz der Wiederherstellung ist es jedoch wichtig, dass wir diese
+Undo-Operationen auch protokollieren. Hierfuer benutzen wir sogenannte
+*Kompensations-Logeintrage*, bzw. *compensation-log-records* (CLRs). Ein CLR ist
+also der Log-Eintrag fuer eine Undo-Operation.
 
-CLR = Compensation Log Record
+Ein solcher CLR hat eine etwas andere Struktur als ein normaler
+Log-Eintrag. Hierbei ist seine Redo-Information natuerlich die Undo-Information
+der Operation, dessen Undo durch diesen CLR protokolliert wird. Die Unterschiede
+zu einem normalen Log-Eintrag beziehen sich auf zwei Aspekte:
 
-Ein CLR wird bei einem Undo eingefuegt. Es enthaelt nur die Redo information
-(die Aktion, das vorher das gesamte undo war), keine undo Information. Die
-Redo-Information ist dann so, als ob es eine ganz normale Operation waere.
+* Keine Undo-Information. Ueberlegen wir uns: Wenn wir $a += 5$ undo-en, dann
+  fuehren wir die Operation $a -= 5$ durch. Nehmen wir dann an, wir haetten
+  einen CLR mit der Undo-Information $a += 5$ (wieder das inverse des inversen),
+  und wuerden dann also im Sinne der Wiederherstellung rueckwarts durch die
+  Log-Eintraege laufen. Dann wuerden wir also zuerst diesen Undo undoen, also $a
+  += 5$. Dann wuerden wir zum urspruengelichen Log-Eintrag kommen, und um ihn zu
+  undoen wuerden wir $a -= 5$ machen. D.h., zwischen dem CLR und dem
+  urspruenglichen Log-Eintrag haette sich nichts geaendert. Wir haetten
+  sozusagen einfach $((f^{-1})^{-1})^{-1} = f^{-1}$ durchgefuehrt, also es waere
+  genau der Undo-Zustand danach da. Deswegen waere die Undo-Information fuer
+  einen CLR redundant.
 
-0. + 25
-1. + 50
-2. + 10
-3. Undo 2 = -10
+* *UndoNextLSN*. Wie oben beschrieben gibt sich eine interessante Beziehung
+  zwischen dem CLR und seinem zugehoerigen Log-Eintrag. Was man sieht, ist das
+  man dieses Paar an Log-Eintraegen eigentlich vollkommen ueberspringen
+  kann. Das ist auch genau der Punkt, wieso der UndoNextLSN auf den Log-Eintrag,
+  vor dem urspruenglichen zeigt (wobei mit dem urspruengliche Log-Eintrag der
+  gemeint ist, dessen Undo im CLR protokolliert wurde). D.h., haben wir
+  Log-Eintraege $1, 2, 3, 3^{-1}, 2^{-1}$, dann springen wir von $2^{-1}$ direkt
+  zu $1$, weil das der letzte Log-Eintrag ist, der noch nicht undo-ed wurde (man
+  bermerke die Symmetrie mit Spiegelungsachse $3,3^{-1}$).
 
-Dann beim Redo: + 25, + 50, +10, -10
+Wenn der BOT einer Transaktion undo-ed wird, erhaelt der CLR wieder eine etwas
+andere Form:
+
+1. Undo und Redo Information sind leer.
+
+2. Der UndoNextLSN ist `null`.
+
+Punkt (2) ist deswegen, weil wenn wir einen CLR fuer den BOT einer Transaktion
+haben, das bedeutet, dass wir die gesamte Transaktion doch sowie so schon
+rueckgaengi gemacht haben. Das heisst wiederum, dass es also gar keine
+Aenderungen von dieser Transaktion mehr gibt. Es ist so, als ob es diese
+Transaktion nie gegeben haette. Daher koennen wir diese Transaktion auch
+als ganzes ueberspringen.
 
 Fail-Over Zeit: Zeit, um System wiederherzustellen. Paar Minuten heute.
 
@@ -381,3 +416,65 @@ Master-Slave Variante: Hier gibt es zwei Plattenspeicher. Der LogWriter schreibt
 Daten auf den einen Plattenspeicher (wie normal), aber die Log-Entries werden
 *gesniffed* (*log-sniffing*), wobei die redo-Information dazu verwendet wird,
 die Aktionen auf einem zweiten Plattenspeicher nachzubilden.
+
+### Partielle Widerherstellung
+
+Oben wurden schon Sicherungspunkte vorgestellt. Ein Vorteil von
+Sicherungspunkten ist, dass sie einen Zeitpunkt waehrend einer Transaktion
+fixieren, sodass man sich bei der Wiederherstellung an diesen Sicherungspunkt
+orientieren kann. Das bedeutet nicht immer, dass man sich die Log-Eintraege nur
+bis zu diesem Zeitpunkt ansehen muss, aber es gibt zumindest einen Anhaltpunkt.
+
+Es gibt nun verschiedene Arten von Sicherungspunkten, die verschieden
+Eigenschaften besitzen:
+
+1. *Transaktionskonsistente Sicherungspunkte*
+
+2. *Aktionskonsistente Sicherungspunkte*
+
+3. *Fuzzy Sicherungspunkte*
+
+#### Transaktionskonsistente Sicherungspunkte
+
+*Transaktionskonsistente Sicherungspunkte* sind solche, die immer erst nach
+Abschluss einer Transaktion wirklich fixiert werden. Man kann einen solchen
+sicherungspunkt anmelden, sodass danach keine weiteren Transaktionen mehr
+begonnen werden. Erst wenn alle noch laufenden, vor der Anmeldung des
+Sicherungspunkts noch aktiven, Transaktionen abgeschlossen sind, werden neue
+erlaubt. Das ermoeglicht eine leichtere Last auf das System und die Log-Datei,
+aber das Sperren von anderen Transaktionen ist natuerlich auch
+unvorteilhaft. Bei der Wiederherstellung muss man nur bis zu diesem
+Sicherungspunkt gehen, nicht weiter (also nicht aeltere Log-Eintreage
+betrachten).
+
+#### Aktionskonsistente Sicherungspunkte
+
+*Aktionskonsistente Sicherungspunkte* sind weniger restriktiv als
+transaktionskonsistente. Sie muessen nicht erst nach Abschluss aller laufenden
+Transaktionen erfolgen, sondern schon nachdem die aktiven Transaktionen ihre
+momentane, atomare Operation (read/write) abgeschlossen haben. Eine interessante
+Eigenschaft dieser Art von Sicherungspunkten ist, dass man zwar ab diesem
+Sicherungspunkt wiederherstellen (`redo`) muss, aber ueber diese hinweg noch
+zuruecksetzen muss. Denn wenn nach einem Sicherungspunkt ein Absturz erfolgt,
+muessen die Loser-Transaktionen ja trotzdem zurueckgesetzt werden. Daher wird
+beim fixieren eines solchen aktionskonsistenten Sicherungspunkts der minimale
+LSN aller noch laufenden Transaktionen ermittelt. Man muss dann beim
+Zuruecksetzen bis zu diesem *MinLSN* nach hinten blicken. Bei diesen
+Sicherungspunkten hat man zwar den Overhead des Wartens nicht (vergleiche
+transaktionskonsistente), aber muss beim Sichern dennoch den ganzen Puffer
+flushen.
+
+#### Fuzzy Sicherungspunkte
+
+*Fuzzy Sicherungspunkte* sind die flexibelsten. Sie werden auch nach atomaren
+Aktionen fixiert, aber erforden keinen Flush des Puffers. Beim Festlegen eines
+fuzzy Sicherungspunkts wird sich einfach gespeichert, was gerade kleinste LSN
+einer modifizerten Seite ist. Hierfuer werden zuerst alle modifizerten (und noch
+nicht permanent ausgelagerten) Seiten als *dirty* markiert, und dann BOT dieser
+schmutzigen Seiten genommen. Das ist dann der *MinDirtyPageLSN*. Weiterhin gibt
+es auch noch einen *MinLSN*, welcher der kleinste LSN aller noch laufenden
+Transaktionen ist (wobei manche dieser Aenderungen schon gespeichert, also nicht
+mehr dirty sind). Bei der Wiederherstellung muss bis zum MinLSN `undo`-ed
+werden, und bis zum MinDirtyPageLSN `redo`-ed, weil die dirty Pages eben
+Operationen enthielten (nach dem Fehler), die noch nicht permanent gespeichert
+wurden.
