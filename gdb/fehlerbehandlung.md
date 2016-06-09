@@ -394,6 +394,8 @@ zu einem normalen Log-Eintrag beziehen sich auf zwei Aspekte:
   zu $1$, weil das der letzte Log-Eintrag ist, der noch nicht undo-ed wurde (man
   bermerke die Symmetrie mit Spiegelungsachse $3,3^{-1}$).
 
+Ein CLR enthaelt aber noch immer einen PrevLSN, wie normale Eintrage.
+
 Wenn der BOT einer Transaktion undo-ed wird, erhaelt der CLR wieder eine etwas
 andere Form:
 

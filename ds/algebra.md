@@ -377,7 +377,7 @@ Eigenschaften der Untergruppe:
 * Die Untergruppe mit Traegermenge $\{0\}$ ist die einzige endliche Untergruppe
   von $\langle \mathbb{Z}, + \rangle$.
 
-* Alle Gruppen $n \cdot \mathbb{Z}, n \in \mathbb{N}$ ist eine Untergruppe der
+* Jede Gruppe $n \cdot \mathbb{Z}, n \in \mathbb{N}$ ist eine Untergruppe der
   Gruppe $\langle \mathbb{Z}, + \rangle$. Beispiele:
   + Die Gruppe mit $\{2n | n \in \mathbb{Z}\}$ ist eine Untergruppe.
   + Die Gruppe mit $\{2n + 1 | n \in\mathbb{Z}\}$ ist keine Untergruppe.

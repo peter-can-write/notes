@@ -19,12 +19,23 @@ sozusagen als Festkommatyp sehen.
 Es gibt dann oft bestimmte Spezialisierungen von `numeric`, die haeufig benutzte
 Konfigurationen von `numeric` darstellen. Diese sind:
 
-* `integer`: Fuer Ganzzahlen. Die Breite diesen Datentyps ist dynamisch. Bei
-  SQLite kann er beispielsweise zwischen einem und acht Bytes variieren.
+* `integer(p)`: Ganzzahlen mit Praezision `p` und keinem scale.
+
+* `integer`: Ganzzahl mit Praezision 10.
+
+* `smallint`: Ganzzahl mit Praezision 5.
+
+* `bigint`: Ganzzahl mit Praezision 19.
+
 
 * `boolean`: Fuer bool'sche Werte ($true/false$).
 
-* `real`: Floating-Point Wert variabler Groesse.
+
+* `float(p)`: Floating-Point Wert mit Mantissenpraezision `p`.
+
+* `real`: Floating-Point Wert mit Mantissenpraezision 7.
+
+* `float`: Floating-Point Wert mit Mantissenpraezision 16.
 
 ### Zeichenketten
 
@@ -43,8 +54,13 @@ angegeben werden muss, dynamisch festlegen.
 
 ### Zeitangaben
 
-Der SQL-92 Standard legt auch einen Datentyp fuer Zeit-Daten fest:
-`date`. Dieser kann benutzt werden, um Timestamps bzw. Zeitangaben zu speichern.
+Der SQL-92 Standard legt mehrere Datentypen fuer Zeitangaben fest:
+
+* `date`: Speichert Jahr, Monat und Tag.
+
+* `time`: Speichert Stunde, Minute und Sekunde.
+
+* `timestamp`: Speichert Jahr, Monat, Tag; Stunde, Minute und Sekunde.
 
 ### Binaerobjekte
 
