@@ -111,7 +111,8 @@ selbe wie `EAX`.
 
 Gesamtblockbild:
 
-```       < 16 Bit >
+```
+     < 16 Bit >
 
 [         | AH | AL ] <-- EAX
 [         | BH | BL ] <-- EBX
