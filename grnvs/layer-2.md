@@ -796,12 +796,14 @@ $s(x)$, welche auf $s(x)$ draufaddiert/ge-XOR-ed werden. Die Fehler, die es
 
 Fehler, die auf Grund des Aufbaus von CRC *sicher nicht* erkannt werden koennen,
 sind solche, die ein Vielfaches von $r(x)$ sind. Denn dabei wuerde der Rest
-weiter gleich bleiben. $s(x)$ ist naemlich schon ein Vielfaches von $r(x)$, also
-$s(x) = k \cdot r(x), k \in \mathbb{N}$. Wenn wir nun ein weiteres Vielfaches
-Polynom $f(x) = l \cdot r(x), l \in \mathbb{N}$ von $r(x)$ auf $s(x)$
-draufaddieren, ist $s(x) + f(x) = (k + l) \cdot r(x) $ natuerlich auch noch ein
-Vielfaches von $r(x)$, weswegen der Rest weiter null waere. Eine Fehlermaske,
-die von CRC also sicher nie erkannt werden wuerde, ist $r(x)$ selbst.
+weiter gleich bleiben. Hierbei meint Vielfaches eine Mulitplikation mit einem
+Term $x^k$ bzw. eine Verschiebung um $k$ Bits. $s(x)$ ist naemlich schon ein
+Vielfaches von $r(x)$, also $s(x) = k \cdot r(x), k \in \mathbb{N}$. Wenn wir
+nun ein weiteres Vielfaches Polynom $f(x) = l \cdot r(x), l \in \mathbb{N}$ von
+$r(x)$ auf $s(x)$ draufaddieren, ist $s(x) + f(x) = (k + l) \cdot r(x) $
+natuerlich auch noch ein Vielfaches von $r(x)$, weswegen der Rest weiter null
+waere. Eine Fehlermaske, die von CRC also sicher nie erkannt werden wuerde, ist
+$r(x)$ selbst.
 
 CRC erkennt jedoch immer:
 

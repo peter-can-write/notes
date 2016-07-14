@@ -117,7 +117,7 @@ Speicher ein ganzes Vielfaches von $n$ ist, sodass $S \mod n = 0$. Hierbei wird
 allgemein angenommen, dass Daten Groessen haben, die Zweierpotenzen sind. Ein
 Beispiel waere, dass ein DoubleWord Datum (32-Bit) auf einer Adresse im
 Hauptspeicher liegt, die ein Vielfaches von $32$ ist, z.B. $0, 32, 64$ oder
-$96$.
+$96$.http://www.stack.nl/~dimitri/doxygen/
 
 Ist ein Datum nicht ausgerichtet und der Prozessor muss darauf zugreifen,
 sprechen wir von einem unausgerichteten Zugriff bzw. *misaligned* oder
