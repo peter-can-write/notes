@@ -53,13 +53,15 @@ Man kann Relationen durch bestimmte Eigenschaften beschreiben. Eine Relation $R
 * *Antisymmetrisch*: Wenn $\forall a, b \in A$ gilt: $(a, b) \in R \land (b, a)
   \in R \rightarrow a = b$. Sind also beide Varianten $(a, b)$ und $(b, a)$ in
   der Relation, dann bedeutet das, dass $a = b$ (z.B. bei $\leq$). Aus
-  Asymmetrie folgt immer auch Antisymmetrie. Bei Antisymmetrie ist Symmetrie
-  also noch immer nicht erlaubt, Reflexivitaet aber nun schon.
+  Asymmetrie folgt immer auch Antisymmetrie, weil sowieso nur immer eine der
+  beiden Varianten in der Relation ist. Bei Antisymmetrie ist Symmetrie also
+  noch immer nicht erlaubt, Reflexivitaet aber nun schon. Die Antisymmetrie
+  erweitert die Asymmetrie also sozusagen auf die Reflexivitaet.
 
 * *Transitiv*: Wenn $\forall a, b, c \in A$ gilt: $(a, b) \in R \land (b, c) \in
   R \rightarrow (a, c) \in R$. Wenn es also ein Brueckenelement zwischen zwei
   Elementen gibt, dann muessen diese zwei Elemente auch in der Relation sein
-  (z.B. bei $<$, aber nicht bei $\neq$). Eine Relation ist also transitiv, wen
+  (z.B. bei $<$, aber nicht bei $\neq$). Eine Relation ist also transitiv, wenn
   zwei Dinge *nicht gelten*:
    + $\exists a, b: (a, b) \in R \land (b, a) \in R \land \neg((a, a) \in R \lor
      (b, b) \in R)$. Wenn es einen Kreis gibt, muss es auch zumindest eine
@@ -76,13 +78,13 @@ Weitere Eigenschaften:
 
 * *Linkstotal*: Wenn jedes Element $a \in A$ zumindest einmal in der Relation
   vorkommt, sodass $\exists b \in B: aRb$. Dann gilt: $|\{b \in B \, | \, (a, b)
-  \in R\}| \geq 1$
+  \in R\}| \geq 1$. D.h. es gibt zumindest ein rechtes Element fuer $a$.
 
 * *Rechtseindeutig*: Wenn jedes Element $a \in A$ mit hoechstens einem Element $b
   \in B$ in Relation steht: $|\{b \in B \, | \, (a, b) \in R\}| \leq 1$
 
 Diese Eigenschaften sind wie Injektivitaet bzw. Surjektivaet fuer Funktionen,
-nur eben auf das Bild bezogen. Eine Funktion ist immer linkstotal *und*
+nur eben auf das Urbild bezogen. Eine Funktion ist immer linkstotal *und*
 rechtseindeutig.
 
 Wir nennen eine Relation *homogen*, wenn Quell- und Zielmenge gleich sind ($R
@@ -124,7 +126,7 @@ eine Aequivalenzklasse von $a$. $[a]$ enthaelt also alle Elemente, die zu $a$
 aequivalent sind.
 
 Die Aequivalenzklassen der Aequivalenzrelation __bilden hierbei eine Partition__
-von $M$. Die Klassen sind nichtleer, da sie zumindest das Element $a$
+von $M$. Die Klassen sind *nichtleer*, da sie zumindest das Element $a$
 enthalten. Sie sind paarweise disjunkt, weil ueber Transitivitaet jedes Element
 das zu $a$ aequivalent ist, erreicht werden kann.
 
@@ -132,7 +134,8 @@ Eine Aequivalenzrelation ist also eine Partition des Kreuzprodukts $A \times B$
 in seine Aequivalenzklassen.
 
 In der graphischen Darstellung kommt man von jedem Element zu jedem
-aequivalenten anderen Element in nur einem Schritt (mit nur einer Kante).
+aequivalenten anderen Element in nur einem Schritt (mit nur einer Kante). Wir
+schrumpfen also alle Zusammenhangskomponenten auf einen Graphen mit einer Senke.
 
 ## Ordnungen
 
@@ -160,11 +163,12 @@ Beispiele:
 
 ### Totale Ordnung
 
-Eine *totale Ordnung* ist nun eine partielle Ordnung, bei welcher fuer
-zwei beliebige Elemente der Grundmenge gilt, $aRb$ oder $bRa$. Zwei Elemente der
+Eine *totale Ordnung* ist nun eine partielle Ordnung, bei welcher fuer zwei
+beliebige Elemente der Grundmenge gilt, $aRb$ oder $bRa$. Zwei Elemente der
 Grundmenge sind also immer *vergleichbar*. Eine partielle Ordnung muss also noch
 nicht vollstaendig sein, und ein totale Ordnung ist nun eine, wo zwei Elemente
-immer in Relation stehen (in nur eine Richtung, da antisymmetrisch).
+immer in Relation stehen (in nur eine Richtung, wenn ungleich, da
+antisymmetrisch).
 
 Eine totale Ordnung hat eine und nur eine Reihenfolge fuer die Grundmenge, daher
 gibt es fuer eine Menge mit $n$ Elementen $n!$ moegliche totale Ordnungen.
@@ -175,10 +179,12 @@ partiellen Ordnung nicht unbedingt.
 Ein Beispiel fuer eine partielle Ordnung ist die Teilbarkeitsrelation $|$ auf
 der Menge $\{3, 4, 6\}$. Diese Relation ist nur eine partielle Ordnung, weil
 fuer die Elemente $3, 4$ nicht gilt, dass entweder $3 | 4$ sodass $(3, 4) \in |$
-oder $4 | 3$ sodass $(4, 3) \in |$. Hingegen ist die Relation $\leq$ auf der
-Menge der natuerlichen Zahlen $\mathbb{N}$ schon eine totale Ordnung, weil fuer
-alle zwei moeglichen $a, b \in \mathbb{N}$ gilt, dass entweder $a \leq b$ oder
-$b \leq a$.
+oder $4 | 3$ sodass $(4, 3) \in |$.
+
+Hingegen ist die Relation $\leq$ auf der Menge der natuerlichen Zahlen
+$\mathbb{N}$ schon eine totale Ordnung, weil fuer alle zwei moeglichen $a, b \in
+\mathbb{N}$ gilt, dass entweder $a \leq b$ oder $b \leq a$. Und wenn $a \leq b$
+*und* $b \leq a$, dann muss $a = b$ gewesen sein.
 
 ### Groessenordnungen
 
@@ -194,19 +200,20 @@ Kommt das obige Element $x$ nie auf der linken Seite eines Tupels vor, sodass es
 also kein __von $x$ verschiedenes__ $y \in M$ gibt, wo $(x, y) \in R$, dann
 nennt man es *maximal*.
 
-Es kann fuer eine Relation mehrere maximale und mehrere minimale Elemente geben.
+__Es kann fuer eine Relation mehrere maximale und mehrere minimale Elemente
+geben.__
 
 Die Verschiedenheit von $y$ in Bezug zu $x$ ist wichtig, da es sonst keine
 reflexiven Tupel geben duerfte.
 
 In Praedikatenlogik fuer eine Relation $R$ ist die Minimalitaet von $x$
-definiert als: $\forall y(R(y, x) \rightarrow x = y)$
+definiert als: $\forall y (R(y, x) \rightarrow x = y)$
 
 #### Kleinstes und Groesstes
 
 Ein Element $x$ einer Menge $M$ ist bezuglich einer Relation $R \subseteq M
 \times M$ nennt man *kleinstes*, wenn es bezueglich $R$ kleiner __als alle__
-anderen Elemente $y \in M, y \neq x$ ist. Fuer *jedes* andere Element gibt es
+anderen Elemente $y \in M, y \neq x$ ist. Fuer *jedes* *andere* Element gibt es
 also ein Tupel $(x, y) \in R$.
 
 Ist das Element $x$ bezueglich $R$ groesser als __jedes__ andere Element, so
@@ -231,14 +238,14 @@ Man nehme z.B. die Teilbarkeitsrelation auf der Grundmenge $\{1, 2, 3, 4, 6, 9,
 12\}$.
 
 * Hier ist $1$ das kleinste Element, weil es fuer jede andere Zahl links in
-  einem Tupel steht ($1$ teilt jede Zahl).
+  einem Tupel steht ($1$ teilt jede Zahl). Es ist folglich auch minimal.
 
 * $12$ ist das einzige maximale Element, weil es keine andere Zahl teilt, also
   niemals auf der linken Seite eines Tupels ist.
 
 * Es gibt kein groesstes Element, weil keine der Zahlen von jeder anderen
-  geteilt werden kann. $36$ waere z.B. ein groesstes Element, wenn man es
-  einfuegen wuerde. Dann waere $12$ auch nicht mehr maximal.
+  geteilt werden kann. $36$ (das kgV) waere z.B. ein groesstes Element, wenn man
+  es einfuegen wuerde. Dann waere $12$ auch nicht mehr maximal.
 
 ### Hasse-Diagramme
 

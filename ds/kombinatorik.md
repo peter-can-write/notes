@@ -811,19 +811,19 @@ Zahlen oben sind ($a_i$) und die Abbildungen ($\pi(a_i)$) unten:
 $\pi = \left(\begin{matrix}1 2 3 4 5 \atop 4 5 2 1 3\end{matrix}\right)$ ist
 eine Permutation, wo $1 \mapsto 4, 2 \mapsto 5$ etc.
 
-Ein Zyklus der Laenge $l \in \mathbb{N}$ in einer Permutation von $n$
-Elementen, ist ein $t$-Tupel fuer welches gilt, dass nach $l$ Permutationen der
-$n$ Elemente, jedes der Elemente im Zyklus genau einmal auf jedes andere Element
-im Zyklus abggebildet wurde, und dann nach der $l$-ten Permutation wieder auf
-sich selbst.
+Ein Zyklus der Laenge $l \in \mathbb{N}$ in einer Permutation von $n$ Elementen,
+ist ein $l$-Tupel fuer welches gilt, dass nach $l$ Permutationen der $n$
+Elemente, jedes der Elemente im Zyklus genau einmal auf jedes andere Element im
+Zyklus abggebildet wurde, und dann nach der $l$-ten Permutation wieder auf sich
+selbst.
 
-Ein Zyklus ist also definiert ueber einer $t$-elementigen Teilmenge $\{a_1, ...,
+Ein Zyklus ist also definiert ueber einer $l$-elementigen Teilmenge $\{a_1, ...,
 a_l\} \subseteq A$ der Urmenge $A$, dessen Elemente paarweise verschieden sind
-($a_i \neq a_j \, \forall i,j \in [t], i \neq j$) und fuer welche gilt, dass die
+($a_i \neq a_j \, \forall i,j \in [l], i \neq j$) und fuer welche gilt, dass die
 Position des Elements an der Stelle $i$ nach der naechsten Permutation, gleich
 der Stelle des naechsten Elements ist, modulo der Laenge, also:
 
-$\pi(a_i) = a_{i+1 \mod t} \forall i \in [t]$
+$\pi(a_i) = a_{i+1 \mod l} \forall i \in [l]$
 
 oder $\pi((1, 2, 3)) = (2, 3, 1)$
 
@@ -835,13 +835,12 @@ $$(1, 2, 3) = (2, 3, 1) = (3, 2, 1) \neq (2, 1, 3) = (3, 2, 1) = (1, 3, 2)$$
 Die Zyklenschreibweise ist also nicht eindeutig. Man sollte sie wenn moeglich
 aber sortieren, sodass das kleinste Element ganz links ist.
 
-Man kann fuer einen Zyklus $\mathcal{Z}$ auch sagen, dass $\forall a \in
-\mathbb{Z}$, mit $t = |\mathcal{Z}|$, jedes Element an jeder Stelle nach $t$
-Permutationen wieder an der selben urspruenglichen Stelle stehen wird. Z.B. sei
-$\mathcal{Z} = (1, 2, 3)$, dann gilt $\pi(\pi(\pi(1))) = 1$
-bzw. $\pi(\pi(\pi(i))) = i$. Also allgemein:
+Man kann fuer einen Zyklus $\mathcal{Z}$ mit $l = |\mathcal{Z}|$ auch sagen,
+dass jedes Element an jeder Stelle nach $l$ Permutationen wieder an der selben
+urspruenglichen Stelle stehen wird. Z.B. sei $\mathcal{Z} = (1, 2, 3)$, dann
+gilt $\pi(\pi(\pi(1))) = 1$ bzw. $\pi(\pi(\pi(i))) = i$. Also allgemein:
 
-$$\pi^t(x) = x$$
+$$\pi^l(x) = x$$
 
 Elemente, die immer auf sich selbst abgebildet werden, heissen hierbei
 *Fixpunkte* und sind also Zyklen der Laenge $1$.
@@ -849,7 +848,7 @@ Elemente, die immer auf sich selbst abgebildet werden, heissen hierbei
 Eine Permutation kann daher auch als Menge seiner Zyklen aufgeschrieben werden,
 z.B.: $\pi = \{(1 5 2 8), (3), (4 6 7), (9), (10 11)\}$. Die Mengenklammern
 koennen auch weggelassen werden, jedenfalls ist die Reihenfolge der Zyklen egal
-und auch die Kommata in den Zyklen. Also $(1)(4 2)(3 6 5)=(6 5 3)(1)(4 2)$.
+und auch die Kommata in den Zyklen. Also $(1)(4 2)(3 6 5) = (6 5 3)(1)(4 2)$.
 
 ### Stirlingzahlen erster Art
 

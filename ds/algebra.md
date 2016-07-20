@@ -883,7 +883,7 @@ $\oplus$ und $\odot$ heisst *Koerper*, falls:
    ist.
 
 2. $\langle S \setminus \{0\}, \odot \rangle$ ist eine abelsche Gruppe (man
-   beachte dass die null hier rausgenommen wird, nicht aus $S$ allgemein!).
+   beachte dass die Null hier rausgenommen wird, nicht aus $S$ allgemein!).
 
 3. Die Distributivgesetze gelten.
 
