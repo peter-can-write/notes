@@ -1,4 +1,4 @@
-# Hauptkomponentenanalyse (Principal Components Analysis)
+# Hauptkomponentenanalyse
 
 $\newcommand{\Var}{\mathop{\rm Var}\nolimits}$
 $\newcommand{\cov}{\mathop{\rm cov}\nolimits}$

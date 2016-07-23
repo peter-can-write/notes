@@ -223,7 +223,7 @@ gibt es fuer diesen Eigenwert zwei verschiedene Begriffe der *Vielfachheit*:
    muss die geometrische Vielfachheit nicht notwendigerweise gleich der
    algebraischen sein.
 
-Die Sumem von sowohl algebraischer als auch geometrischer Vielfachheiten ist
+Die Summen von sowohl algebraischer als auch geometrischer Vielfachheiten ist
 durch die Dimension des Raumes nach oben beschraenkt. Fuer algebraische
 Vielfachheiten ist das so, weil wir nicht mehr als $n$ Nullstellen fuer ein
 Polynom $n$-ten Grades finden koennen. Fuer geometrische Vielfachheiten ist das
@@ -231,6 +231,37 @@ so, weil wir nicht mehr als $n$ linear unabhaengige (Basis-)Vektoren aus den
 Eigenraeumen waehlen koennen. Denn Eigenvektoren bzw. Basisvektoren von
 Eigenraeumen sind natuerlich selbst Vektoren aus dem Raum und die maximale
 Anzahl an linear unabhaengigen Vektoren ist gerade die Dimension des Raumes.
+
+### Gleichheite von Vielfachheiten
+
+Eine interessante Beobachtung ist, dass wenn sich die geometrischen
+Vielfachheiten auf $n$ summieren, dann algebraische Vielfachheiten gleich den
+Geometrischen sein muessen. Also:
+
+$$\sum_\lambda m_g(\lambda) = n \iff m_g(\lambda) = m_a(\lambda)$$
+
+#### Beweis
+
+Fuer den Beweis setzen wir die geometrischen Vielfachheiten Anfangs den
+Algebraischen und zeigen, dass keine andere Konfiguration moeglich ist. Es gilt
+also momentan: $m_g(\lambda) = m_a(\lambda)$ fuer alle Eigenwerte
+$\lambda$. Insbesondere gilt eben auch $\sum_\lambda m_g(\lambda) = \sum_\lambda
+m_a(\lambda) = n$. Wir wissen auch, dass geometrische Vielfachheiten stets durch
+algebraische beschraenkt sind. Wenn wir nun also eine der algebraischen
+Vielfachheiten eins erhoehen wollen, so muessen wir zwingend die Vielfachheit
+einer anderen um eins reduzieren. Denn sonst wuerden sie sich auf $n + 1 > n$
+summieren. D.h. wir muessen also die algebraische Vielfachheit um eins
+verringern, sodass diese algebraische Vielfachheit dann aber um Eines kleiner
+waere als die geometrische. Wir wissen aber, dass das nicht moeglich ist!
+Wiederspruch.
+
+Summieren sich geometrische Vielfachheiten also auf $n$, so muss gelten:
+
+$$m_a(\lambda) = m_g(\lambda)$$
+
+Ist die Matrix im Uebrigen noch ueber ihrem eigenen Raum in Linearfaktoren
+zerfallen, so muss eine Matrix, fuer welche obige Eigenschaft gilt,
+diagonalisierbar sein.
 
 ### Beispiele
 

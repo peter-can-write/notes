@@ -1,5 +1,16 @@
 # Zusammenfassung
 
+$\newcommand{\det}{\mathop{\rm det}\nolimits}$
+$\newcommand{\sgn}{\mathop{\rm sgn}\nolimits}$
+$\newcommand{\dim}{\mathop{\rm dim}\nolimits}$
+$\newcommand{\Kern}{\mathop{\rm Kern}\nolimits}$
+$\newcommand{\Bild}{\mathop{\rm Bild}\nolimits}$
+$\newcommand{\Id}{\mathop{\rm Id}\nolimits}$
+$\newcommand{\diag}{\mathop{\rm diag}\nolimits}$
+$\newcommand{\adj}{\mathop{\rm adj}\nolimits}$
+$\newcommand{\GL}{\mathop{\rm GL}\nolimits}$
+$\newcommand{\rang}{\mathop{\rm rang}\nolimits}$
+
 ## Matrizen
 
 Seien $A \in K^{m \times n}$ und $B \in K^{n \times k}$ zwei Matrizen, dann
@@ -15,17 +26,18 @@ gilt:
 * $A^\top$ ergibt sich durch Vertauschen von Zeilen mit Spalten.
 * Gilt $A = A^\top$, so nennt man $A$ symmetrisch.
 * $Av \in K^m$ fuer Vektor $v \in K^n$
+* $\diag(x_1, ..., x_n) \cdot \diag(y_1, ..., y_n) = \diag(x_1y_1, ..., x_ny_n)$
+* Sind $D,D'$ beide Diagonalmatrizen, so gilt $DD' = D'D$
 
 ## Vektorraeume
-
-### Vektorraume
 
 Sei $V$ eine Menge von Vektoren, dann ist $V$ ein Vektorraum, wenn gilt:
 
 * $\langle V, + \rangle$ ist eine abelsche Gruppe.
-* $\langle V, \cdot \rangle$ ist distributiv fuer Skalare.
+* $\langle V, \cdot \rangle$ ist distributiv fuer Skalare: $s (v + w) = sv + sw$
+* $\langle V, \cdot \rangle$ ist distributiv fuer Vektoren: $v(s + t) = vs + vt$
 * $\langle V, \cdot \rangle$ ist kommutativ fuer Skalare.
-* $\langle V, \cdot \rangle$ ist assoziativ.
+* $\langle V, \cdot \rangle$ ist assoziativ: $(st)v = s(tv)$
 * $\langle V, \cdot \rangle$ hat die $1$ als neutrales Element.
 
 ### Untervektorraeume
@@ -63,20 +75,22 @@ besprochen wurden.
 
 Sei $f: V \rightarrow W$ eine lineare Abbildung, dann gilt:
 
-* $f(v + w) = f(v) + f(w)$
-* $f(av) = a f(v)$
-* $f(0) = 0$
+* $f(v + w) = f(v) + f(w)$ (Additivität)
+* $f(av) = a f(v)$ (Homogenität)
+* $f(0) = 0$ (!)
 * $\Kern(f) = \{ v \in V \,|\, f(v) = 0\}$
 * $\Bild(f) = \{ w \in W \,|\, \exists v \in V: f(v) = w\}$
 * Jeder $k$-dimensionale Vektorraum ist isomorph zum $K^n$
 * Sei $K$ die Basis von $\Kern(f)$ und $U$ die Basis von $f^{-1}(\Bild(f))$ (die
-  Urbilder der Basis des Bildes), dann ist $K \uplus U$ eine Basis von $f$
+  Basis der Urbilder des Bildes), dann ist $K \uplus U$ eine Basis von $f$
 * $\dim(V) = \dim(\Kern(f)) + \dim(\Bild(f))$ fuer $f: V \rightarrow V$
 * Fuer $f: V \rightarrow W$ mit $\dim(V) = \dim(W)$ gilt:
-  $\text{surjektiv } \iff \text{ injektiv } \iff { bijektiv }$
+  $\text{surjektiv } \iff \text{ injektiv } \iff \text{ bijektiv }$
 * $\Kern(f_A) = \dim(V) - \dim(\Bild(f_A)) = n - \rang(A)$
 * Spaltenrang ($\dim(\Bild(f))$) ist gleich Zeilenrang $\rang(A)$
 * Die Anzahl linear unabhaengiger Zeilen gleicht jener der Spalten
+* Man kann $f$ als (Darstellungs)-Matrix darstellen.
+* $f(x) = xf(1)$
 
 ### Inverse
 
@@ -97,7 +111,7 @@ Sei $f: V \rightarrow W$ eine lineare Abbildung, dann gilt:
 * Finde $D_{B,C}$ durch Abbildung von $B$ durch $f$ und Darstellung des Bildes
   zur Basis $C$.
 * Sei $D_{B,C}$ die Darstellungsmatrix von $f$, dann gilt: $f(v) = D_{B,C}v$
-* $D_{B,C} \cdot D_{C,E} = D_{B,E}$
+* $D_{C,E} \cdot D_{B,C} = D_{B,E}$
 
 Sei nun $A \in K^{m \times n}$ und $f: K^n \rightarrow K^m: v \mapsto Av$, dann:
 
@@ -118,8 +132,6 @@ Sei $A, D$ Matrizen und $B, C$ Basen, dann gilt:
 * $S_{B,C} = D_{C,B}(\Id)$
 * $S_{B,C} = B^{-1} C$
 * $S_{B,C}^{-1} = S_{C,B}$
-* Aehnliche Matrizen haben dieselbe Determinante.
-* Aehnliche Matrizen haben dasselbe charakteristische Polynom.
 * Die Basiswechselmatrix $S_{I_n, B}$ ist $B$ selbst.
 * Sei auch $E$ eine Basis, dann gilt: $S_{B,C} \cdot S_{C,E} = S_{B,E}$
 * $Bx = Cy$ fuer Koordinaten $x,y$ von $v$ zur Basis $B,C$
@@ -130,15 +142,13 @@ Seien $A,B$ zwei Matrizen, dann gilt:
 
 * Sind $A,B$ aehnlich, so sind sie Darstellungsmatrizen derselben Funktion zu
   verschiedener Basis.
+* Aehnliche Matrizen haben dieselbe Determinante.
+* Aehnliche Matrizen haben dasselbe charakteristische Polynom.
 * $B = T^{-1} A S$ mit $S \in \GL_n(\mathbb{R})$ wenn $A,B$ aequivalent
 * $B = S^{-1} A S$ mit $S \in \GL_n(\mathbb{R})$ wenn $A,B$ aehnlich
 * $A = S B S^{-1}$ mit $S \in \GL_n(\mathbb{R})$ wenn $A,B$ aehnlich
 
 ## Basen
-
-Hier die Zusammenfassung der wichtigsten Eigenschaften dieses Kapitels. Sei
-hierzu $E$ ein Erzeugendensystem und $B$ eine Basis, sowie $V$ der entsprechende
-Vektorraum. Dann gilt:
 
 * $E$ ist Erzeugendensystem, wenn $\langle E \rangle = V$
 * $B$ ist Basis, wenn $B$ linear unabhaengig und Erzeugendensystem
@@ -156,10 +166,8 @@ Vektorraum. Dann gilt:
   2. $\dim(U) = \dim(V) \iff U = V$
 * Alle Basen haben gleich viele Elemente, naemlich $\dim(V)$
 * $\dim(K^n) = n$
-* Sei
-
 * Bilde aus $E$ eine Basis durch elementare Zeilenoperationen mit $E$ in den
-  Zeilen einer Matrix.
+  Zeilen einer Matrix. Man darf hier auch die urspruenglichen Vektoren nehmen, welche durch Zeilenoperationen womoeglich veraendert wurden.
 * Sei $S$ eine linear unabhaengige Menge, dann ergaenze sie durch $(S | I_N)$ in
   Zeilenstufenform zu einer Basis.
 
@@ -168,7 +176,7 @@ Vektorraum. Dann gilt:
 ### Permutationen
 
 1. $\sgn(\sigma\tau) = \sgn(\sigma) \cdot \sgn(\tau)$
-2. $\sgn(\sigma) \cdot \sgn(\sigma) = 1 \Rightarrow \sgn(\sigma) = \sgn(\tau)$
+2. $\sgn(\sigma) \cdot \sgn(\tau) = 1 \Rightarrow \sgn(\sigma) = \sgn(\tau)$
 3. $\sgn(\sigma) = \sgn(\sigma^{-1}) = \sgn(\sigma)^{-1}$
 
 ### Determinante
@@ -187,15 +195,17 @@ Vektorraum. Dann gilt:
 10. Sei $A$ in Block-Dreiecksgestalt mit $\begin{bmatrix}B & 0 \\ C &
     D\end{bmatrix}$. Dann gilt $\det(A) = \det(B) \cdot \det(D)$
 11. Sei $A$ antisymmetrisch mit ungerader Dimension, dann ist $\det(A) = 0$.
-12. Sei $A \in K^{2 \times 2}$, dann gilt $A^{-1} = \det(A)^{-1} \cdot \adj(A)$
-13. Gauss Operationen:
+12. $\adj(A)_{i,j} = (-1)^{i + j} \cdot \det(A_{j,i})$ (Weglassen von Zeile $j$ und Spalte $i$)
+13. Sei $A \in K^{2 \times 2}$, dann gilt $A^{-1} = \frac{\adj(A)}{\det(A)}$
+14. Gauss Operationen:
 	1. Vertauschen einer Zeile: Vorzeichen veraendert sich.
 	2. Skalieren einer Zeile mit $s$: Determinante wird um $s$ skaliert.
 	3. Skalieren der Matrix um $s$: Determinante wird um $s^n$ skaliert.
 	4. Addieren des $s$-fachen einer Zeile auf eine andere: Determinante bleibt
        gleich.
-14. Alles aus (13) auch fuer Spalten.
-15. $\det(f) = \det(D_B(f))$ fuer beliebige Darstellungsmatrix $D_B(f)$.
+15. Alles aus (13) auch fuer Spalten.
+16. $\det(f) = \det(D_B(f))$ fuer beliebige Darstellungsmatrix $D_B(f)$.
+17. Ist $A$ orthogonal, gilt $|\det(A)| = 1$
 
 ### Aequivalenzen
 
@@ -209,7 +219,7 @@ Sei $A$ quadratisch, dann sind aequivalent:
 * $f_A$ ist surjektiv
 * $f_A$ ist bijektiv
 * $Ax = b$ ist eindeutig loesbar
-* $\kern(f_A) = \{0\}$
+* $\Kern(f_A) = \{0\}$
 * $\det(A) \neq 0$
 
 ## Eigenvektoren
@@ -231,10 +241,19 @@ Sei $A$ quadratisch, dann sind aequivalent:
      3. Die Basisvektoren der Eigenraeume von $A$ bilden eine Basis des $K^n$.
 13. Ist eine Matrix $A$ diagonalisierbar, so ist $A$ aehnlich zu einer
     Diagonalmatrix $\diag(\lambda_1, ..., \lambda_r)$.
-14. $\sum_\lambda m_g(\lambda) = \sum_\lambda m_a(\lambda) = n$
+14. $\sum_\lambda m_a(\lambda) = n$
 15. Jede Matrix, dessen charakteristisches Polynom in Linearfaktoren zerfaellt,
     ist aehnlich zu einer oberen Dreiecksmatrix, mit Eigenwerten in der
     Diagonalen (und diese kann in Jordan-Normalform gebracht werden).
+16. Ist $A$ invertierbar, so ist jeder Eigenwert $\lambda \neq 0$.
+17. Ist $\lambda$ Eigenwert von $A$, dann auch von $A^\top$
+18. Ist $v$ Eigenvektor von $A$, dann nicht sicher auch von $A^\top$
+19. Ist $\lambda$ Eigenwert von $A$, dann ist $1/\lambda$ Eigenwert von $A^{-1}$
+20. Ist $v$ Eigenvektor von $A$ und $B$, dann auch von $AB$
+21. Ist $A$ singulär, so ist $0$ ein Eigenwert, weil es nicht-triviale Loesungen fuer $Ax = 0$ gibt
+22. Gilt $\sum_\lambda m_g(\lambda) = n$, so gilt $m_g(\lambda_i) = m_a(\lambda_i) \forall i$
+23. Ist $A$ orthogonal, gilt $|\lambda| = 1$
+24. Ist $\lambda$ ein Eigenwert von $A$, so auch von $A^k$
 
 ## Hauptachsentransformation
 
@@ -277,7 +296,7 @@ Hier die in diesem Kapitel besprochenen Eigenschaften.
 	* $a$: Realteil
 	* $b$: Imaginaerteil
 	* $i$: Imaginaere Einheit
-2. $\bar(a + bi) = a - bi$
+2. $\overline{a + bi} = a - bi$
 3. $|z| = \sqrt{z \cdot \bar{z}} = \sqrt{a^2 + b^2}$
 4. $|z_1 z_2| = |z_1| \cdot |z_2|$
 5. $\frac{z_1}{z_2} = \frac{z_1\bar{z_2}}{z_2\bar{z_2}}$
@@ -287,7 +306,6 @@ Hier die in diesem Kapitel besprochenen Eigenschaften.
 9. $|z_1 + z_2| \leq |z_1| + |z_2|$
 10. $|z| = 0 \iff z = 0$
 11. $|z| \geq 0 \iff a \geq 0 \lor b \geq 0$
-12.
 
 ## Lineare Gleichungssysteme
 
@@ -334,6 +352,12 @@ Seien $v,w$ zwei Vektoren. Dann gilt:
 * $\langle u, v + aw \rangle = \langle u,v \rangle + a \langle u, w \rangle$
 * $\langle v, w \rangle = \langle w, v \rangle$
 * $(K^n)^\perp = \{0\}$
+
+"Binomische Formeln":
+
+* $|x + y|^2 = |x|^2 + 2x^\top y + |y|^2$
+* $|x - y|^2 = |x|^2 - 2x^\top y + |y|^2$
+* $\langle x + y, x - y \rangle = |x|^2 - |y|^2$
 
 ### Laenge (Betrag)
 

@@ -15,7 +15,7 @@ Eine *Abbildung* $f: V \rightarrow W$ heisst linear, falls gelten:
 Eine erste Beobachtung, die wir aus (2) schliessen koennen, ist dass eine
 lineare Abbildung den Nullvektor von $V$ auf den Nullvektor von $W$
 abbildet. Beweis: Sei $v$ beliebig und $a = 0$. Dann gilt nach
-Linearitaetskriterium $f(a \cdot v) = f(0) = a \cdot f(v) = 0 \cdot f(v) = 0.$
+Linearitaetskriterium $f(a \cdot v) = f(0) = a \cdot f(v) = 0 \cdot f(v) = 0.$. Ist $f$ linear, so kann man die Anwendung von $f$ auf einen Vektor durch eine Matrixmultiplikation nachahmen. Diese Matrix nennt man dann *Darstellungsmatrix* und wird weiter unten besprochen.
 
 Beispiele:
 
@@ -1221,6 +1221,7 @@ Sei $f: V \rightarrow W$ eine lineare Abbildung, dann gilt:
 * $\Kern(f_A) = \dim(V) - \dim(\Bild(f_A)) = n - \rang(A)$
 * Spaltenrang ($\dim(\Bild(f))$) ist gleich Zeilenrang $\rang(A)$
 * Die Anzahl linear unabhaengiger Zeilen gleicht jener der Spalten
+* Man kann $f$ als (Darstellungs-)Matrix darstellen.
 
 ### Inverse
 

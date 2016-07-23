@@ -3,8 +3,8 @@
 $\newcommand{\det}{\mathop{\rm det}\nolimits}$
 $\newcommand{\dim}{\mathop{\rm dim}\nolimits}$
 
-Hier wollen wir nun eine weitere Anwendung der linearen Algebra, die sogenante
-*spektrale Graphentheorie* beleuchten. Die spektrale Graphentheorie untersuch
+Hier wollen wir nun eine weitere Anwendung der linearen Algebra, die sogenannte
+*spektrale Graphentheorie* beleuchten. Die spektrale Graphentheorie untersucht
 Graphen nach ihren *Spektren* (Definition unten) um zu erkennen, ob Graphen
 isomorph sind oder um die Zusammenhangskomponenten von Graphen zu finden.
 
@@ -56,16 +56,16 @@ definiert.
 
 ## Spektrum
 
-Die Menge der Eigenwerte der Adjazenzmatrix $A$ eines Graphen $G = (V, E)$ nennt
-man nun das *Spektrum* eines Graphen. Hierbei betrachten wir das Spektrum als
-Menge von Eigenwerten, wobei wir fuer die (algebraischen) Vielfachheiten jeden
-Eigenwertes noch zusaetzliche Kopien in die Menge geben. Da Adjazenzmatrizen
-ungerichter Graphen (wir betrachten nur solche) symmetrisch sind, wissen wir,
-dass $A$ in relle Eigenwerte zerfaellt. Da es vollstaendig zerfaellt, gibt es
-gerade $n$ solcher reller Eigenwerte, die aber eben nicht paarweise verschieden
-sein muessen. Somit koennen wir das Spektrum eines Graphen als eine Menge von
-genau $n$ rellen Zahlen angeben, wobei wir diese Eigenwerte noch nach ihrer
-Groesse aufsteigend sortieren.
+Die Menge $\{\lambda_1, ..., \lambda_n\}$ der Eigenwerte der Adjazenzmatrix $A$
+eines Graphen $G = (V, E)$ nennt man nun das *Spektrum* eines Graphen. Hierbei
+betrachten wir das Spektrum als Menge von Eigenwerten, wobei wir fuer die
+(algebraischen) Vielfachheiten jeden Eigenwertes noch zusaetzliche Kopien in die
+Menge geben. Da Adjazenzmatrizen ungerichter Graphen (wir betrachten nur solche)
+symmetrisch sind, wissen wir, dass $A$ in relle Eigenwerte zerfaellt. Da es
+vollstaendig zerfaellt, gibt es gerade $n$ solcher reller Eigenwerte, die aber
+eben nicht paarweise verschieden sein muessen. Somit koennen wir das Spektrum
+eines Graphen als eine Menge von genau $n$ rellen Zahlen angeben, wobei wir
+diese Eigenwerte noch nach ihrer Groesse aufsteigend sortieren.
 
 Betrachten wir beispielsweise folgenden Graphen:
 
@@ -91,19 +91,19 @@ $$
 Das charakteristische Polynom $\chi_A = \det(xI_n - A)$ ergibt sich dann als:
 
 $$
-\chi_A = \det(
+\chi_A = \det\left(
 \begin{bmatrix}
 x & -1 & 0 & -1 \\
 -1 & x & -1 & 0 \\
 0 & -1 & x & -1 \\
 -1 & 0 & -1 & x \\
 \end{bmatrix}
-)
+\right)
 $$
 
 Als Faktorisierung erhalten wir dann $x^2(x + 2)(x - 2)$. Somit sind die
 Eigenwerte $\{0, -2, 2\}$ wobei der Eigenwert $0$ algebraische Vielfachheit $2$
-hat. Das Spektrum des Graphen waere also $-2, 0, 0, 2$.
+hat. Das Spektrum des Graphen waere also $\{-2, 0, 0, 2\}$.
 
 ## Isomorphe Graphen
 
@@ -113,7 +113,7 @@ bekannten Regeln aus der linearen Algebra zeigen. Naemlich:
 __Die Spektren isomorpher Graphen stimmen ueberein.__
 
 Seien hierzu $A = (g_{i,j}), A' = (g'_{i,j}) \in \mathbb{R}^{n \times n}$ die
-Adjanzenzmatrizen zweier isomorpher Graphen $G$ und $G'$. Ohne Beschraenkung der
+Adjazenzmatrizen zweier isomorpher Graphen $G$ und $G'$. Ohne Beschraenkung der
 Allgemeinheit benutzen $G$ und $G'$ die Knotenmenge $\{1, ..., n\}$
 (ueberladen). Dann wuerde Isomorphie hier bedeuten, dass es eine Permutation
 $\sigma \in S_n$ gibt, sodass gilt:
@@ -180,15 +180,14 @@ durch:
 $$
 l_{i,j} =
 \begin{cases}
-d_i, \text{ fuer } i = j
--g_{i,j}, sonst
+d_i, \text{ fuer } i = j\\
+-g_{i,j}, \text{ sonst}.
 \end{cases}
-.
 $$
 
 Diese Matrix nennt man *Laplace-Matrix* von $G$. Sie hat in der Diagonalen, also
 Eintrag $l_{i,i}$ mit $i \in [n]$, jeweils den Grad des Knoten $i$ und ueberall
-sonst die selben Eintrage wie die Adjazenzmatrix von $G$, aber mit negativem
+sonst die selben Eintrage wie die Adjazenzmatrix von $G$, aber mit vertauschtem
 Vorzeichen. Da die Adjazenzmatrix nur Einsen enthaelt, enthaelt $G$ also fuer
 jede Eins in der Adjazenzmatrix eine $-1$ in der Laplace-Matrix. Das Spektrum
 dieser Matrix, also die Menge ihrer Eigenwerte, nennt man *Laplace-Spektrum* von
@@ -201,7 +200,7 @@ aber, dass Gleichheit des Laplace-Spektrums zweier Graphen nicht deren
 Isomorphie impliziert. Es gibt sogar Graphen, wo Spektrum *und* Laplace-Spektrum
 gleich sind, die aber nicht isomorph sind. Eine offene Forschungsfrage ist im
 Uebrigen, ob es eine Familie von Matrizen gibt, sodass man sicher sein kann,
-dass ihre Spektren verschieden sind (denn auch wenn Matrizen nicht isomorph
+dass ihre Spektren verschieden sind (denn auch wenn Graphen nicht isomorph
 sind, weiss man ja nicht, ob die Spektren verschieden oder gleich sind).
 
 ### Satz
