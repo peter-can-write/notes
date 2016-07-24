@@ -1,10 +1,10 @@
 # OSI Model: Layer 4
 
 Die vierte Schicht des OSI Modells wird auch *Transportschicht* bzw. *Transport
-Layer* genannt. Sie behandelt Multiplexing von Datenstömen zwischen zwei Knoten
+Layer* genannt. Sie behandelt Multiplexing von Datenströmen zwischen zwei Knoten
 im Netzwerk, sowie spezifiziert zwei Datenübertragungsprotokolle, *TCP* und
 *UDP*. Weiters geschieht auf dieser Schicht auch *Network Address Translation*
-(NAT). Das ist ein Mechanismus, wodurch private, zwischen Netzwerken
+(*NAT*). Das ist ein Mechanismus, wodurch private, zwischen Netzwerken
 wiederverwendbare Adressen auf globale Adressen abgebildet werden.
 
 ### Multiplexing
@@ -15,7 +15,7 @@ egal wo sie in der Welt physikalisch stehen, auszutauschen. Jedoch hat ein
 Rechner meist nicht nur eine Anwendung laufen, sondern viele. Diese empfangen
 und senden alle verschiedene Arten von Daten. Beispielsweise könnte der Rechner
 einen Web-Server laufen lassen und muss also HTTP Requests und Responses senden
-und empfangen können.  Gleichzeitig hat er aber auch einen Email Dienst, welcher
+und empfangen können. Gleichzeitig hat er aber auch einen Email Dienst, welcher
 mit SMTP Nachrichten arbeitet. Wenn nun also ein IPv4 oder IPv6 Paket bei
 unserem Rechner ankommt, dann müssen wir ja irgendwie entscheiden, an welche
 Anwendung wir ein bestimmtes Paket weiterleiten. Wir müssen die SMTP Nachrichten
@@ -61,10 +61,15 @@ sprechen wir bei der Aufsplittung von Daten auf der Transportschicht von
 *Segmenten*. Jedes Segment erhält dann einen eigenen Header, wodurch also die
 Protocol Data Unit (PDU) der Transportschicht entsteht. Jedes dieser Segmente
 mit Header wird dann selbst wieder an einen IP Header konkateniert und in ein IP
-Paket gewickelt, dann in ein Ethernet Paket und letztendlich verschickt.
+Paket gewickelt, dann in einen Ethernet Rahmen und letztendlich verschickt. Der
+Sinn hinter diesen verschiedenen Bezeichnungen fuer eine Nachricht, also
+Segment, Paket und Rahmen ist im Uebrigen, dass ein Segment in viele IP Pakete,
+ein IP Paket dann in viele Rahmen fragmentiert werden kann. Auf der
+Anwendungsschicht haben wir dann noch *Datagramme* (z.B. eine E-Mail), welche
+also selbst in viele Segmente aufgeteilt werden koennen.
 
-Konkret ist ein Port meist ein 16 Bit großer Wert. Das oben genannte 5-Tupel ist
-auch genau das, was ein Socket im Kernel repräsentiert. Mit diesem kann dann
+Konkret ist ein Port meist ein *16 Bit* großer Wert. Das oben genannte 5-Tupel
+ist auch genau das, was ein Socket im Kernel repräsentiert. Mit diesem kann dann
 über einen File Deskriptor und den `read()` und `write()` Systemaufrufen Daten
 versendet bzw. empfangen werden.
 
@@ -72,19 +77,21 @@ versendet bzw. empfangen werden.
 
 Es gibt auf der Transportschicht zwei Protokolle: TCP, was
 *verbindungsorientiert* ist und UDP, was *verbindungslos* ist. Wir werden zuerst
-UDP betrachten und dann TCP. Jedenfalls bemerke man unbedingt die Parallelität
-zwischen verbindungslosen und -orientierten Protokollen auf der
-Transportschicht, und Paket- bzw. Leitungsvermittlung auf der
-Vermittlungsschicht.
+UDP bzw. allgemein verbindungslose Protokolle betrachten und dann TCP
+bzw. allgemein verbindungsorientierte Protokolle. Jedenfalls bemerke man
+unbedingt die Parallelität zwischen verbindungslosen und -orientierten
+Protokollen auf der Transportschicht, und Paket- bzw. Leitungsvermittlung auf
+der Vermittlungsschicht.
 
 ### Verbindungslose Übertragung
 
 *Verbindungslose* Übertragungen sind so konzipiert, dass jedes versendete
- Segment unabhängig von allen anderen ist. Aus Sicht der Transportschicht sind
- die Pakete also sozusagen *zustandslos*. Daher muss zunächst mal der Header
- solcher Segmente jeweils alle Informationen enthalten, die die Verbindung
- identifizieren. Auf der Transportschicht sind das die Ports --- die Header von
- Segmenten verbindungsloser Protokolle enthalten also Quell- und Zielport.
+Segment unabhängig von allen anderen ist. Aus Sicht der Transportschicht sind
+die Pakete also sozusagen *zustandslos*. Daher muss zunächst mal der Header
+solcher Segmente jeweils alle Informationen enthalten, die die Verbindung
+identifizieren. Auf der Transportschicht sind das die Ports -- die Header von
+Segmenten verbindungsloser Protokolle enthalten also zumindest mal Quell- und
+Zielport.
 
 Was wir dabei sogleich merken, ist dass wenn Segmente den Empfänger nicht
 erreichen, sie einfach verloren gehen und grundsätzlich weder Empfänger noch
@@ -93,34 +100,37 @@ Kommunikation.
 
 Da die Segmente auch alle unabhängig sind und so verschickt werden, können sie
 also auch verschieden geroutet werden und insbesondere in beliebiger Reihenfolge
-beim Empfänger ankommen. Gibt es also eine logische Verbindung zwischen den
-Daten der Segmente, so muss man sich überlegen, wie man die Reihenfolge der
-Segmente erhält. Weil Segmente also eigentlich jeweils für sich ganze
-Nachrichten darstellen, nennt man verbindungslose Protokolle
-*nachrichtenorientiert*. Das Gegenteil davon wäre *Stromorientierung*.
+(out-of-order) beim Empfänger ankommen. Gibt es also eine logische Verbindung
+zwischen den Daten der Segmente, so muss man sich überlegen, wie man die
+Reihenfolge der Segmente erhält. Weil Segmente also eigentlich jeweils für sich
+ganze Nachrichten darstellen, nennt man verbindungslose Protokolle
+*nachrichtenorientiert*. Das Gegenteil davon wäre *Stromorientierung*, wofuer
+TCP ein Beispiel ist.
+
+#### UDP
 
 Praktisch gesehen ist verbindungslose Übertragung heutzutage Synonym mit *UDP*,
-dem *User Datagram Protocol*. Nachrichten werden bei UDP dann *Datagramme*
-genannt. Es ist eigentlich nur ein leichter "Wrapper" um seine Payload. Es fügt
-dem IP-Paket einfach genau die minimal notwendige Information der
-Transportschicht hinzu, um die Adressierung durch IP auf der Vermittlungsschicht
-zu ergänzen. Die im Header enthaltenen Daten sind also genau Quellport,
-Zielport, Länge von Header und Payload und letztlich noch eine Checksum. Die
-Länge gibt dabei die Anzahl an Bytes von Header *und* Daten an. Die Checksumme
-ist bei IPv4 optional, bei IPv6 dann aber doch notwendig. Wird sie für IPv4
-nicht berechnet, wird sie einfach mit Nullen gefüllt. Wird sie schon berechnet,
-wird hierfür wie bei ICMPv6 Nachrichten ein Pseudo-Header verwendet. Dieser
-Pseudo-Header berechnet sich aus dem UDP Segment (Header + Payload) sowie
-folgenden Informationen aus dem IP Paket:
+dem *User Datagram Protocol*. Es ist eigentlich nur ein leichter "Wrapper" um
+seine Payload. Es fügt dem IP-Paket einfach genau die minimal notwendige
+Information der Transportschicht hinzu, um die Adressierung durch IP auf der
+Vermittlungsschicht zu ergänzen. Die im Header enthaltenen Daten sind also genau
+Quellport, Zielport, Länge von Header und Payload und letztlich noch eine
+Checksum. Die Länge gibt dabei die Anzahl an Bytes von Header *und* Daten
+an. Die Checksumme ist bei IPv4 optional, bei IPv6 dann aber doch
+notwendig. Wird sie für IPv4 nicht berechnet, wird sie einfach mit Nullen
+gefüllt. Wird sie schon berechnet, wird hierfür wie bei NDP Nachrichten ein
+Pseudo-Header verwendet. Dieser Pseudo-Header berechnet sich aus dem UDP Segment
+(Header + Payload) sowie folgenden Informationen aus dem IP Paket:
 
 * IP Adresse der Quelle und des Ziels
 * Ein 8-Bit Feld mit nur Nullen
 * Die ID des verwendeten Protokolls, also immer UDP mit ID `0x11` (17)
 * Die Länge von Header und Payload
 
-Die Vorteile von UDP sind nun wie folgt zusammenzupassen:
+Die Vorteile von UDP sind nun wie folgt zusammenzufassen:
 
-* UDP Segmente haben geringen Overhead, da der Header klein ist.
+* UDP Segmente haben geringen Overhead, da der Header klein ist (leichter
+  Wrapper).
 * Keine Verzögerung durch Verbindungsaufbau wie bei verbindungsorientierten
   Protokollen. Auch keine Verzögerung durch Retransmits.
 * Gut geeignet für Anwendungen, wo es nicht so schlimm ist, wenn gelegentlich
@@ -131,9 +141,9 @@ Die Vorteile von UDP sind nun wie folgt zusammenzupassen:
 Die Nachteile von UDP sind aber:
 
 * Keine Zusicherung irgendeiner Form von Dienstqualität, da die Nachrichten
-  ungesichert sind und die Fehlerrate somit beliebig hoch sein kann.
-* Datagramme können ungeordnet ankommen, beispielsweise wenn es mehr als einen
-  Pfad zu einem Ziel gibt
+  *ungesichert* sind und die Fehlerrate somit beliebig hoch sein kann.
+* Datagramme können ungeordnet (out-of-order) ankommen, beispielsweise wenn es
+  mehr als einen Pfad zu einem Ziel gibt
 * Keine Flusskontrolle: der Empfänger kann überrumpelt werden.
 * Keine Staukontrolle: der Sender kann das Netzwerk überlasten, wodurch die
   Verlustrate steigt, wenn Pakete in Transit verloren gehen (z.B. wenn bei einem
@@ -142,8 +152,8 @@ Die Nachteile von UDP sind aber:
 ### Verbindungsorientierte Übertragung
 
 Bei *verbindungsloser* Übertragung war jedes Segment eine unabhängige
-Nachricht. Bei *Verbindungsorientierter* Übertragung "erstellen" wir zuerst
-einen Kanal zwischen zwei Endpunkten (IP + Port). Dieser Kanal ist dann also die
+Nachricht. Bei *Verbindungsorientierter* Übertragung stellen wir zuerst einen
+Kanal zwischen zwei Endpunkten (IP + Port) her. Dieser Kanal ist dann also die
 dedizierte Verbindung zwischen Quell- und Zielknoten. Dieser Kanal muss dann
 natürlich auch entsprechend verwaltet, also auf- und abgebaut, werden. Es gibt
 also bei verbindungsorientierter Übertragung immer drei Schritte:
@@ -177,10 +187,10 @@ senden. Dieses beeinhaltet Informationen darüber, dass das Paket zum initialen
 Verbindungsaufbau, also der Sychronisations, dient (`SYN` Flag). Auch wird die
 initiale Sequenznummer $x$ von $A$ mitgeschickt. Dann kommt die entsprechende
 Antwort auf die Synchronisation von Knoten $B$. Sie enthält wieder entsprechende
-Flags, die auf die Natur des Pakets hinweisen. Dann enthält es aber noch zwei
-weitere Daten:
+Flags fuer den Handshake, die auf die Natur des Pakets hinweisen. Dann enthält
+es aber noch zwei weitere Daten:
 
-1. Die initiale Sequenznummer $y$ der Segmente von Knoten $B$
+1. Die initiale Sequenznummer $y$ der Segmente von Knoten $B$,
 2. Die Bestätigung der initialen Sequenznummer $x$ von $A$, sodass also das
    Segment von $A$ mit Sequenznummer $x + 1$ angefordert wird.
 
@@ -199,22 +209,23 @@ A           B
 v           v
 ```
 
-Diesen drei-stufigen Verbindungsaufbau nennt man auch *3-Way Handshake*. Für den
-Verbindungsabbau wird dasselbe Verfahren verwendet, wobei aber nicht
-Synchronisationspakete mit der gesetzen `SYN` Flag gesendet werden, sondern
-*Finish*-Pakete mit dem `FIN` Flag.
+Diesen drei-stufigen Verbindungsaufbau (Handshake) nennt man auch *3-Way
+Handshake*. Für den Verbindungsabbau wird dasselbe Verfahren verwendet, wobei
+aber nicht Synchronisationspakete mit der gesetzen `SYN` Flag gesendet werden,
+sondern *Finish*-Pakete mit dem `FIN` Flag.
 
 #### Datenübertragung
 
-Bei der Datenübertragung interessieren wir uns vor Allem dafür, wann und auf
-welche Weise Segmente quittiert, also bestätigt, werden. Die einfachste Variante
-der Quittierung ist, dass einfach jede Nachricht einzeln quittiert wird und der
-Sender erst auf die Bestätigung für ein Segment vom Empfänger wartet, bevor er
-sein nächstes Segment wegschickt. Diese Methode ist zwar simpel, aber ebenso
-ineffizient. Während nämlich ein Segment von $A$ nach $B$ propagiert, könnten
-weitere Segmente nachgeschickt werden. Die *Round Trip Time* (RTT) wird also
-nicht gut ausgenutzt, wodurch viel Bandbreite ungenutzt bleibt. Dieses Verfahren
-nennt man auch __Stop and Wait__.
+Bei der Datenübertragung interessieren wir uns vor allem dafür, wann und auf
+welche Weise Segmente *quittiert*, also bestätigt, werden. Die einfachste
+Variante der Quittierung ist, dass einfach jede Nachricht einzeln quittiert wird
+und der Sender erst auf die Bestätigung für ein Segment vom Empfänger wartet,
+bevor er sein nächstes Segment wegschickt. Diese Methode ist zwar simpel, aber
+ebenso ineffizient. Während nämlich ein Segment von $A$ nach $B$ propagiert und
+$A$ dann auf die Bestaetigung von $B$ wartet, könnten weitere Segmente
+nachgeschickt werden. Die *Round Trip Time* (RTT) wird also nicht gut
+ausgenutzt, wodurch viel Bandbreite ungenutzt bleibt. Dieses Verfahren nennt man
+auch __Stop and Wait__ (sende, stop and wait, ack, sende, ...).
 
 Eine effizientere und flexiblere Steigerung dieses simplen Prinzips ist es, dem
 Sender ein *Fenster* (also eine Anzahl) an Segmenten mitzuteilen. Der Sender
@@ -237,8 +248,8 @@ Wir betrachten im Weiteren folgendes Modell von Schiebefensterprotokollen:
   ..., N - 1\}$ mit $N := |\mathcal{S}|$
 * Der Sender hat ein *Sendefenster* (Send Window) $W_s \subset \mathcal{S}$ mit
   $w_s = |W_s|$
-* Der Empfänger hat ein *Empfangsfenster* (Receive Window) $W_r \subset \mathcal{S}$ mit
-  $w_r = |W_r|$
+* Der Empfänger hat ein *Empfangsfenster* (Receive Window) $W_r \subset
+  \mathcal{S}$ mit $w_r = |W_r|$
 * Bestätigungen sind im Weiteren immer kumulativ. Das bedeutet, dass ein `ACK
   = x + 1` nicht mehr nur das Segment mit Sequenznummer $x$ bestätigt, sondern
   alle Sequenznummern $\leq x$.
@@ -249,13 +260,16 @@ Wir betrachten im Weiteren folgendes Modell von Schiebefensterprotokollen:
   Sequenznummer in seinem momentanen Fenster erhalten und dieses Segment
   bestätigt hat (unabhängig davon, ob die Bestätigung eigentlich ankommt.)
 
-Wir interessiern uns nun dafür, wie bei Schiebefensterprotokollen mit
-Segmentverlusten umgegangen wird. Hierfür gibt es zwei Verfahren: *Go-Back-$N*$
+##### Segmentverlust
+
+Wir interessieren uns nun dafür, wie bei Schiebefensterprotokollen mit
+Segmentverlusten umgegangen wird. Hierfür gibt es zwei Verfahren: *Go-Back-N*
 und *Selective Repeat*. Wir wollen sie näher untersuchen. Jedenfalls ergibt sich
 durch den Einsatz von Schiebefenstern die interessante Situation, dass
 Verwechslungen zwischen Fenstern auftreten können. Es ist hierbei vor allem
 wichtig zu verstehen, dass sich die Fenster beider Seiten während der
-Übertragung von Segmenten eines Fensters verschieben können.
+Übertragung von Segmenten eines Fensters verschieben können (nach oben
+angefuehrten Bedingungen).
 
 Betrachten wir beispielsweise den Fall, dass sowohl Sender und Empfänger den
 gesamten Sequenznummernaum $\mathcal{S}$ als Fenster wählen. Nun darf der Sender
@@ -273,7 +287,7 @@ Segmente aus seinem unveränderten Fenster nochmals an den Empfänger. Der Sende
 denkt ja, dass der Empfänger die Segmente nicht erhalten hat, weil sie nicht
 bestätigt wurden. Wenn diese $N$ Segmente mit Sequenznummern gerade
 $\mathcal{S}$ nun beim Empfänger ankommen, denkt dieser aber nun, dass das die
-Segmente des nächsten Fensters sind. Der Empfänger hat die alten ja alle
+Segmente des *nächsten* Fensters sind. Der Empfänger hat die alten ja alle
 bekommen und quittiert. Hier ist nun also eine Verwechslung aufgetreten. So
 könnte aus diesem Datenstrom nun eine falsche Nachricht rekonstruiert werden.
 
@@ -283,8 +297,12 @@ unter welchem keine Verwechslungen auftreten können.
 
 Es sei noch angemerkt, dass wenn Sende- und Empfangsfenster beide eins sind, man
 wieder Stop and Wait erhält. Eine Steigerung von Stop and Wait erhält man erst,
-wenn man das Sendefenster erhöht. Die Größe des Sendefensters ist also gerade
-das essentielle, was diese beiden Methoden von Stop and Wait unterscheidet.
+wenn man *das Sendefenster* erhöht. Die Größe des Sendefensters ist also gerade
+das essentielle, was diese beiden Methoden von Stop and Wait unterscheidet. Wenn
+das Sendefenster eins ist aber das Empfangsfenster groesser eins, dann bringt
+das nichts, weil nie mehr als ein Segment gesendet wird. Wenn das
+Empfangsfenster eins ist, muss das Sendefenster eins sein und wir sind wieder
+bei diesem Fall. Das Sendefenster ist also eben ausschlaggebend.
 
 ###### Go-Back-$N$
 
@@ -301,8 +319,8 @@ Sequenznummer $0$. Dann sendet er also ein `ACK = 1` Segment zurück, da er ja
 das nun erste Segment erwartet und somit das null-te bestätigt. Gleichzeitg
 erhält er nun die höheren Sequenznummern $2$ und $3$. Diese verwirft der
 Empfänger nun aber einfach! Er wartet nämlich noch immer auf das erste. Konkret
-erhält der Empfänger diese höheren Segmente zwar, er sendet für sie aber dennoch
-ein `ACK = 1` zurück.
+erhält der Empfänger diese höheren Segmente zwar, __er sendet für sie aber
+dennoch ein `ACK = 1` zurück__ (man braucht also kein Timeout).
 
 Dieses Verfahren heißt also Go-Back-$N$, weil selbst wenn der Sender alle $N$
 Segmente in einem Sequenznummernaum senden würde, das erste aber verloren geht,
@@ -322,11 +340,11 @@ Verwechlungen zwischen Fenstern auftreten? Hierzu die folgenden Beobachtungen:
   Überlappung von einem Fenster und dem darauffolgenden Fenster. Bei Go-Back-$N$
   ist es nun aber so, dass das nächste Fenster immer nur die allererste
   Sequenznummer akzeptiert, und nicht die darauffolgenden. Solange also nur
-  nicht die Anfänge des momentanen Fensters und des nächsten Fensters
+  nicht __die Anfänge__ des momentanen Fensters und des nächsten Fensters
   überlappen, wird es bei Go-Back-$N$ keine Fehler geben. Dann kann man nämlich
   alle Segmente des momentanen Fensters mehrmals senden. Da keines der Segmente
-  der Anfang des nächsten sein wird, wird es nie eine Verwechslung geben
-  Genauer darf der Anfang des nächsten also gar keine Sequenznummer des
+  der Anfang des nächsten sein wird, wird es nie eine Verwechslung
+  geben. Genauer darf der Anfang des nächsten also gar keine Sequenznummer des
   momentanen Fensters sein. Es gibt aber auch nur einen Fall, wo der Anfang des
   nächsten Fensters eine Sequenznummer des momentanen Fensters ist, und in
   diesem Fall überlappen sich genau die Anfänge.
@@ -338,7 +356,7 @@ Verwechlungen zwischen Fenstern auftreten? Hierzu die folgenden Beobachtungen:
   gibt es dann also eine Verwechslung, falls der Anfang des vorherigen Segments
   neu gesendet werden muss (Erinnernung: es ist nur der Anfang wichtig, weil
   wenn höhere Sequenznummer wiederholt werden müssen, dann sind diese für das
-  nächste Fenster sowieso uininteressant, weil es noch auf sein Anfangssegment
+  nächste Fenster sowieso unininteressant, weil es noch auf sein Anfangssegment
   wartet).
 * Wir können dieses Problem, dass sich die Anfänge des momentanen und nächsten
   Fensters überlappen, ganz einfach dadurch lösen, dass wir zwischen dem
@@ -347,18 +365,19 @@ Verwechlungen zwischen Fenstern auftreten? Hierzu die folgenden Beobachtungen:
   okkupiert, dann setzen wir den Anfang des nächsten Fensters einfach auf
   Sequenznummer $N - 1$. Dann überlappen sich zwar $N - 2$ Sequenznummern
   zwischen diesen Fenstern (alle außer $N - 2$ und $N - 1$), aber eben nicht die
-  Anfänge (an Positionen $N - 1$ und $0$).
+  Anfänge (an Positionen $N - 1$ und $0$), welche zaehlen.
 
 Zusammenfassend: Bei Go-Back-$N$ muss das Sendefenster also maximal $N - 1$
-Sequenznummern okkupieren, damit man den Anfang des nächsten Fensters in die
-Lücke setzen kann. Dann überlappen sich zwar $N - 2$ Sequenznummern, aber die
+Sequenznummern okkupieren, *damit man den Anfang des nächsten Fensters in die
+Lücke setzen kann*. Dann überlappen sich zwar $N - 2$ Sequenznummern, aber die
 Anfänge der Fenster nicht, was die einzige Source of Badness bei Go-Back-$N$
 wäre.
 
 Go-Back-$N$ ist einfacher zu implementieren als Selective Repeat, aber weniger
-effizient. Insbesonderen interessant ist bei Go-Back-$N$ aber, dass man gar
-keinen Speicherpuffer beim Empfänger braucht. Da es immer nur ein einziges
-mögliches Segment gibt, das der Empfänger erwartet, muss er andere nicht
+effizient, weil eben moeglicherweise alle $N$ Segmente neu uebermittelt werden
+muessen. Insbesondere interessant ist bei Go-Back-$N$ aber, dass man gar keinen
+Speicherpuffer beim Empfänger braucht. Da es immer nur ein einziges mögliches
+Segment gibt, das der Empfänger erwartet, muss er andere nicht
 zwischenspeichern. Daher braucht er auch keinen Puffer.
 
 ###### Selective Repeat
@@ -370,7 +389,7 @@ sondern speichern sie in einen Puffer. Fehlt eine erwartete Sequenznummer im
 Fenster, so teilt der Empfänger dem Sender das durch ein passendes ACK mit. Der
 Sender schickt dann aber nicht wie bei Go-Back-$N$ alle Segmente ab dem
 bestätigten nochmals neu, sondern nur das mit dieser konkreten
-Sequenznummer. Gehen mehrere erwartete Segmente verloren, sender der Empfänger
+Sequenznummer. Gehen mehrere erwartete Segmente verloren, sendet der Empfänger
 dem Sender eben mehrere solcher ACKs.
 
 Wählen wir für das Empfangsfenster eine Größe von $1$, so erhalten wir einfach
@@ -378,26 +397,33 @@ wieder Go-Back-$N$. Der Empfänger könnte nämlich immer nur das nächste erwar
 Segment speichern und müsste höhere ignorieren. Es wäre aber nicht zwingend
 dasselbe wie Stop and Wait, da der Sender ja wohl ein größeres Fenster haben
 kann und mehr als ein Segment wegsenden kann, auch wenn alle außer dem ersten
-dann ignoriert würden. Im besten Fall würde der Empfänger aber immer genau ein
-Segment nach dem anderen erhalten, wodurch sich das $1$-große Fenster des
-Empfängers immer um eins weiterschieben würde. Würde nun aber ein erwartetes
-Segment nicht ankommen, so würden höhere ignoriert und müssten dann wie bei
-Go-Back-$N$ nochmals gesendet werden.
+dann ignoriert würden, weil sie nicht ins momentane Empfangsfenster fallen. Im
+besten Fall würde der Empfänger aber immer genau ein Segment nach dem anderen
+erhalten (unter der Annahme von vernachlaessigbarer Verarbeitungszeit), wodurch
+sich das $1$-große Fenster des Empfängers immer um eins weiterschieben
+würde. Würde nun aber ein erwartetes Segment nicht ankommen, so würden höhere
+ignoriert und müssten dann wie bei Go-Back-$N$ nochmals gesendet
+werden. Praktisch gesehen ist das Sendefenster aber durch das Empfangsfenster
+nach oben beschraenkt.
 
 Wir überlegen uns wieder, wie groß nun die maximale Größe des Sendefensters sein
-darf. Es sei wieder angemerkt, dass das Empfangsfenster in dieser Diskussion
-keine Rolle spielt. Überlegen wir uns zunächst, ob $N - 1$ wieder eine passende
-obere Schranke sein könnte. Dann würden sich das momentane und nächste
-Sendefenster also wie oben besprochen in genau $N - 2$ stellen überlappen (nur
-nicht im letzten des momentanen und im ersten des nächsten). Bei Go-Back-$N$ war
-diese Überlappung kein Problem, da der Empfänger für das nächste Segment sowieso
-nur die erste Sequenznummer akzeptieren würde, wo keine Überlappung war. Nun ist
-es aber so, dass der Empfänger höhere Segmente für das nächste Fenster __sehr
-wohl__ akzeptiert. Er puffert ja diese Segmente bei Selective Repeat. D.h. wir
-haben mit dieser Überlappung von $N - 2$ Segmenten ein Problem. Konkret kann man
-hier erkennen, dass eine Unterscheidung vom momentanen und nächsten Fenster nur
-dann möglich ist, wenn es __überhaupt keine Überlappung__ gibt. Denn jegliche
-Überlappung würde bedeutetn, dass wenn dieses Segment im momentanen Fenster neu
+darf. Es sei wieder angemerkt, dass *das Empfangsfenster in dieser Diskussion
+keine Rolle spielt*. *Nur Ueberlappungen im Sendefenster zaehlen*. Wir machen
+das Empfangsfenster ja nur kleiner bzw. nicht gleich dem ganzen Sequenzraum, um
+Flusskontrolle zu machen. Theoretisch koennte das Empfangsfenster beliebig gross
+sein (beschraenkt durch den Sequenzraum). Überlegen wir uns zunächst, ob $N - 1$
+wieder eine passende obere Schranke sein könnte. Dann würden sich das momentane
+und nächste Sendefenster also wie oben besprochen in genau $N - 2$ stellen
+überlappen (nur nicht im letzten des momentanen und im ersten des nächsten). Bei
+Go-Back-$N$ war diese Überlappung kein Problem, da der Empfänger für das nächste
+Segment sowieso nur die erste Sequenznummer ($N - 1$) akzeptieren würde, wo
+keine Überlappung war. Nun ist es aber so, dass der Empfänger höhere Segmente
+für das nächste Fenster __sehr wohl__ akzeptiert. Er puffert ja diese Segmente
+bei Selective Repeat. D.h. wir haben mit dieser Überlappung von $N - 2$
+Segmenten ein Problem. Und zwar genau $N - 2$ Probleme. Konkret kann man hier
+erkennen, dass eine Unterscheidung vom momentanen und nächsten Fenster nur dann
+möglich ist, wenn es __überhaupt keine Überlappung__ gibt. Denn jegliche
+Überlappung würde bedeuten, dass wenn dieses Segment im momentanen Fenster neu
 gesendet werden muss, der Empfänger aber schon auf die Segmente des nächsten
 Fensters wartet (weil er alle Segmente erhalten hat, die ACKs aber alle in
 Transit krepiert sind), er dieses Segment für das nächste Fenster puffern würde,
@@ -410,8 +436,9 @@ eine Hälfte des Sequenznummernaums okkupieren und das nächste Fenster dann imm
 die zweite Hälfte. Es gäbe also gar keine Überlappung. Natürlich kann man die
 Fenstergrößen auch kleiner wählen, aber dies ist die obere Grenze.
 
-Bei Selective Repeat benötigt der Empfänger einen Puffer, was bei Go-Back-$N$
-noch nicht der Fall war.
+Bei Selective Repeat benötigt der Empfänger einen Puffer (mit Platz fuer
+$\lfloor N/2 \rfloor - 1$ Elementen), was bei Go-Back-$N$ noch nicht der Fall
+war.
 
 #### TCP
 
@@ -424,75 +451,100 @@ Window und Selective Repeat. Bei TCP werden aber nicht ganze Segmente, sondern
 immer einzelne Bytes bestätigt. D.h. wenn ein Segment $b$ Bytes enthält, wird
 der nächste `ACK` den Offset $b$ gegenüber dem letzten ACK haben.
 
-Ein TCP Segment hat natürlich einen TCP Header. Währen der UDP Header wirklich
-nur minimal klein war, enthält ein TCP Header nun schon viel mehr
-Infromationen. Er ist minimal 20 Byte groß (wie ein IP Header) besteht also aus:
+Ein TCP Segment hat natürlich einen TCP Header. Während der UDP Header wirklich
+nur minimal klein war (leichter Wrapper um die Payload), enthält ein TCP Header
+nun schon viel mehr Infromationen. Er ist minimal 20 Byte groß (wie ein IP
+Header) besteht also aus:
 
 * Einem *Source Port* (wie bei UDP)
+
 * Einem *Destination Port* (wie bei UDP)
-* Der *Sequence Number*
-* Der *Acknowledgement Number* (`ACK`)
-* Einem (Data) *Offset*, der angibt, an welchem Offset die Daten im TCP Segment
-  anfangen. Ein TCP Header kann nämlich noch *Optionen* enthalten. Somit gibt
-  dieser Wert also eigentlich an, wie groß der Header insgesamt ist.
+
+* Der *Sequence Number* (!)
+
+* Der *Acknowledgement Number* (`ACK`) (!)
+* Einem (Data) *Offset*, der angibt, an welchem Offset die Daten im ganzen TCP
+  Segment anfangen. Ein TCP Header kann nämlich noch *Optionen* enthalten. Somit
+  gibt dieser Wert also eigentlich an, wie groß der Header insgesamt ist.
+
 * Reserved: Momentan auf Null gesetzter Bereich.
+
 * Dann sechs Flags:
-  - *URG* (urgent): Ist dieses Bit gesetzt, dann heißt das, dass das Segment
-    *urgent data* enthält. Es gibt dann noch ein *Urgent Pointer* Feld im Header
-  (siehe unten). Dann sind die Daten im Segment ab dem ersten Byte bis zum
-  Urgent Pointer also die wichtigen Daten. Diese sollen dann sofort an höhere
-  Schichten weitergeleitet werden. Die restlichen Daten werden dann ganz normal
-  verarbeitet. Im Linux-Kernel kann ein Prozess z.B. das `SIGURG` Signal
-  erhalten. Dann weiß er, dass auf einem Socket nun urgent Daten anstehen.
- - *ACK* (acknowledgement): Erst durch dieses Flag wird das Acknowledgement
-   Number Feld "aktiv". D.h. wenn dieser Bit gesetzt ist, dann handelt es sich
-   im Ack. Number Field um eine Bestätigungsnummer. Ansonsten wird das Feld
-   ignoriert. Eine "reine Bestätigung" wie wir sie oben betrachtet haben, hätte
-   also keine Daten und dieses Bit gesetzt. In der Praxis ist es aber möglich,
-   dass der Empfänger (bzw. eben Knoten $B$) dem Sender Daten auch senden
-   möchte. Dann kann er in einem Segment gleichzeitig durch die Ack. Number das
-   letzte Segment von Knoten $A$ bestätigen, und seine Daten an $A$
-   senden. Dieses Konzept nennt man *piggy-backing*.
- - *PSH* (push): Ist dieses Flag gesetzt, werden die Daten im Segment nicht beim
-   Sender und Empfänger nicht gepuffert. Normalerweise würde der TCP Stack des
-   Senders Daten zuerst ein wenig puffern, bevor er ein Segment ins Netzwerk
-   wegschickt und Traffic macht. So wird nicht jeder einzelne Byte, den man in
-   einen Socket reinschickt, sofort als ein IP Paket mit einem Byte Nutzdaten
-   weggeschickt. Viel eher wartet man, bis der Puffer voll ist oder man
-   zumindest genügend Daten hat, und schickt dann ein Segment weg. Beim
-   Empfänger ist das genau so. Der TCP Stack wird die Anwendung nicht für jeden
-   einzelnen Byte stören. Auch hier würden Daten zuerst gepuffert. Hat man aber
-   eine interaktive Anwendung, die Daten sofort möchte, dann will man diese
-   Puffer nicht. Beispielsweise bei Telnet möchte man lieber, dass jeder Byte
-   (also jedes Text-Zeichen) sofort an die Anwendung weitergeleitet wird. Dann
-   setzt man also die push flag. Bei einem Socket gibt es hierfür die
-   `TCP_NODELAY` Sockopt, welche den Nagle Algorithmus für Buffering deaktiviert
-   (https://en.wikipedia.org/wiki/Nagle%27s_algorithm).
-   Der Unterschied zwischen urgent und push Flag ist nun der, dass selbst wenn
-   ein Segment urgent data enthält, diese dennoch gepuffert werden
-   könnten. Meistens würde man also urgent und push Flag für maximal schnellen
-   Durchsatz gleichzeitig senden.
- - *RST* (reset): Dient dem Abbruch einer TCP-Verbindung ohne ordnungsgemäßen
-   Verbindungsabbau.
- - *SYN* (synchronization): Ist diese Flag gesetzt, handelt es sich bei dem
-   Segment um eines, welches zum Verbindungsaufbau dient. Ein gesetztes SYN-Flag
-   inkrementiert Sequenz- und Bestätigungsnummer um 1, auch wenn keine Nutzdaten
-   geschickt werden. Das SYN Paket hat nämlich selbst auch eine Sequenznummer.
- - *FIN* (finish): Das Gegenstück zu *SYN*, dient also zum
-   Verbindungsabbau. Inkrementiert ebenso beide Nummern im Header.
-* *Receive Window*: Die vom Empfänger mitgeteilte Größe des Empfangsfensters
+
+	- *URG* (urgent): Ist dieses Bit gesetzt, dann heißt das, dass das Segment
+	*urgent data* enthält. Es gibt dann noch ein *Urgent Pointer* Feld im Header
+	(siehe unten). Dann sind die Daten im Segment ab dem ersten Byte *bis zum*
+	Urgent Pointer also die wichtigen (*out-of-band*) Daten. Diese sollen dann
+	sofort an höhere Schichten weitergeleitet werden. Die restlichen Daten
+	werden dann ganz normal verarbeitet. Im Linux-Kernel kann ein Prozess
+	z.B. das `SIGURG` Signal erhalten. Dann weiß er, dass auf einem Socket nun
+	urgent Daten anstehen. Ueber `select` kann man dann erfahren, auf welchem
+	Socket (wenn man viele hat) die urgent Daten anliegen. Denn man kann mit
+	`select` nicht nur read und write readiness, sondern auch nach exceptional
+	conditions nachfragen.
+	https://www.gnu.org/software/libc/manual/html_node/Out_002dof_002dBand-Data.html
+
+   - *ACK* (acknowledgement): Erst durch dieses Flag wird das Acknowledgement
+	 Number Feld "aktiv". D.h. wenn dieser Bit gesetzt ist, dann handelt es sich
+	 im Ack. Number Field um eine Bestätigungsnummer. Ansonsten wird das Feld
+	 ignoriert. Eine "reine Bestätigung" wie wir sie oben betrachtet haben,
+	 hätte also keine Daten und dieses Bit gesetzt. In der Praxis ist es aber
+	 möglich, dass der Empfänger (bzw. eben Knoten $B$) dem Sender Daten auch
+	 senden möchte. Dann kann er in einem Segment gleichzeitig durch die
+	 Ack. Number das letzte Segment von Knoten $A$ bestätigen (bzw. das naechste
+	 anfordern), und seine Daten an $A$ senden. Dieses Konzept nennt man
+	 *piggy-backing*.
+
+   - *PSH* (push): Ist dieses Flag gesetzt, werden die Daten im Segment weder
+	 beim Sender noch beim Empfänger gepuffert. Normalerweise würde der TCP
+	 Stack des Senders Daten zuerst ein wenig puffern, bevor er ein Segment ins
+	 Netzwerk wegschickt und Traffic macht. So wird nicht jeder einzelne Byte,
+	 den man in einen Socket reinschickt, sofort zu einem TCP Segment und als
+	 ein IP Paket mit einem Byte Nutzdaten weggeschickt. Viel eher wartet man,
+	 bis der Puffer voll ist oder man zumindest genügend Daten hat, und schickt
+	 dann ein Segment weg. Beim Empfänger ist das genau so. Der TCP Stack wird
+	 die Anwendung nicht für jeden einzelnen Byte stören. Auch hier würden Daten
+	 zuerst gepuffert. Hat man aber eine interaktive Anwendung, die Daten sofort
+	 möchte, dann will man diese Pufferung nicht. Beispielsweise bei Telnet
+	 möchte man lieber, dass jeder Byte (also jedes Text-Zeichen) sofort an die
+	 Anwendung weitergeleitet wird. Dann setzt man also die push flag. Bei einem
+	 Socket gibt es hierfür die `TCP_NODELAY` Sockopt, welche den Nagle
+	 Algorithmus für Buffering deaktiviert
+	 (https://en.wikipedia.org/wiki/Nagle%27s_algorithm).  Der Unterschied
+	 zwischen urgent und push Flag ist nun der, dass selbst wenn ein Segment
+	 urgent data enthält, diese dennoch gepuffert werden könnten. Meistens würde
+	 man also urgent und push Flag für maximal schnellen Durchsatz gleichzeitig
+	 senden.
+
+   - *RST* (reset): Dient dem Abbruch einer TCP-Verbindung ohne ordnungsgemäßen
+	 Verbindungsabbau (FIN).
+
+   - *SYN* (synchronization): Ist diese Flag gesetzt, handelt es sich bei dem
+	 Segment um eines, welches zum Verbindungsaufbau dient. Ein gesetztes SYN-Flag
+	 inkrementiert Sequenz- und Bestätigungsnummer um 1, auch wenn keine Nutzdaten
+	 geschickt werden. Das SYN Paket hat nämlich selbst auch eine Sequenznummer.
+
+   - *FIN* (finish): Das Gegenstück zu *SYN*, dient also zum
+	 Verbindungsabbau. Inkrementiert ebenso beide Nummern im Header.
+
+* *Receive Window*: Die vom Empfänger mitgeteilte Größe des *Empfangsfensters*
   $W_r$ in Byte. Da die Größe des Sendefensters nur maximal so groß wie das
   Fenster vom Empfänger ist, bestimmt dieser Wert also indirekt auch die
-  Sendefenstergröße.
+  Sendefenstergröße. Durch diese Option kann der Empfaenger die Datenrate
+  drosseln und Flusskontrolle betreiben.
+
 * *Checksum*: Eine weitere Checksum, die wie bei UDP wieder einen Pseudo-Header
   verwendet.
+
 * *Urgent Pointer*: Gibt das Ende der urgent Daten im Segment an. Anfangen tun
   die urgent Daten, sofern das Urgent Flag gesetzt ist, immer beim ersten Byte.
+
 * *Zusätzliche Optionen*, z.B. für Window Scaling. Denn das Window Feld ist nur
-  16 Bit groß, man könnte also ein maximales Sendefenster von $2^16 - 1$ Byte
-  angeben. Wenn man nun mehr Byte möchte, dann kann man diese Zahl einfach
-  skalieren. Der Wert in diesem Feld würde also nicht mehr Byte, sondern dann
-  vielleicht zwei oder mehr Byte repräsentieren.
+  16 Bit groß. Da Sequenznummern bei TCP ja Bytes designieren, könnte man also
+  maximal ein Sendefenster von $2^16 - 1$ Byte angeben. Wenn man nun mehr Byte
+  möchte, dann kann man diese Zahl einfach skalieren. Der Wert in diesem Feld
+  würde also nicht mehr in Vielfachen von Byte, sondern moeglicherweise von
+  zwei oder mehr Byte berechnet sein.
 
 http://stackoverflow.com/questions/9153566/difference-between-push-and-urgent-flags-in-tcp
 http://www.tcpipguide.com/free/t_TCPPriorityDataTransferUrgentFunction-2.htm
@@ -500,7 +552,7 @@ http://www.tcpipguide.com/free/t_TCPPriorityDataTransferUrgentFunction-2.htm
 #### MSS
 
 Bei TCP ist immer eine *Maximum Segment Size* (MSS) bekannt. Sie gibt die
-maximale Größe der Nutzdaten eines TCP Segments (also ohne TCP
+maximale Größe der *Nutzdaten* eines TCP Segments (also ohne TCP
 Header). Vergleichsweise gibt die MTU auf Schicht zwei die maximale Größe eines
 Ethernet Headers (zum Beispiel) an. In Praxis wird die MSS so gewählt, dass
 keine IP-Fragmentierung geschehen muss. Die MTU (minus TCP Header) ist dann also
@@ -511,23 +563,29 @@ bleiben also 1460 Byte für die MSS.
 Die MSS Größe kann im Weiteren dann zum Zwecke der Fluss- und Staukontrolle
 angepasst werden. Auch sei angemerkt, dass man auf Schicht 4 die MSS nicht immer
 genau so wählen kann, dass keine Fragmentierung passiert. Insbesondere weiß man
-auf Schicht 4 nicht, welches Schicht 3 oder 2 Protokoll überhaupt angewandt
+auf Schicht 4 nicht, welches Schicht 3 oder 2 Protokoll überhaupt angewendet
 wird. Selbst wenn man weiß, dass Ethernet und IP genutzt wird, weiß man dann
-auch noch nicht, ob der IP Header vielleicht noch Optionen hat.
+auch noch nicht, ob der IP Header vielleicht noch Optionen hat, was die MSS
+weiter beschraenken wuerde.
 
 #### Flusskontrolle
 
 Da der Empfänger dem Sender die Größe des Empfangsfensters mitteilen kann, kann
-der Empfänger auf Über- oder Unterlast auf seiner Seite dynamisch reagieren. Das
-nennt man dann *Flusskontrolle*. Da weiter bei TCP nicht Segmente, sondern immer
-Byte quittiert werden, bestimmt die Größe des Empfangsfensters also die maximale
-Anzahl an Bytes, die der Sender in einem Mal lossenden kann. Insofern bestimmt
-die Größe des Empfangsfensters die MSS (als ein Faktor, siehe unten). Das ist
-also die maximale Anzahl an Bytes, die der Sender ohne Abwarten einer
-Bestätigung wegsenden kann.
+der Empfänger auf *Über- oder Unterlast* auf seiner Seite dynamisch
+reagieren. Das nennt man dann *Flusskontrolle*. Da weiter bei TCP nicht
+Segmente, sondern immer Byte quittiert werden, bestimmt die Größe des
+Empfangsfensters also die maximale Anzahl an Bytes, die der Sender in einem Mal
+lossenden kann. Wie vorhin besprochen beschraenkt das Empfangsfenster folglich
+das Sendefenster. Das ist also die maximale Anzahl an Bytes, die der Sender ohne
+Abwarten einer Bestätigung wegsenden kann.
+
+Es sei aber angemerkt, dass das Sendefenster nicht gleich der MSS ist. Denn die
+MSS kann aufgrund der MTU des L3 Protokolls unter dem nach Empfaenger moeglichen
+Empfangs- bzw. Sendefenster liegen. So ist es beispielsweise moeglich, dass in
+einem Sendefenster mehrere MSS versendet werden.
 
 Durch Herabsetzen dieses Fensters kann der Empfänger beispielsweise auf einen
-droheden Overflow seines Empfangspuffers reagieren, wenn er von einem Sender
+drohenden Overflow seines Empfangspuffers reagieren, wenn er von einem Sender
 schneller Daten erhält, als er sie verarbeiten kann.
 
 #### Staukontrolle
@@ -545,36 +603,42 @@ das Fenster schrittweise, solange Daten verlustfrei übertragen werden. Treten
 Verluste auf (kommen keine Quittierungen mehr), so verringert der Sender das
 Fenster wieder.
 
-Das Sendefenster, was also gerade die MSS ist, wird also nicht nur durch das
-Empfangfenster nach oben begrenzt, sondern auch durch das Congestion
-Window. Somit gilt also:
+Das Sendefenster wird also nicht nur durch das Empfangsfenster nach oben
+begrenzt, sondern auch durch das Congestion Window. Somit gilt also:
 
-$$\text{MSS} = W_s = \min{W_c, W_r}$$
+$$W_s = \min\{W_c, W_r\}$$
 
 Es gibt bei TCP grundsätzlich zwei *Phasen* der Staukontrolle:
 
-1. *Slow-Start*: Hierbei wird Congestion Window bei jedem bestätigten Segment um
-   eine MSS vergrößert. Im Fall das das Receive Window größer als das Congestion
-   Window ist, gilt also $\text{MSS} = W_s = W_c$. Dann entspricht die Addition
-   eiber MSS gerade der Verdoppelung des Congestion Windows. Das führt dann also
-   zu exponentiellem Wachstum gemäß $\text{MSS} \cdot 2^i$, wobei $i$ die Anzahl
-   bisher bestätigter Segmente ist. Es sei aber angemerkt, dass wenn das
-   Empfangsfenster kleiner ist als das Congestion Window, die MSS gleich dem
-   Empfangsfenster ist. Dann ist die Addition der MSS keine Verdoppelung
-   mehr. In diesem Fall müsste Staukontrolle als ganzes aber auch abgebrochen
-   werden müssen. Denn wenn die MSS gleich dem kleineren Empfangfenster ist,
-   dann kommen wohl alle Segmente durch. Wenn man gerade Slow Start macht, würde
-   man also glauben, das Congestion Window (was eigentlich gerade gar keinen
-   interessiert, weil das Empfangsfenster kleiner ist) passt so und kann weiter
-   erhöht werden. Dann hätte man also quasi ein Count-To-Infinity Problem.
-   Kommt es hierbei jedenfalls dann langsam zu Überlast im Netzwerk, wird mit
-   Phase (2) begonnen.
+1. *Slow-Start*: Hierbei wird das Congestion Window $W_c$ bei jedem bestätigten
+   Segment um eine MSS vergrößert. Im Falle, dass das Receive Window größer als
+   das Congestion Window ist, gilt also $W_s = W_c$, wobei wir annehmen, dass
+   $W_s = k = MSS$ dann auch ein Vielfaches von der MSS ist. Wir duerfen dann
+   also $k$ MSS-grosse Segmente wegsenden. Fuer jedes der $k$ Segmente
+   vergroessern wir das Congestion Window (und somit das Sendefenster) um eine
+   MSS. Nach Bestaetigung aller $k$ MSS haben wir das Congestion Window also um
+   $k \cdot MSS$ Bytes vergroessert, was gerade dem Congestion Window vorher
+   entsprach. Somit hat sich die Groesse des Congestion Windows verdoppelt. Nun
+   koennen wir $2k$ viele MSS wegsenden, und werden dann nach erfolgreicher
+   Bestaetigung aller MSS unser Fenster wieder um $2k$ MSS-Groessen vergroessert
+   haben. Dann haben wir also $2 \cdot 2k$ viele MSS Platz und somit das
+   Congestion Window wieder vergroessert. Wie man sieht hat man bei Slow-Start
+   also *exponentielles* Wachstum nach $W_c \cdot 2^i$, wo $i$ die Anzahl
+   erhaltener Congestion Windows, also jeweils $k \cdot MSS$ ist. Man bemerke
+   hier auch, dass die MSS konstant ist, weil sie ja z.B. durch die L2 MTU
+   beschraenkt ist.
+
 2. *Congestion-Avoidance*: Wird bei Slow-Start nun erkannt, dass es zu einer
-   Überlast gekommen ist, wird mit Congestion Avoidance begonenn. Hierbei wird
+   Überlast gekommen ist, wird mit Congestion Avoidance begonnen. Hierbei wird
    das Congestion Window zunächst reduziert (entweder auf die Hälfte oder auf
    die ursprüngliche, kleinste MSS Größe). Dann wird das Congestion Window für
-   jedes bestätigte Segment nicht um eine ganze MSS, sondern um $MSS/W_c$
-   erhoeht (= 1 ?????). Das Wachstum ist also linear.
+   jedes bestätigte Segment (also jede MSS) nicht um eine ganze MSS, sondern um
+   das $MSS/W_c = MSS/(k \cdot MSS) = 1/k$-fache einer MSS erhoeht. Nach einer
+   *Round-Trip-Time* (RTT), also nach der Bestaetigung aller MSS des
+   Sendefensters (bzw. Staukontrollfensters), hat man das Fenster also $k$ mal
+   um das $1/k$-fache einer MSS erhoeht. Somit haben wir nach einer RTT eine
+   Steigerung um *exakt eine MSS*. Das bedeutet, dass wir das Congestion Window
+   nur mehr *linear* (pro RTT) anwachsen lassen.
 
 Da frühestens nach einer RTT (bei wiederholtem Senden aber manchmal erst nach
 mehreren RTTs) eine Bestätigung für ein Segment beim Sender ankommt, ist die
@@ -590,33 +654,42 @@ Funktion mit schnellerem Wachstum modelliert
 Vorlesung TCP Reno. Es geht auf folgende Weise von Slow Start zu Congestion
 Avoidance über:
 
-1. Wenn es drei duplizierte ACKs erhält, also nach dreifach fehlgeschlagenenen
-   Senden, reduziert es die Congestion Window Größe auf die Hälfte der
-   momentanen Größe. Dann beginne mit der (bei TCP Reno) linearen
+1. Wenn es drei duplizierte ACKs (*3 duplicate-ACKs*) erhält, also nach dreifach
+   fehlgeschlagenenen Senden, reduziert es die Congestion Window Größe auf die
+   Hälfte der momentanen Größe. Dann beginnt es mit der (bei TCP Reno) linearen
    Stauvermeidungsphase.
-2. Wenn gar keine ACKs mehr bekommt (also nach einem *Timeout*), dann ist das
-   Netzwerk anscheinend vollkommen im Eimer. Dann setzt es also einen
-   *Schwellenwert* $W_c/2$ fest. Dann reduziert es das Fenster auf die
-   ursprüngliche MSS Größe. Dann beginnt es mit einem neuen Slow-Start, bis es
+2. Wenn der Sender gar keine ACKs mehr bekommt (also nach einem *Timeout*), dann
+   ist das Netzwerk anscheinend vollkommen im Eimer. Dann setzt es also einen
+   *Schwellenwert* $W_c/2$ fest und reduziert es das Fenster auf eine MSS
+   Größe. Dann beginnt es mit einem neuen (exponentiellen) Slow-Start, bis es
    den Schwellenwert erreicht, worauf es mit Congestion Avoidance beginnt. Es
    geht also erstmal komplett vom Gas, um das Netzwerk ausruhen zu lassen. Dann
    geht es mit Slow Start schnell auf den Schwellenwert.
 
+In beiden Faellen setzen wir den Schwellenwert $W_c/2$ (halbes Congestion
+Window) fest, ab welchem wir Congestion Avoidance machen. Der Unterschied ist,
+dass wir bei 3-duplicate Acks sofort auf diesen Schwellenwert gehen und mit
+Congestion Avoidance beginnen. Bei Timeout gehen wir erst ganz runter auf eine
+MSS und fangen dann nach einem neuen Slow Start nach dem Erreichen dieses
+Schwellenwertes auch mit Congestion Avoidance an.
+
 #### Anmerkungen
 
 Obwohl TCP eine gesicherte Verbindung ist, dient es nicht der Kompensation eines
-unzuverlässigen Physical oder Data Link Layer (Schichten 2,3). Also man kann,
-nur weil man mit TCP sicher davon ausgehen kann, dass Pakete irgendwann einmal
-durch Retransmits ankommen, nicht einfach auf Fehlerkorrekturmechanismen
+unzuverlässigen Physical oder Data Link Layer (Schichten 2 und 3). Also man
+kann, nur weil man mit TCP sicher davon ausgehen kann, dass Pakete irgendwann
+einmal durch Retransmits ankommen, nicht einfach auf Fehlerkorrekturmechanismen
 verzichten. TCP interpretiert Paketverlust nämlich stets als eine
 Überlastsituation im Netzwerk. Dann wird die Datenrate also entsprechend
-gedrossel. Wenn der Paketverlust aber auf Grund von Bitfehlern geschieht, dann
-ist das eine unnötige Reduktion des Durchsatzes. In Praxis ist TCP bereits mit
-1% Paketverlust, der nicht Überlast zurückzuführen ist, überfordert.
+gedrosselt. Wenn der Paketverlust aber auf Grund von Bitfehlern geschieht, dann
+ist das eine unnötige Reduktion des Durchsatzes. Insbesondere haben Bitfehler
+nichts mit der Ueberlast im Netzwerk oder der momentanen Datenrate zu tun. In
+Praxis ist TCP bereits mit 1% Paketverlust, der nicht Überlast zurückzuführen
+ist, überfordert.
 
 ## NAT
 
-Network Adress Translation (NAT) ist eine Methode, durch welche lokal, aber
+*Network Adress Translation* (*NAT*) ist eine Methode, durch welche lokal, aber
 nicht global, eindeutige Adressen auf global eindeutige abgebildet werden
 können. Genauer erlaubt NAT eine Übersetzung von *privaten Adressen*,
 beispielsweise dem 10.0.0.0/8 Adressraum, auf *öffentliche Adressen*. Die Hosts
@@ -626,16 +699,17 @@ durchaus diese privaten Adressen mehrmals geben. Um mit Hosts in anderen
 Netzwerken zu kommunizieren, werden ihre privaten Adressen dann in global
 eindeutige übersetzt.
 
-Formal bezeichnet NAT Techniken, welche es ermöglichen, $N$ private (global
-nicht eindeutige) Adressen auf $M$ global eindeutige Adressen
+Formal bezeichnet NAT eine Familie von Techniken, welche es ermöglichen, $N$
+private (global nicht eindeutige) Adressen auf $M$ global eindeutige Adressen
 abzubilden. Hierbei wird ferner wie folgt zwischen NAT-Typen unterschieden:
 
-* Ist $N \geq M$, kann die Übersetzung statisch geschehen. Dann hat jeder Knoten
-  eine private und öffentliche Adresse. Insofern ist dieser Fall nicht wirklich
-  interessant. Er ist aber mit link-local Adressen und öffentlichen IPv6
-  Adressen vergleichbar.
+* Ist $N \leq M$, kann die Übersetzung statisch geschehen. Dann hat jeder Knoten
+  eine private und mindestens eine öffentliche Adresse. Insofern ist dieser Fall
+  nicht wirklich interessant, ausser vielleicht bei IPv6, wo wir viele Adressen
+  haben und womoeglich mehrere globale Adressen zum selben privaten Rechner
+  routen moechten.
 * Ist $N > M$, wird eine öffentliche Adresse von mehreren Rechnern gleichzeitg
-  verwendet. Eine eindeutige Untesrcheidung kann dann mittels
+  verwendet. Eine eindeutige Unterscheidung kann dann mittels
   *Port-Multiplexing* geschehen. Häufig ist $M$ sogar gleich $1$, z.B. bei
   privaten Haushalten.
 
@@ -644,32 +718,34 @@ abzubilden. Hierbei wird ferner wie folgt zwischen NAT-Typen unterschieden:
 Zunächst wollen wir wiederholen, was private Adressen überhaupt sind. Private
 IP-Adressn sind *spezielle Adressebereiche*, die zur privaten Nutzung ohne
 vorherige Registeriung freigegeben sind. Sie können in unterschiedlichen
-Netzwerken gleichzeitig genutzt werden und werden nicht geroutet. Die private
+Netzwerken gleichzeitig genutzt werden und werden *nicht geroutet*. Die privaten
 Adressbereiche sind:
 
 * 10.0.0.0/8
-* 172.16.0.0/18
-* 169.254.0.0/16
+* 172.16.0.0/12
 * 192.168.0.0/16
+* 169.254.0.0/16
 
 Der Addressbereich 169.254.0.0/16 wird des Weiteren zur automatischen
 Adressvergabe (*Automatic Private IP Adressing*) genutzt. Startet ein Computer
 ohne statisch vergebene IP Adresse, so versucht dieser zunächst, einen DHCP
-Server (durch eine DHCP Discovery) zu erreichen. Findet sich kein DHCP Server,
-generiert das Betriebssystem eine zufällig gewählte Adresse aus diesem
-Adressblock. Dann broadcastet es einen ARP-Request, um zu prüfen, ob diese
-Adresse schon ein anderer Rechner im Direktnetzwerk hat. Wenn ja, generiert es
-eine neue. Das passiert so lange, bis kein ARP Reply mehr kommt.
+Server (durch eine DHCP Discovery) zu erreichen. Findet sich kein DHCP Server
+(erhaelt der Computer keinen DHCP Offer), generiert das Betriebssystem eine
+zufällig gewählte Adresse aus diesem Adressblock. Dann broadcastet es einen
+ARP-Request, um zu prüfen, ob diese Adresse schon ein anderer Rechner im
+Direktnetzwerk hat. Wenn ja, generiert es eine neue. Das passiert so lange, bis
+kein ARP Reply mehr kommt und angenommen wird, dass kein anderer Rechner diese
+Adresse besitzt.
 
 ### NAT im Detail
 
-Im Allgemeinen übernehmen Router die NAT Funktion in einem Netzwerk. Der Router
-hat dann eine *NAT-Tabelle*, in welcher er im einfachsten Fall vier Spalten
-hält:
+Im Allgemeinen übernehmen *Router* die NAT Funktion in einem Netzwerk. Der
+Router hat dann eine *NAT-Tabelle*, in welcher er im einfachsten Fall vier
+Spalten hält:
 
-1. Die private Queladresse eines Rechners.
-2. Der private Quellport eines Rechners.
-3. Der globale Port des Routers.
+1. Die private Quelladresse eines Rechners.
+2. Der Quellport dieses Rechners.
+3. Ein globaler Port des Routers.
 4. Das verwendete Protokoll.
 
 Hierbei nehmen wir an, dass der Router nur eine globale Adresse hat ($M =
@@ -680,35 +756,39 @@ erstellt der Rechner einen neuen Eintrag in der Tabelle. Er vermerkt darin dann
 zunächst private Adresse und Port des Quellrechners. Dann gilt es, einen
 globalen Port des Routers für diese $(\text{Quelladresse, Quellport})$
 Kombination zu finden. Hierzu prüft der Router zunächst, ob der Quellport schon
-als globaler Port vergeben wurde. Wenn nicht, übernimmt es den private Quellport
+als globaler Port vergeben wurde. Wenn nicht, übernimmt es den privaten Quellport
 einfach als globalen Port und gibt ihn in die Tabelle. Ist der Port schon
 vergeben, generiert es einfach einen zufälligen Port. Würde also ein weiterer
 lokaler Rechner auf diesem selben Port kommunizieren wollen, würde er eben einen
-solchen zufällig gewählten globalen Port zugewiesen bekommen.
+solchen zufällig gewählten globalen Port zugewiesen bekommen. Die genau Wahl des
+ausgehenden Ports ist letztendlich egal (sofern er keinem Well-Known Port
+entspricht).
 
 Nachdem der Router diesen Eintrag generiert hat (oder nicht, falls der Eintrag
-schon existierte), geschieht die eigentliche Adressübersetzung. Der Router
-ersetzt nun die Quell-IP Adresse des privaten Rechners im Paket, durch die
-globale Adresse des Routers. Ebenso wird im UDP/TCP Segment der private Port
-durch den zugewiesenen globalen Port ersetzt. Dann schickt der Router das Paket
-into se world wide webs.
+fuer diesen Rechner und diesen Port schon existiert hat), geschieht die
+eigentliche Adressübersetzung. Der Router ersetzt nun die Quell-IP Adresse des
+privaten Rechners im Paket, durch die globale Adresse des Routers. Ebenso wird
+im UDP/TCP Segment der private Port durch den zugewiesenen globalen Port
+ersetzt. Dann schickt der Router das Paket into se world wide webs zum
+urspruenglichen Zielrechner (die Ziel-IP-Adresse wurde ja nicht veraendert).
 
 Wenn nun aus se world wide webs eine Antwort auf dieses Paket kommen soll, wird
 dies also nicht an den Rechner adressiert sein, sondern an den *Router*. Die
 Zieladresse wird also die globale Adresse des Routers sein und ebenso wird der
 Port der gewählte globale Port des Routers sein. Dann muss der Router also die
-Adressen zurückübersetzten. Hierzu sieht der Router in seiner Tabelle unter dem
-globalen Port nach. Dort findet er private Adresse und Port des entsprechenden
-lokalen Rechners, durch welche er das IP Paket modifiziert. Dann schickt er das
-Paket in den lokalen Link an den privaten Rechner.
+Adressen zurückübersetzten. Hierzu sieht der Router in seiner Tabelle in der
+Spalte der globalen Ports nach. Dort findet er die private Adresse und Port des
+entsprechenden lokalen Rechners, durch welche er das IP Paket modifiziert (oder
+die Payload einfach neu verpackt). Dann schickt er das Paket in den lokalen Link
+an den privaten Rechner.
 
 Während des ganzen Prozesses wissen also weder der lokale Quellrechner noch der
 Zielrechner, dass sie eigentlich mit dem Router kommunizieren. Der lokale
 Rechner sendet das Paket ja einfach an seinen Gateway, im Glauben, dass dieser
-das Paket einfach weiterleiten wird. Der Zielrechner hingegen glaubt, dass er
-eigentlich mit dem Router kommuniziert. Er weiß vom lokalen Rechner gar nichts!
-Wenn zwei lokale Rechner mit demselben Zielrechner kommunizieren, glaubt der
-Zielrechner, dass der Router einfach zwei Verbindungen aufgebaut hat.
+das Paket an den Ziel-Host weiterleiten wird. Der Zielrechner hingegen glaubt,
+dass er eigentlich mit dem Router kommuniziert bzw. haelt den Router fuer den
+Quell-Rechner. Wenn zwei lokale Rechner mit demselben Zielrechner kommunizieren,
+glaubt der Zielrechner, dass der Router einfach zwei Verbindungen aufgebaut hat.
 
 ### NAT Typen
 
@@ -731,19 +811,27 @@ Eigenschaften:
   in seiner Tabelle.
 * Existiert einmal ein Eintrag für einen Rechner in der NAT-Tabelle, so kann
   jeder externer Host mit diesem privaten Rechner über den entsprechenden Port
-  kommunizieren.
+  kommunizieren (Anmerkung: das waere ohne NAT ja auch so).
 
 Das machen andere Arten von NAT anders:
 
 * *Restricted NAT* leitet nur dann ein Paket an einen internen Host weiter, wenn
-  der interne Host zuvor schon ein Paket an die Quell-IP-Adresse gesendet
-  hat. Der Port wird dabei nicht betrachtet.
+  der interne Host zuvor schon ein Paket an die Quell-IP-Adresse des Pakets
+  gesendet hat. Der Router wuerde also fuer jeden Eintrag auch noch die Ziel-IP
+  speichern. *Der Port wird dabei nicht betrachtet*.
+
 * *Port-Restricted NAT* erhöht die Restriktivität der Weiterleitung noch
   dadurch, dass nur Pakete weitergeleitet werden, wo der interne Host schon ein
   Paket an diese Quell-IP-Adresse und *an diesen Quell-Port* des eingehenden
-  Pakets gesendet hat.
+  Pakets gesendet hat. Dann wird feur jeden Eintrag nicht nur Ziel-IP, sondern
+  auch Ziel-Port gespeichert.
 
 http://www.think-like-a-computer.com/2011/09/16/types-of-nat/
+
+Es sei aber angemerkt, dass NAT trotz (Port-)Restriktivität nie als Firewall
+betrachtet werden sollte. Eine Firewall hat viel maechtigere Moeglichkeiten,
+nach bestimmten Regeln eingehende oder ausgehende Verbindungen zu erlauben, oder
+nicht. https://en.wikipedia.org/wiki/Firewall_%28computing%29
 
 Im Weiteren ist es so, dass ein Router einen Eintrag in seiner NAT Tabelle nach
 einiger Zeit wieder löscht, um den Port wieder freizugeben. Denn ansonsten ist
@@ -765,7 +853,17 @@ gibt. Nicht alle IP Payloads sind ja TCP oder UDP Segmente. Zum Beispiel könnte
 ein IP Paket eine ICMP Nachricht enthalten. Dies haben keinen Port. Was tun? Bei
 Echo Requests und Replies ist das weniger problematisch, da diese eine
 *Identifier* Nummer in ihrem Header haben. Diese wird dann einfach an Stelle
-des Ports in die Tabelle eingetragen.
+des Ports in die Tabelle eingetragen. Wenn dann der entsprechende Echo Reply
+kommt, enthaelt dieser auch denselben Identifier und die Nachricht kann
+entsprechend weitergeleitet werden.
+
+Bei anderen ICMP Nachrichten gibt es zwar meist keinen Identifier (z.B. *Time
+Exceeded* oder *Destination Unreachable*), aber diese Arten von ICMP Nachrichten
+enthalten in ihrer Payload meist noch den IP Header sowie __die ersten 8 Byte
+der Payload dieses Pakets__. In diesen 8 Byte stehen bei UDP und TCP dann
+insbesondere immer Source und Destination Port, sodass man auf den Port eben
+auch zugreifen kann, um den privaten Rechner in der NAT-Tabelle zu
+identifizieren.
 
 ### NAT bei IPv6
 
@@ -773,12 +871,13 @@ NAT kann auch bei IPv6 angewendet werden. Das ist weniger häufig nötig, da man
 bei IPv6 das Problem der Adressknappheit nicht hat. IPv6 hat aber ebenso das
 Konzept von privaten Adressen. Diese heißen bei IPv6 dann
 *Unique-Local-Unicast-Adressen* und haben den Präfix `fc00::/7`. Die
-NAT-Übersetzung benutzt bei IPv6-NAT aber keinerlei Merkmale aus Schicht 4. Es
-werden nämlich einfach Präfixe übersetzt. Z.B. werden alle lokalen Adressen mit
-Präfix `fd01:0203:0405::/48` auf den globalen Präfix `2001:db8:0001::/48`
-abgebildet. Erhält ein Router also ein Paket, dass an eine Adresse mit diesem
-globalen Präfix adressiert ist, ersetzt er einfach den Präfix. Anders als bei
-IPv4 passiert bei IPv6 NAT also nie Port Multiplexing. Wir haben ja für $N$
-lokale Adressen ebenso viele globale Adressen bei dieser
-Präfixtauschmethode. Insofern lösen wir das Problem der Adressknappheit
-nicht. Das ist bei IPv6 aber eben auch nicht nötig.
+NAT-Übersetzung benutzt bei IPv6-NAT aber keinerlei Merkmale (Ports, Identifier)
+aus Schicht 4. Es werden nämlich einfach Präfixe übersetzt. Z.B. werden alle
+lokalen Adressen mit Präfix `fd01:0203:0405::/48` auf den globalen Präfix
+`2001:db8:0001::/48` des Routers abgebildet. Erhält ein Router also ein Paket,
+das an eine Adresse mit diesem globalen Präfix adressiert ist, ersetzt er
+einfach den Präfix. Anders als bei IPv4 passiert bei IPv6 NAT also nie Port
+Multiplexing. Wir haben ja für $N$ lokale Adressen ebenso viele globale Adressen
+bei dieser Präfixtauschmethode. NAT ist bei IPv6 also einfach eine
+Bijektion. Insofern lösen wir das Problem der Adressknappheit nicht. Das ist bei
+IPv6 aber eben auch nicht nötig.

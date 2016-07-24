@@ -394,6 +394,9 @@ Filter ist perfekt. Dann werden also alle Frequenzen $f$ mit $|f| < B$
 durchgelassen, und alle Frequenzen $|f| \geq B$ werden vollstaendig gesperrt,
 erhalten also eine Amplitude von Null.
 
+https://en.wikipedia.org/wiki/Bandwidth_(computing)
+https://en.wikipedia.org/wiki/Goodput
+
 #### Rauschfreier, Binaerer Kanal
 
 Das Nyquist Theorem sagt uns, dass wir fuer ein auf $B$ bandbegrenztes Signal
