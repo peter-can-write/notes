@@ -128,7 +128,8 @@ Aussage fuer $n + 1$ zu zeigen, die Aussage nur fuer $n$ angenommen. Bei der
 wohlfundierten Induktion nehmen wir die Aussage fuer *alle* $m$ an, die
 bezueglich einer Relation "links" von $n$ stehen. Fuer die natuerlichen Zahlen
 und der "kleiner"-Relation $<$ nehmen wir also an, die Aussage gilt fuer alle
-Zahlen $m < n$, und zeigen dadurch die Aussage fuer $n$.
+Zahlen $m < n$, und zeigen dadurch die Aussage fuer $n$ (nicht mehr
+bzw. indirekt fuer $n + 1$).
 
 Wohlfundierte Induktion kann man nur mit *wohlfundierten* Relationen
 durchfuehren. Eine *wohlfundierte* Relation ist dabei eine, wo kein Element eine
@@ -147,7 +148,7 @@ zu zeigen. Also:
    $R = \{(a, b), (b, c), (c, a)\}$
 
 3. Aus (3) folgt: Die Relation ist irreflexiv. Sonst muesste man, um die Aussage
-  fuer $a$ zu zeigen, die Aussage nur fuer $a$ zeigen.
+  fuer $a$ zu zeigen, die Aussage fuer $a$ zeigen.
 
 In Praedikatenlogik laesst sich die wohlfundierte Induktion fuer eine beliebige
 wohlfundierte Relation $\prec$ nun so beschreiben:
@@ -156,23 +157,24 @@ $\forall a \in M: P(a) \Leftrightarrow P(a_0) \land \forall a: (\forall b \in M,
 b \prec a: P(b)) \rightarrow P(a)$
 
 In Worten: "Um zu zeigen, dass jedes $a \in M$ die Eigenschaft $P$ besitzt,
-zeige fuer jedes $a$: Wenn alle Vorgaenger $b \in M$ bezueglich der Relation
-$\prec$ die Eigenschaft besitzen, dann besitzt auch $a$ die Eigenschaft".
+zeige fuer jedes $a$: Wenn ein minimales Element $a_0$ die Eigenschaft besitzt,
+und alle Vorgaenger $b \in M$ bezueglich der Relation $\prec$ die Eigenschaft
+besitzen, dann besitzt auch $a$ die Eigenschaft".
 
 Die Basis der wohlfundierten Induktion ist es dann, die Aussage fuer jenes
-Element $\in M$ zu zeigen, die keine Vorgaenger hat. Wo also die Menge $\{b \in
-M \, | \, b \prec a\}$ die leere Menge ist. Man zeigt die Aussage also fuer ein
-*minimales* Element, oder wenn die Ordnung bzw. die Relation total ist, fuer das
-*kleinste* Element (in diesem Fall gilt sowieso "kleinste" $=$ "minimales"). Ist
-die wohlfundierte Relation die "kleiner"-Relation $<$ und $M$ die Menge der
-natuerlichen Zahlen, dann waere dieses kleinste Element eben $1$.
+Element $a \in M$ zu zeigen, das keine Vorgaenger hat. Wo also die Menge $\{b
+\in M \,|\, b \prec a\}$ die leere Menge ist. Man zeigt die Aussage also fuer
+ein *minimales* Element, oder wenn die Ordnung bzw. die Relation total ist, fuer
+das *kleinste* Element (in diesem Fall gilt sowieso "kleinste" $=$
+"minimales"). Ist die wohlfundierte Relation die "kleiner"-Relation $<$ und $M$
+die Menge der natuerlichen Zahlen, dann waere dieses kleinste Element eben $1$.
 
 Wie ergibt sich dann die vollstaendige Induktion als Spezialfall der
 wohlfundierten Induktion? Indem die Relation einfach als die Vorgaengerrelation
 gewaehlt wird. Die Relation ist dann einfach $\{(n, n + 1) \, | \, n \in
-\mathbb{N}\}$. Um die wohlfundierte Induktion dann durchzufuehren, muss nimmt
-man an, die Aussage gilt fuer alle Vorgaenger eines beliebigen $n$ bezueglich
-der Relation (die hier als die Vorgaengerrelation gewaehlt ist). Da ein $n$ bei
+\mathbb{N}\}$. Um die wohlfundierte Induktion dann durchzufuehren, nimmt man an,
+die Aussage gilt fuer alle Vorgaenger eines beliebigen $n$ bezueglich der
+Relation (die hier als die Vorgaengerrelation gewaehlt ist). Da ein $n$ bei
 dieser Relation nur einen Vorgaenger hat, naemlich $n - 1$, nimmt man die
 Aussage also nur fuer $n - 1$ an, um sie fuer $n$ zu zeigen (bzw. man nimmt sie
 fuer $n$ an um sie fuer $n + 1$) zu zeigen.
@@ -188,7 +190,7 @@ Aussagen ueber Summen $\sum_{k=n_0}^n a_k$ und Produkte $\prod_{k=n_0} a_k$ kann
 man oft sehr leicht mittels vollstaendiger Induktion loesen. Meist ist eine
 Summe oder ein Produkt angegeben, und ein weiterer Ausdruck, zu dem die Summe
 oder das Produkt gleich sein soll. Dann soll die Gleichheit fuer alle
-natuerlichen Zahlen (mit/ohne null) gezeigt werden.
+natuerlichen Zahlen (mit/ohne Null) gezeigt werden.
 
 Allgemein versucht man bei der vollstaendigen Induktion immer, den Ausdruck fuer
 $n + 1$ auf den fuer $n$ zu reduzieren, welcher laut Induktionsannahme schon
@@ -199,6 +201,9 @@ Hierbei kann man normalerweise einem Standardrezept folgen. Die Aufgabe ist
 dabei meistens der Form (hier fuer $\mathbb{N}$ ohne untere Schranke):
 
 Zeige: $\sum_{k=1}^n a_k = f(n), \forall n \in \mathbb{N}$
+
+Hierbei ist $a_k$ irgendein Ausdruck in Abhaengigkeit von $k$ und $f(n)$ die
+Zielfunktion.
 
 Dann:
 
@@ -273,16 +278,16 @@ Aussage wieder fuer das kleinste Element. Im Schritt formt man den Ausdruck fuer
 $n + 1$ zu dem fuer $n$ um. Wichtig ist es dann, dass wenn eine Zahl $y$ durch
 eine andere $x$ teilbar ist, diese einen gemeinsamen Faktor $k$ haben:
 
-$x | y :\Leftrightarrow \exists k \in \mathbb{Z}: y = k \cdot x$
+$x | y :\iff \exists k \in \mathbb{Z}: y = k \cdot x$
 
 Das bedeutet, dass wir den Ausdruck fuer $n$, wenn wir ihn aus dem fuer $n + 1$
-rauskneten, durch $x \cdot k$ ersetzen duerfen. Dann koenenn wir die gesamte
+rauskneten, durch $x \cdot k$ ersetzen duerfen. Dann koennen wir die gesamte
 Rechnung so umformen, dass wir ein $k'$ in Abhaengigkeit von $n$ und $k$
-erhalten, dass eben der Faktor fuer $n + 1$ ist.
+erhalten, welches eben der Faktor fuer $n + 1$ ist.
 
 Allgemeines Schema (heir fuer $\mathbb{N}_0$):
 
-Zeige: $x \, | \, f(n) \forall n \in \mathbb{N}_0$.
+Zeige: $x \,|\, f(n) \forall n \in \mathbb{N}_0$.
 
 I. Basis: Setze $0$ in $f(n)$ ein, und erhalte einen Wert, wo man meist leicht
 sieht, dass er durch $x$ teilbar ist (z.B. $x$ selbst).
@@ -381,13 +386,13 @@ $d$ braucht immer $d$ Anfangsbedingungen fuer die Faelle $f(0), f(1), ..., f(d -
 \geq d$.
 
 Manchmal moechte man dann eine Aussage ueber $f$ ueberpruefen, z.B. dass $f(n)$
-$\geq d$ gleich einer anderen Funktion $g(n)$ ist. Dann geht man folgends vor:
+gleich einer anderen Funktion $g(n)$ ist. Dann geht man folgends vor:
 
 I. Basis: Zeige die Aussage, dass $f(n) = g(n)$, fuer die Anfangsbedingungen.
 
 II. Schritt: Sei $n \in \mathbb{N}_0, n \geq d - 1$ beliebig, aber fest.
 
-	Annahme: Die Aussage gilt fuer $n, n-1, ...,n - d + 1$. Man muss hier diese
+	Annahme: Die Aussage gilt fuer $n, n-1, ...,n - (d - 1)$. Man muss hier diese
 	         Werte annehmen, weil die Rekursionsgleichung fuer $n + 1$ die
 			 Funktion fuer diese Parameter aufruft.
 
@@ -451,7 +456,7 @@ Vorgehensweise ein wenig von den Rezepten fuer vollstaendige Induktion. Bei der
 wohlfundierten Induktion nehmen wir die Aussage fuer alle Vorgaenger von $n$ an,
 und zeigen sie dann fuer $n$ (nicht fuer $n + 1$). Also hier ein Schema:
 
-Sei $R$ ein wohlfundierte Relation (mit endlicher Anzahl an Vorgaengern fuer
+Sei $R$ eine wohlfundierte Relation (mit endlicher Anzahl an Vorgaengern fuer
 jedes Element) auf den natuerlichen Zahlen, z.B. $\{(n + 5, n) | n \in
 \mathbb{N}\}$. Zeige die Aussage $P$ fuer alle natuerlichen Zahlen.
 
@@ -466,7 +471,7 @@ Schritt: Sei $n \in \mathbb{N}$	beliebig, aber fest.
 
 	Behauptung: Dann gilt sie auch fuer __$n$__ (nicht $n + 1$).
 
-Beweis: Fuehre die Aussage fuer $n$	auf die Aussage fuer $n + 1$ zurueck.
+Beweis: Fuehre die Aussage fuer $n$	auf die Aussage fuer $k \leq n$ zurueck.
 
 ## Gotchas
 

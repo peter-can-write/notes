@@ -22,6 +22,7 @@ kann. Es ist aber auch moeglich, mit dem SQL statement:
 CREATE INDEX <index_name>
 ON <table_name> (<column_name>)
 ```
+
 Daher ist in der Diskussion von B-Baeumen mit einem *Schluessel* nicht immer der
 Primaerschluessel der Relation gemeint, sondern der Schluessel der
 Indexstruktur.
@@ -60,8 +61,7 @@ waere. Wir koennen also schon festhalten:
 1. Jeder Knoten __ausser der Wurzel__ hat *mindestens* $k$ Elemente und
    *maximal* $2k$ Elemente.
 
-2. Ein Knoten ist also zwischen $50\%$ und $100\%$ voll (minimale
-   Platzverschwendung)
+2. Ein Knoten ist zwischen $50\%$ und $100\%$ voll (minimale Platzverschwendung).
 
 3. $k$ steht fuer das Minimum an Elementen.
 
@@ -81,7 +81,8 @@ natuerlich keine weiteren Kinder haben (nach Definition eines Blattes). Also
 gelten obige zwei Eigenschaften fuer alle *inneren Knoten*.
 
 Innerhalb eines Knoten sind die $k$ bis $2k$ Kinder dann immer sortiert. Somit
-kann man dann innerhalb eines Knotens eine Binaersuche machen.
+kann man dann innerhalb eines Knotens eine Binaersuche machen, um einen
+Schluessel zu finden.
 
 Eine sehr wichtige Eigenschaft von B-Baeumen ist, dass sie *balanciert*
 sind. Das bedeutet, dass jeder Pfad von einem Blatt zur Wurzel gleich lang
@@ -113,14 +114,14 @@ Hintergrundspeicher.
 
 Der Einfuegealgorithmus in einen B-Baum ist wie folgt:
 
-1. Fuehre Suche nach Schluessel durch; diese endet. Fuege den Schluessel dort
-   ein.
+1. Fuehre Suche (`upper_bound`) nach Schluessel durch; diese endet. Fuege den
+   Schluessel dort ein.
 2. Ist der Knoten ueberfuellt, teile den Knoten in der Mitte, schiebe den Median
    in den Elternknoten und verbinde die Schluessel vom vorherigen Knoten die
    links vom Median waren mit dem linken Verweis vom Median (im Elternknoten)
    und selbes mit dem rechten Knoten (waechst nach oben wie 2-3 Tree).
 3. Ist der Elternknoten ueberfuellt, wiederhole den Prozess. Gibt es keinen
-   Elternknoten (i.e. ist die Wurzel ueberfuellt), so kreeire einen neuen
+   Elternknoten mehr (i.e. ist die Wurzel ueberfuellt), so kreeire einen neuen
    Knoten. Einzige Situation wo ein B-Baum also waechst.
 
 Bei insert muessen alle Eintraege in $O(k)$ verschoben werden.
@@ -131,7 +132,7 @@ TL;DR:
 
 Es wird ein Element geloescht in:
 
-1. Einem Blatt. Wenn dann:
+1. Einem Blatt. Falls dann:
    1. Noch genug Elemente im Knoten sind, fertig.
    2. Man aus einem Geschwisterknoten etwas nehmen kann ($>k$), rotiere das
       Elternelement in den Knoten aus dem geloescht wurde, und ersetze das
@@ -176,7 +177,7 @@ Einfach loeschen (noch immer $\geq k$ Keys):
 ```
 
 2. Fall: Deletion eines Keys in einem Leaf so, dass danach $< k$ Keys verbleiben
-   wuerden, der Knoten die B-Baum Invarianten also verletzt. Hier gibt es nun
+   wuerden, der Knoten die B-Baum Invariante also verletzt. Hier gibt es nun
    zwei "Unterfaelle":
 
 (a) Der linke oder rechte Schwesterknoten vom Knoten in welchem geloescht werden
@@ -235,7 +236,7 @@ $\Rightarrow$ merge:
 
 Hierbei muss man einfach Hibbard-Deletion durchfuehren:
 
-1. Suche das kleinste Element das groesser ist (ceiling) oder das groesste
+1. Suche das kleinste Element, das groesser ist (ceiling) oder das groesste
    Element das kleiner ist (floor).
 
 2. Ersetze das zu loeschende Element im inneren Knoten durch den Successor.
@@ -255,8 +256,8 @@ folgenden drei Schritten vorzugehen:
 
 1. Element aus dem Kinderknoten entfernen.
 
-2. __Elternelement zuerst in den geloeschten Knoten ziehen__. Der innere Knote
-   wird dabei $< k$ und __soll so werden!__.
+2. __Elternelement zuerst in den geloeschten Knoten ziehen__. Der innere
+   Elternknoten wird dabei $< k$ und __soll so werden!__.
 
 3. Kinderknoten nun zu einem validen Knoten zusammenziehen.
 
@@ -391,7 +392,7 @@ Eintraege verschieben. Somit erhalten wir eine Komplexizitaet von $O(\log_k N
 Ein $B^+$-Baum ist eine Erweiterung des B-Baumes. Die Grundidee ist es hier,
 dass Daten nur in den Blaettern gespeichert werden. Die inneren Knoten enthalten
 hingegen nur die Schluessel, welche eine Suche also nur durch den Baum zu einem
-Blatte leiten sollen. Das besondere an den Blaetterknoten ist dann, dass sie wie
+Blatt leiten sollen. Das besondere an den Blaetterknoten ist dann, dass sie wie
 verkettete Listen durch zusaetzliche Zeiger verbunden sind. Somit sind
 $B^+$-Baueme ideal fuer *Bereichsanfragen* wie:
 
@@ -401,10 +402,10 @@ from R r
 where r.A between x and y;
 ```
 
-Ein $B^+$-Baum ist nun nicht mehr nur durch einen Grad $k$ definiert, sondern
+Ein $B^+$-Baum ist nun nicht mehr nur durch einen Wert $k$ definiert, sondern
 durch ein Paar an Graden $(k, k^\star)$. Hierbei steht $k$ dann fuer die
 minimale Anzahl an Eintraegen in einem inneren Knoten, wo also nur Schluessel
-udn Verweise, nicht Daten gespeichert sind. $k^\star$ ist dann die minimale
+und Verweise, nicht Daten gespeichert sind. $k^\star$ ist dann die minimale
 Anzahl an Eintraegen in einem Blatt. Wie bei einem B-Baum ist das Maximum der
 Anzahl an Eintragen in einem $B^+$-Baum also $2k$ bzw. $2k^\star$.
 
@@ -418,11 +419,11 @@ enthaelt. Dieser Knoten ist anfangs sowohl Wurzel- als auch Blattknoten:
 ```
 
 Fuegt man nun einen neuen Schluessel $e$ in diesen Baum ein, so wird der Knoten
-zu voll, muss also wie bei einem B-Baum gesplittet werden. Man erhaelt also zwei
-Knoten und einen freien Median $c$, der bei einem *B-Baum* nun in den Elternknoten
-(oder hier in einen neu kreeirten) Knoten eingefuegt werden wuerde. Bei einem
-$B^+$-Baum sind Daten aber nur in den Blaettern, das heisst der Median muss
-auch in den Blaettern bleiben.
+zu voll, muss also wie bei einem B-Baum gesplittet werden. Man erhaelt somit
+zwei Knoten und einen freien Median $c$, der bei einem *B-Baum* nun in den
+Elternknoten (oder hier in einen neu kreeirten) Knoten eingefuegt werden
+wuerde. Bei einem $B^+$-Baum sind Daten aber nur in den Blaettern, das heisst
+der Median muss auch in den Blaettern bleiben.
 
 __Nach Konvention bleibt der Median im linken Knoten. Stoesst man bei der Suche
 auf einen inneren Knoten mit dem exakten Schluessel, muss man also nach links
@@ -453,9 +454,9 @@ rekursiv in den Elternknoten geschoben (hier nur ein Schritt):
 
 Resultat:
 
-           ____ [*|c|*|e|*]_____
+           ____ [*|c|*|f|*]_____
           /          |          \
-[*|a|*|b|*|c|*] -> [*|d|*|e|*] -> [*|f|*|g|*|h|*]
+[*|a|*|b|*|c|*] -> [*|d|*|e|*|f|*] -> [*|g|*|h|*]
 ```
 
 Die Blaetter wuerden hier noch zusaetzliche Daten, also das ganze Tupel oder den
@@ -463,7 +464,7 @@ TID enthalten.
 
 ### Deletion in einem $B^+$-Baum
 
-1. Fall: Es sind nach dem Loeschen noch mehr als $k^\star}$ Elemente in einem
+1. Fall: Es sind nach dem Loeschen noch mehr als $k^\star$ Elemente in einem
    Blatt enthalten. Dann ist es leicht, man loescht das Element einfach und wenn
    es der Schluessel im Elternknoten war (also der ganz links), dann ersetzt man
    diesen einfach durch den naechst kleineren Schluessel:

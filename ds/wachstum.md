@@ -14,18 +14,50 @@ Abhaengigkeit von $x$ veraendern, also wie die Funktion *waechst*. Wir messen
 das Wachstum einer Funktion $f$ dabei relativ zu einer anderen Funktion
 $g$.
 
-Wir sagen, dass $f_A(n)$ *langsamer waechst als* $f_B(n)$, falls *ab einem
-gewissen Punkt* $f_A(n)$ immer unter $f_B(n)$ liegt.
+So sagen wir beispielsweise, dass $f_A(n)$ *langsamer waechst als* $f_B(n)$,
+falls *ab einem gewissen Punkt* $f_A(n)$ immer unter $f_B(n)$ liegt.
+
+## Effizienzklassen
+
+Wir wollen nun einen Algorithmus anhand seiner Laufzeit beschreiben
+koennen. Konkret interessieren uns dabei drei verschiedene Faelle: die
+Mindestlaufzeit, die Durchschnittslaufzeit sowie die Hoechstlaufzeit des
+Algorithmus. Sei hierfuer $\mathcal{I}_n$ die Menge aller *Instanzen* oder
+*Auspraegungen* eines Algorithmus der Groesse $n$. D.h. diese Menge enthaelt
+alle moeglichen Eingaben zu einem Algorithmus, wobei die Eingabe aber stets $n$
+Elemente enthaelt. Dann sind definiert:
+
+* *Best Case* Laufzeit: die optimistischte Laufzeit fuer die einfachste Eingabe,
+  welche eine untere Schranke und somit ein Ziel fuer alle Instanzen
+  darstellt. Mathematisch ist diese Laufzeit gegeben durch:
+  $$T_B(n) = \min\{ T(i) \,|\, i \in \mathcal{I}_n \}$$
+
+* *Worst Case* Laufzeit: die pessimistischte Beschreibung der Laufzit, errechnet
+  aus der schwierigsten Eingabe. Diese Laufzeit stellt eine obere Schranke und
+  daher eine *Garantie* fuer die Laufzeit einer jeden Instanz $i \in
+  \mathcal{I}_n$. Mathematisch beschreiben wir sie als:
+  $$T_W(n) = \max\{ T(i) \,|\, i \in \mathcal{I}_n \}$$
+
+* *Average Case* Laufzeit: die durchschnittliche Laufzeit ueber alle moeglichen,
+  zufaelligen Eingaben. Diese Zeit beschreibt also die erwartete Laufzeit fuer
+  eine zufaellig Instanz des Algorithmus. Insbesondere heisst durchschnittlich
+  hier also nicht notwendigerweise, dass es sich um die im Alltag uebliche
+  Eingabe handeln muss. Beispielsweise koennen in der echten Welt die meisten
+  Eingaben fuer einen Algorithmus sehr schwer sein, sodass die Worst Case
+  Laufzeit ein besseres Mass fuer den zu erwartenden Fall. Ueber alle moeglichen
+  Eingaben hinweg ist aber diese durchschnittliche Laufzeit die Referenz. Wir
+  bestimmen sie einfach als Mittelwert der Laufzeiten aller Instanzen:
+  $$T_A(n) = \frac{1}{n} \sum_{i \in \mathcal{I}_n} T(i)$$
 
 ## Klassen von Wachstum
 
-Wir benutzen sogenannte Landau-Symbole, um eine Funktion zu klassifizieren. Mit
-diesen druecken wir aus z.B., dass ein Funktions hoechstens oder mindestens so
-schnell waechst wie eine andere. Eine Klasse bzw. ein Landau-Symbol beschreibt
-dabei eine Menge von Funktionen, z.B. ist $O(n)$ die Menge aller Funktionen, die
-bis auf einen konstanten Faktor hoechstens so schnell wachsen wie die Funktion
-$n$. Wenn es eine solche Funktion $f$ gibt, dann schreibt man also $f \in O(n)$
-(Betonung auf $\in$).
+Wir benutzen sogenannte *Landau-Symbole*, um eine Funktion bezueglich einer
+anderen zu klassifizieren. Mit diesen druecken wir z.B. aus, dass ein Funktion
+hoechstens oder mindestens so schnell waechst wie eine andere. Eine Klasse
+bzw. ein Landau-Symbol beschreibt dabei eine Menge von Funktionen, z.B. ist
+$O(n)$ die Menge aller Funktionen, die *bis auf einen konstanten Faktor*
+hoechstens so schnell wachsen wie die Funktion $n$. Wenn es eine solche Funktion
+$f$ gibt, dann schreibt man also $f \in O(n)$ (Betonung auf $\in$).
 
 ## $O(n)$
 
@@ -34,37 +66,46 @@ gehoert dabei zur Menge der Funktionen $O(g(n))$ genau dann, wenn eine Konstante
 $c$ existiert sodass nach einem bestimmten $n_0$ der Wert der Funktion $f$ immer
 kleiner oder hoechstens gleich dem Wert der Funktion $g$ ist:
 
-$f(n) \in O(g(n)) \Leftrightarrow \exists c \in \mathbb{R}^+: \exists n_0 \in
-\mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| \leq c \cdot
-g(n)$
+$$f(n) \in O(g(n)) \iff \exists c \in \mathbb{R}^+: \exists n_0 \in \mathbb{N}:
+\forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| \leq c \cdot g(n)$$
 
-Man beachte, dass $O(n)$ nicht unbedingt *minimal* sein muss. Eine konstante
-Funktion $f(x) = 1$ schreibt man zwar meist als $f \in O(1)$, aber ebenso gilt
-$f \in O(n^{1000})$, weil $f$ ja eben hoechstens so schnell waechst wie z.B. $5
-\cdot n^{1000}$ (ab einem gewissen $n_0$).
+Man beachte, dass die Funktion $g(n)$ nicht unbedingt *minimal* sein muss. Eine
+konstante Funktion $f(x) = 1$ schreibt man zwar meist als $f \in O(1)$, aber
+ebenso gilt $f \in O(n^{1000})$, weil $f$ ja eben hoechstens so schnell waechst
+wie z.B. $5 \cdot n^{1000}$ (ab einem gewissen $n_0$). Man sagt dann fuer die
+Funktion $f$ auch:
 
-"$f$ waechst bis auf einen konstanten Faktor hoechstens so schnell wie $g$"
+"$f$ waechst *bis auf einen konstanten Faktor* hoechstens so schnell wie $g$"
+
+Ist $f$ also $\in O(g)$, so koenenn wir dies durch einen *Limes*
+beschreiben. Waechst naemlich $n$ gegen unendlich, und ist $f \in O(g)$, so ist
+der Limes von $f(n)/g(n)$ kleiner als unendlich:
+
+$$f \in O(g) \iff \exists c \in \mathbb{R}: \lim_{n \rightarrow \infty}
+\frac{f(n)}{g(n)} < \infty$$
 
 $f \in O(g)$ schreibt man oft als $f \preceq g$.
 
 ## $o(n)$
 
-$f(n)$ gehoert zu Menge der Funktionen $o(g(n))$ genau dann, wenn fuer alle
-Konstanten $c \in \mathbb{R}^+$ ein $n_0 \in \mathbb{N}$ existiert, sodass die
-Funktion $f(n)$ ab diesem $n_0$ strikt langsamer waechst als $g(n)$, bis auf den
-konstanten Faktor.
+$f(n)$ gehoert zu Menge der Funktionen $o(g(n))$ genau dann, wenn *fuer alle*
+(nicht mehr nur eine) Konstanten $c \in \mathbb{R}^+$ ein $n_0 \in \mathbb{N}$
+existiert, sodass die Funktion $f(n)$ ab diesem $n_0$ strikt langsamer waechst
+als $g(n)$, bis auf den jeweiligen konstanten Faktor $c$.
 
-$f(n) \in o(g(n)) \Leftrightarrow \forall c \in \mathbb{R}^+: \exists n_0 \in
-\mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| < c \cdot g(n)$
+$$f(n) \in o(g(n)) \iff \forall c \in \mathbb{R}^+: \exists n_0 \in \mathbb{N}:
+\forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| < c \cdot g(n)$$
 
-"$f$ waechst echt/strikt langsamer als $g$"
+Wir sagen dann:
+
+"$f$ waechst echt/strikt/immer langsamer als $g$"
 
 Wenn eine Funktion strikt langsamer waechst als eine andere, waechst sie
 natuerlich auch hoechtens so schnell: $f \in o(g) \rightarrow f \in O(g)$.
 
 Man beachte hier die Reihenfolge der Quantoren: Es gibt fuer alle Konstanten ein
 $n_0$ ab welchem die Funktion langsamer waechst, und nicht *ein* $n_0$ *fuer
-alle Konstanten*. $n_0$ muss also nicht fuer alle Konstanten eindeutig.
+alle Konstanten*. $n_0$ muss also nicht fuer alle Konstanten eindeutig sein.
 
 Strebt $n$ gegen unendlich, und ist $f \in o(g)$, dann gilt:
 $\frac{|f(n)|}{g(n)} = 0$
@@ -73,31 +114,36 @@ $f \in o(g)$ schreibt man oft als $f \prec g$.
 
 ## $\Omega(n)$
 
-$\Omega$ ist gewissermassen das Gegenteil von $O$. Es beschreibt nicht die
+$\Omega$ ist gewissermassen das Gegenstueck von $O$. Es beschreibt nicht die
 Hoechstlaufzeit (worst case) eines Programms, sondern die *Mindestlaufzeit*
 (best case). Eine Funktion $f(n)$ ist daher $\in \Omega(g(n))$, genau dann, wenn
 es eine Konstante $c$ gibt, sodass ab einem $n_0$ die Funktion $f$ *mindestens*
-so schnell waechst wie $g$.
+so schnell waechst wie $g$:
 
-$f(n) \in \Omega(g(n)) \Leftrightarrow \exists c \in \mathbb{R}^+ : \exists n_0
-\in \mathbb{N} : \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| \geq c \cdot g(n) \geq 0$
+$$f(n) \in \Omega(g(n)) \iff \exists c \in \mathbb{R}^+ : \exists n_0 \in
+\mathbb{N} : \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| \geq c
+\cdot g(n) \geq 0$$
 
 "$f$ waechst bis auf einen konstanten Faktor mindestens so schnell wie $g$"
 
-$f \in \Omega(g)$ schreibt man oft als $g \preceq f$
+$f \in \Omega(g)$ schreibt man oft als $g \preceq f$. Durch einen Limes
+beschreibt man den Ausdruck $f \in \Omega(g)$ dadurch, dass $f(n)/g(n)$ eben
+nicht Null, sondern groesser Null ist, wenn $n$ gegen unendlich strebt:
+
+$$f \in \Omega(g) \iff \lim_{n\rightarrow\infty} \frac{f(n)}{g(n)} > 0$$
 
 ## $\omega(n)$
 
 $\omega$ ist zu $\Omega$ wie $o$ zu $O$. $\omega$ ist also eine schaerfere
 Einschraenkung auf das Wachstum der Funktion. Eine Funktion $f(n)$ ist $\in
-\omega(g(n))$, wenn es fuer jede Konstante ein $n_0$ gibt, sodass die Funktion
-$f(n)$ ab diesem $n_0$ strikt schneller waechst als $c \cdot g(n)$.
+\omega(g(n))$, wenn es fuer *jede Konstante* ein $n_0$ gibt, sodass die Funktion
+$f(n)$ ab diesem $n_0$ strikt schneller waechst als $c \cdot g(n)$:
 
-$f(n) \in \omega(g(n)) \Leftrightarrow \forall c \in \mathbb{R}^+ : \exists n_0
-\in \mathbb{N} : \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| > c
-\cdot g(n) \geq 0$
+$$f(n) \in \omega(g(n)) \iff \forall c \in \mathbb{R}^+ : \exists n_0 \in
+\mathbb{N} : \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| > c \cdot
+g(n) \geq 0$$
 
-"$f$ waechst echt/strikt schneller als $g$"
+"$f$ waechst echt/strikt/immer schneller als $g$"
 
 Wenn eine Funktion strikt schneller waechst als eine andere, waechst sie
 natuerlich auch mindestens so schnell: $f \in \omega(g) \rightarrow f \in
@@ -106,10 +152,11 @@ natuerlich auch mindestens so schnell: $f \in \omega(g) \rightarrow f \in
 Man beachte auch hier die Reihenfolge der Quantoren: Es gibt fuer alle
 Konstanten ein $n_0$ ab welchem die Funktion langsamer waechst, und nicht *ein*
 $n_0$ *fuer alle Konstanten*. $n_0$ muss also nicht fuer alle Konstanten
-eindeutig.
+eindeutig sein.
 
 Strebt $n$ gegen unendlich, und ist $f \in \omega(g)$, dann gilt:
-$\frac{|g(n)|}{f(n)} = 0$
+
+$$\frac{|g(n)|}{|f(n)|} = 0 \text{ bzw. } \frac{|f(n)|}{|g(n)|} = \infty$$
 
 $f \in \omega(n)$ schreibt man oft als $g \prec f$.
 
@@ -121,20 +168,18 @@ Schranke von $f(n)$ ist, bis auf konstante Faktoren. Es existieren also zwei
 Konstanten $c_1,c_2$, sodass die Funktion ab einem gewissen $n_0$ zwischen $c_1
 g(n)$ liegt und $c_2 g(n)$.
 
-$f(n) \in \Theta(g(n)) \Leftrightarrow f(n) \in O(g(n)) \land f(n) \in
-\Omega(g(n))$
+$$f(n) \in \Theta(g(n)) \iff f(n) \in O(g(n)) \land f(n) \in \Omega(g(n))$$
 
 oder:
 
-$f(n) \in \Theta(g(n)) \Leftrightarrow f(n) \in O(g(n)) \land g(n) \in O(f(n))$
-
+$$f(n) \in \Theta(g(n)) \iff f(n) \in O(g(n)) \land g(n) \in O(f(n))$$
 
 (wenn $f(n)$ mindestens so schnell waechst wie $g(n)$, dann waechst $g(n)$
 hoechstens so schnell wie $f(n)$).
 
 oder:
 
-$f(n) \in \Theta(g(n)) \Leftrightarrow \exists c_1,c_2 \in \mathbb{R}^+: \exists
+$f(n) \in \Theta(g(n)) \iff \exists c_1,c_2 \in \mathbb{R}^+: \exists
 n_0 \in \mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow c_1 \cdot
 g(n) \leq |f(n)| \leq c_2 \cdot g(n)$
 
@@ -144,7 +189,7 @@ Oftmals sagen Informatiker ueber die Laufzeit $f(n)$ eines Algorithmus aus, dass
 sie $O(g(n))$ ist, aber *asymptotically tight*. Das bedeutet dann soviel wie,
 dass $f(n) \in \Theta(g(n))$ ist, also dass $f(n)$ nicht bis auf einen
 konstanten Faktor hoechstens so schnell waechst wie $g(n)$, sondern dass $f(n)$
-bis auf einen konstanten Faktor gleich schnell waechst wie $g(n)$.
+bis auf konstante Faktoren gleich schnell waechst wie $g(n)$.
 
 http://cs.stackexchange.com/questions/19141/what-is-an-asymptotically-tight-upper-bound
 
@@ -154,11 +199,15 @@ Zwei Funktionen $f$ und $g$ sind asymptotisch gleich, wenn gilt:
 
 $\lim_{n\rightarrow\infty} \frac{|f(n)|}{g(n)} = 1$
 
-Bei $\Theta(g)$ konnte die Funktion noch zwischen zwei Konstanten $c_1, c_2$ mal
-$g$ liegen, hier muss es eine Konstante $c$ geben sodass $f(n) = c \cdot
-g(n)$. Diese Konstante faellt im Limes in der obigen Definition weg.
+(vgl. Tilde Notation bei Princeton Algorithms). Interessant hierbei ist
+insbesondere, dass $f$ und $g$ hier auch nicht notwendigerweise ueber Konstanten
+aehnlich sein muessen. Beispielsweise ist $O(n^3 + n) \sim O(n^3)$, weil der
+Term $n$ mit dem niedrigeren Grad bei gegen unendlich strebendem $n$ keinen
+bermerkbaren Einfluss mehr auf den Wert der Funktion hat ("drop the lower-order
+terms").
 
-Man schreibt "$f$ ist asymptotisch gleich zu $g$" oft als $f \sim g$.
+Man schreibt "$f$ ist asymptotisch gleich zu $g$" oft als $f \sim g$. Dann gilt
+natuerlich auch, dass $f \in \Theta(g)$ und $g \in Theta(f)$.
 
 https://en.wikipedia.org/wiki/Big_O_notation#Family_of_Bachmann.E2.80.93Landau_notations
 
@@ -167,43 +216,45 @@ https://en.wikipedia.org/wiki/Big_O_notation#Family_of_Bachmann.E2.80.93Landau_n
 Hier alle fuenf Definitionen. Diese sind wichtig, um zu beweisen, dass eine
 Funktion $f$ in einer diese Klassen ist:
 
-1. $f \in O(g) \Leftrightarrow \exists c \in \mathbb{R}^+: \exists n_0 \in
+1. $f \in O(g) \iff \exists c \in \mathbb{R}^+: \exists n_0 \in
   \mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| \leq c
   \cdot g(n)$
 
-2. $f \in \Omega(g) \Leftrightarrow \exists c \in \mathbb{R}^+: \exists n_0 \in
+2. $f \in \Omega(g) \iff \exists c \in \mathbb{R}^+: \exists n_0 \in
   \mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| \geq c
   \cdot g(n)$
 
-3. $f \in o(g) \Leftrightarrow \forall c \in \mathbb{R}^+: \exists n_0 \in
+3. $f \in o(g) \iff \forall c \in \mathbb{R}^+: \exists n_0 \in
   \mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| < c \cdot
   g(n)$
 
-4. $f \in \omega(g) \Leftrightarrow \forall c \in \mathbb{R}^+: \exists n_0 \in
+4. $f \in \omega(g) \iff \forall c \in \mathbb{R}^+: \exists n_0 \in
   \mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |f(n)| > c \cdot
   g(n)$
 
-5. $f \in \Theta(g) \Leftrightarrow f \in O(g) \land f \in \Omega(g)$
+5. $f \in \Theta(g) \iff f \in O(g) \land f \in \Omega(g)$
 
-Und hier alle Negationen der obigen Aussagen. Diese sind wichtig, um zu
+## Negationen
+
+Hier nun alle *Negationen* der obigen Aussagen. Diese sind wichtig, um zu
 beweisen, dass eine Funktion $f$ *nicht* in einer dieser Klassen ist.
 
-1. $f \notin O(g) \Leftrightarrow \forall c \in \mathbb{R}^+: \forall n_0 \in
+1. $f \notin O(g) \iff \forall c \in \mathbb{R}^+: \forall n_0 \in
    \mathbb{N}: \exists n \in \mathbb{N}: n \geq n_0 \land |f(n)| > c \cdot g(n)$
 
-2. $f \notin \Omega(g) \Leftrightarrow \forall c \in \mathbb{R}^+: \forall n_0
+2. $f \notin \Omega(g) \iff \forall c \in \mathbb{R}^+: \forall n_0
    \in \mathbb{N}: \exists n \in \mathbb{N}: n \geq n_0 \land |f(n)| < c \cdot
    g(n)$
 
-3. $f \notin o(g) \Leftrightarrow \exists c \in \mathbb{R}^+: \forall n_0 \in
+3. $f \notin o(g) \iff \exists c \in \mathbb{R}^+: \forall n_0 \in
    \mathbb{N}: \exists n \in \mathbb{N}: n \geq n_0 \land |f(n)| \geq c \cdot
    g(n)$
 
-4. $f \notin \omega(g) \Leftrightarrow \exists c \in \mathbb{R}^+: \forall n_0
+4. $f \notin \omega(g) \iff \exists c \in \mathbb{R}^+: \forall n_0
    \in \mathbb{N}: \exists n \in \mathbb{N}: n \geq n_0 \land |f(n)| \leq c
    \cdot g(n)$
 
-5. $f \notin \Theta(g) \Leftrightarrow f \notin O(g) \lor f \notin \Omega(g)$
+5. $f \notin \Theta(g) \iff f \notin O(g) \lor f \notin \Omega(g)$
 
 ## Abhaengigkeiten
 
@@ -221,15 +272,15 @@ Hier nun einige Verbindungen zwischen den Symbolen:
   andere Richtung folgt aus der Definition von $\Theta$.
 
 * $f \in \Omega(g) \Leftarrow f \in \Theta(g)$; (!) symmetrische Argumentation
-  wie oben.
+  zu obiger.
 
-* $f \in o(g) \Leftrightarrow g \in \omega(f)$: Wenn $f$ strikt langsamer
+* $f \in o(g) \iff g \in \omega(f)$: Wenn $f$ strikt langsamer
   waechst als $g$, waechst $g$ strikt langsamer als $f$.
 
-* $f \in O(g) \Leftrightarrow g \in \Omega(f)$: Wenn $f$ hoechstens so schenll
-  waechst wie $g$, waechst $g$ mindestens so schnell wie $f$.
+* $f \in O(g) \iff g \in \Omega(f)$: Wenn $f$ hoechstens so schnell waechst wie
+  $g$, waechst $g$ mindestens so schnell wie $f$.
 
-* $f \in \Theta(g) \Leftrightarrow g \in \Theta(f)$: Wenn $f$ bis auf konstante
+* $f \in \Theta(g) \iff g \in \Theta(f)$: Wenn $f$ bis auf konstante
   Faktoren genauso schnell waechst wie $g$, dann waechst $g$ genauso schnell wie
   $f$. Anderer Beweis: $f \in Theta(g) \Rightarrow f \in O(g) \land f \in
   \Omega(g)$, dann:
@@ -244,7 +295,7 @@ Nun einige Eigenschaften der Landau Notation:
 1. Landau Symbole sind transitiv: $f \in O(g) \land g \in O(h) \rightarrow f \in
    O(h)$.
 
-2. Die Summe zweier Funktionen in einer Klasse ergibt eine Funktion in der
+2. Die Summe zweier Funktionen derselben Klasse ergibt eine Funktion in der
    selben Klasse, weil sich der Grad nicht veraendert: $f,g \in O(h) \rightarrow
    f + g \in O(h)$.
 
@@ -267,13 +318,13 @@ Nun einige Eigenschaften der Landau Notation:
 
 7. Moechte man zwei Funktionen der Form $\frac{1}{...}$ miteinander vergleichen,
    darf man auch nur den Nenner vergleichen:
-   + $\frac{1}{f(n)} \prec \frac{1}{g(n)} \Leftrightarrow f(n) \prec g(n)$
-   + $\frac{1}{f(n)} \sim \frac{1}{g(n)} \Leftrightarrow f(n) \sim g(n)$
+   + $\frac{1}{f(n)} \prec \frac{1}{g(n)} \iff g(n) \prec f(n)$ (__umgekehrt__!)
+   + $\frac{1}{f(n)} \sim \frac{1}{g(n)} \iff f(n) \sim g(n)$
 
 8. Alle Definitionen der Landau-Symbole enthalten Betraggstriche. Diese sind
    nur fuer Funktionen mit $\mathbb{R}$ als Definitionsmenge (Urbild) relevant,
    also kann man sie fuer Funktionen $\mathbb{N} \rightarrow ?$ fallen lassen,
-   was beim rechnen hilft.
+   was beim Rechnen hilft.
 
 Wenn man $O(g)$ als Term in einem arithmetischen Ausdruck stehen hat, dann
 bedeutet das: "eine Funktion aus der Menge $O(g)$". Z.b., wenn steht
@@ -284,7 +335,7 @@ O(\frac{1}{n^2})$.
 
 Hier einige bewiesene spezielle Faelle:
 
-* $n! \in O(n^n)$, weil $n(n-1)(n-2)... \leq n(n)(n)$
+* $n! \in O(n^n)$, weil $n(n-1)(n-2)... \leq n n n ...$
 
 * $2^n \in O(2^{2n})$
 
@@ -297,20 +348,22 @@ Hier einige bewiesene spezielle Faelle:
 Falls $\lim_{n\rightarrow \infty} \frac{|f(n)|}{g(n)}$ existiert und $g(n)$ aber
 einem bestimmten $n$ positiv ist, gilt:
 
-* $f \in o(g) \Leftrightarrow
+* $f \in o(g) \iff
   \lim_{n\rightarrow \infty} \frac{|f(n)|}{g(n)} = 0$
 
-* $f \in \omega(g) \Leftrightarrow
+* $f \in \omega(g) \iff
   \lim_{n\rightarrow \infty} \frac{|f(n)|}{g(n)} = \infty$
 
-* $f \in O(g) \Leftrightarrow
+* $f \in O(g) \iff
    \lim_{n\rightarrow \infty} \frac{|f(n)|}{g(n)} < \infty$
 
-* $f \in \Omega(g) \Leftrightarrow
+* $f \in \Omega(g) \iff
    \lim_{n\rightarrow \infty} \frac{|f(n)|}{g(n)} > 0$
 
-* $f \in \Theta(g) \Leftrightarrow
+* $f \in \Theta(g) \iff
    \lim_{n\rightarrow \infty} \frac{|f(n)|}{g(n)} = c, 0 < c < \infty$
+
+* $f \sim g \iff \lim{n \rightarrow \infty} \frac{|f(n)|}{g(n)} = 1$
 
 ### Logarithmengesetze
 
@@ -358,12 +411,16 @@ Beziehung zueinander stehen (z.B. $f \in o(g)$ oder $f \notin \Omega(g)$). Dann
 sind hier die Definitionen der Landau-Symbole sowie ihrer Negationen sehr
 wichtig. Zuerst sei aber gesagt, dass nicht alle Funktionen in einer Relation
 mit einer anderen stehen koennen, z.B. wenn die eine Funktion nicht stetig ist
-sondern ueber und unter die ander Funktion huepft.
+sondern ueber und unter die andere Funktion huepft. Stetigkeit alleine ist hier
+jedoch keine hinreichende Bedingung dafuer, dass man zwei Funktionen in
+Beziehung stellen kann, oder nicht. Ist eine Funktion $g$ nicht stetig, sondern
+sprunghaftig definiert, aber dennoch immer strikt groesser als $f$, so gilt
+trotzdem $f \in o(g)$.
 
 Aber allgemein wird eine solche Defintion das folgende Schema haben:
 
-$Q_1 c \in \mathbb{R}^+: Q_2 n_0 \in \mathbb{N}: Q_3 \in \mathbb{N}: n \geq n_0
-\land |f(n)| ? c \cdot g(n)$
+$Q_1 c \in \mathbb{R}^+: Q_2 n_0 \in \mathbb{N}: Q_3 n \in \mathbb{N}: n \geq
+n_0 \land |f(n)| ? c \cdot g(n)$
 
 wo $Q_1,Q_2,Q_3$ Quantoren sind. Dann muss man fuer die Variable jeden
 Existenquantors unter $Q_1,Q_2,Q_3$ einen konkreten Wert finden, der die
@@ -384,7 +441,7 @@ Zeige, dass $6n^2 \in o(2n^3)$.
 
 Dann nehme man zuerst die Definition von $\in o$:
 
-$f \in o(g) \Leftrightarrow \forall c \in \mathbb{R}^+: \exists n_0 \in
+$f \in o(g) \iff \forall c \in \mathbb{R}^+: \exists n_0 \in
 \mathbb{N}: \forall n \in \mathbb{N}: n \geq n_0 \rightarrow |6n^2| < c \cdot
 2n^3$.
 
@@ -416,8 +473,8 @@ Zeige, dass $2^n \notin \omega(n^n)$.
 
 Zuerst die Defintion von $\notin \omega$:
 
-$f \notin \omega(g) \Leftrightarrow \exists c \in \mathbb{R}: \forall n_0 \in
-\mathbb{N}: \exists n \in \mathbb{N}: n \geq n_0 \land |2^n| \leq c \cdot n^n$
+$f \notin \omega(g) \iff \exists c \in \mathbb{R}: \forall n_0 \in \mathbb{N}:
+\exists n \in \mathbb{N}: n \geq n_0 \land |2^n| \leq c \cdot n^n$
 
 Nun loesen wir zuerst wieder die Ungleichung, um zu sehen, fuer welche $n$ die
 Aussage gilt:

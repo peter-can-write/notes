@@ -633,7 +633,7 @@ Finde den Koeffizienten von $x^3y^5z^4$ in $(xyz + y + z)^6$.
 
 Wenn wie hier mehr als $2$ Variablen im Ausdruck stehen, dann muss man zwei
 einfach einklammern und zusammen als Variable sehen. Also ist in $(x + y + z)$
-einfach $a = x$ und $b = (y + z)$, und dann gilt $\sum_{k=0}^n{n \choose
+einfach $a := x$ und $b := (y + z)$, und dann gilt $\sum_{k=0}^n{n \choose
 k}x^k(y + z)^{n - k}$.
 
 Sei $a := xyz, b := y + z$, dann gilt:
@@ -645,7 +645,7 @@ Weil $x^3$ muss, waehlen wir $k = 3$, und setzen ein:
 ${6 \choose 3}(xyz)^3(x + y)^{6 - 3}$
 
 Mit $(x + y)^{6 - 3} = (x + y)^3$ haben wir wieder einen Ausdruck der Form,
-welche wir in eine Summe umformen koennen:
+den wir in eine Summe umformen koennen:
 
 $\sum_{k=0}^3{3 \choose k}y^k z^{3 - k}$.
 
