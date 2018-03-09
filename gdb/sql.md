@@ -145,18 +145,18 @@ Tabelle, sowie dann die genaue Schemadefinition:
 
 ```sql
 create table <name> (
-	<column_name> <type> <modifier>,
-	<column_name> <type> <modifier>,
-	...
-)
+  <column_name> <type> <modifier>,
+  <column_name> <type> <modifier>,
+  ...
+);
 ```
 
 Ein Beispiel waere:
 
 ```sql
-create table data(
-	id integer primary key,
-	name varchar(100)
+create table data (
+  id integer primary key,
+  name varchar(100)
 );
 ```
 
@@ -234,9 +234,9 @@ Allgemein ist die Syntax hierbei:
 
 ```sql
 create table <name> (
-	<attribute> <type> check (<condition>),
-	...
-)
+  <attribute> <type> check (<condition>),
+  ...
+);
 ```
 
 Weitere Bedingungen, die man uerberpruefen koennte:
@@ -248,9 +248,9 @@ Komplexere Checks koennen hierbei auch mit dem Schluesselwort `constraint`
 benannt werden:
 
 ```sql
-create table <name>(
-	...
-	constraint <constraint_name> check(<condition>)
+create table <name> (
+  ...
+  constraint <constraint_name> check (<condition>)
 );
 ```
 
@@ -336,11 +336,11 @@ allgemein die Struktur:
 ```sql
 select A_1,...,A_n
 from   R_1,...,R_k
-where P.
+where P;
 ```
 
-Hierbei sind $A_1,...,A_n$ die selektierten (bzw. eigentlich projezierten)
-Attribute, $R_1,...,R_k$ die Relationen, aus welchen die Attributwerte entnommen
+Hierbei sind $A_1,\ldots,A_n$ die selektierten (bzw. eigentlich projezierten)
+Attribute, $R_1,\ldots,R_k$ die Relationen, aus welchen die Attributwerte entnommen
 und auf dessen Schemata gearbeitet wird, und $P$ das Selektionspraedikat wie
 jenes wie fuer $\sigma$ aus der relationalen Algebra. Eine einfache Anfrage
 waere es zum Beipsiel, alle Studenten mit Namen *Fichte* zu finden:
@@ -348,7 +348,7 @@ waere es zum Beipsiel, alle Studenten mit Namen *Fichte* zu finden:
 ```sql
 select MatrNr
 from Studenten
-where Name='Fichte';
+where Name = 'Fichte';
 ```
 
 Hierbei sei angemerkt, dass in der Attributangabe auch `*` als *Wildcard*
@@ -361,7 +361,7 @@ kann. Diese Umbennung macht man dabei mit einem `as` Statement, wobei die Syntax
 ```sql
 select MatrNr as M, Name Bla -- mit/ohne 'as'
 from Studenten
-where Name='Fichte';
+where Name = 'Fichte';
 ```
 
 ### Sortieren von Daten
@@ -578,8 +578,8 @@ Studenten die mehr als zwei Vorlesungen hoeren:
 ```sql
 select Name
 from Studenten s, hoeren h
-where s.MatrNr=h.MatrNr
-group by s.MatrNr
+where s.MatrNr = h.MatrNr
+group by s.Name
 having count(*) > 2;
 ```
 
@@ -591,9 +591,9 @@ in Semestern niederiger als $5$ betrachten:
 select Name
 from Studenten s, hoeren h
 where
-	s.MatrNr=h.MatrNr and
-    s.Semester < 5
-group by s.MatrNr
+  s.MatrNr = h.MatrNr and
+  s.Semester < 5
+group by s.Name
 having count(*) > 2;
 ```
 
@@ -653,8 +653,8 @@ Unteranfrage verwenden muss:
 select s1.Name, s1.Semester, s2.Name, s2.Semester
 from Studenten s1, Studenten s2
 where
-	s1.Semester = (select min(Semester) from Studenten) and
-	s2.Semester = (select max(Semester) from Stduenten);
+  s1.Semester = (select min(Semester) from Studenten) and
+  s2.Semester = (select max(Semester) from Stduenten);
 ```
 
 oder ein Vereinigung verwenden muss:
@@ -691,10 +691,10 @@ in der `select`-Klausel und in Vergleichen in der `where`-Klausel
 nuetzlich. Suchen wir beispielsweise alle Studenten, die nicht im niedrigsten
 Semester sind:
 
-```
+```sql
 select Name
 from Studenten
-where Semester = (select min(Semester) from Studenten);
+where Semester != (select min(Semester) from Studenten);
 ```
 
 Wie man sieht, werden Unteranfragen also immer in Klammern angegeben, und da es
@@ -711,7 +711,7 @@ vom System eine Fehlermeldung ausgegeben. So koennten wir beispielsweise ohne
 deren Namen anfuegen:
 
 ```sql
-select Name, (select sum(SWS) from Vorlesungen where PersNr=gelesenVon)
+select Name, (select sum(SWS) from Vorlesungen where PersNr = gelesenVon)
 from Professoren;
 ```
 
@@ -720,8 +720,8 @@ neuer Name gegeben werden:
 
 ```sql
 select
-	Name,
-	(select sum(SWS) as Foo from Vorlesungen where PersNr=gelesenVon) as Bar
+  Name,
+  (select sum(SWS) as Foo from Vorlesungen where PersNr = gelesenVon) as Bar
 from Professoren;
 ```
 
@@ -774,10 +774,10 @@ lesen:
 ```sql
 select temp.MatrNr, temp.Name, temp.Anzahl
 from (
-	select s.MatrNr, s.Name, count(*) as Anzahl
-	from Studenten s, hoeren h
-	where s.MatrNr=h.MatrNr
-	group by s.MatrNr, s.Name;
+  select s.MatrNr, s.Name, count(*) as Anzahl
+  from Studenten s, hoeren h
+  where s.MatrNr = h.MatrNr
+  group by s.MatrNr, s.Name
 ) as temp
 where temp.Anzahl > 2;
 ```
@@ -806,10 +806,10 @@ werden (wir nehmen dazu an, es gaebe ein Attribut `Alter` fuer beide Relationen)
 select *
 from Assistenten a
 where exists (
-			select *
-			from Professoren p
-			where p.PersNr=a.Boss
-			and a.Alter < p.Alter
+  select *
+  from Professoren p
+  where p.PersNr = a.Boss
+  and a.Alter > p.Alter
 );
 ```
 
@@ -819,9 +819,9 @@ Unteranfragen entschachtelt werden koennen:
 
 
 ```sql
-select a.*
+select distinct a.*
 from Assistenten a, Professoren p
-where a.Boss=p.PersNr and a.Alter < p.Alter;
+where a.Boss = p.PersNr and a.Alter > p.Alter;
 ```
 
 Das waere also eine weniger komplexe Anfrage die das DBMS sechneller
@@ -839,9 +839,9 @@ Studenten, die eine Vorlesung hoeren:
 select s.Name
 from Studenten s
 where s.MatrNr in (
-	select h.MatrNr
-	from hoeren h;
-)
+  select h.MatrNr
+  from hoeren h
+);
 ```
 
 Aber wie gesagt geht das auch mit `exists`:
@@ -850,9 +850,9 @@ Aber wie gesagt geht das auch mit `exists`:
 select s.Name
 from Studenten s
 where exists (
-			select h.VorlNr
-			from hoeren h
-			where h.MatrNr=s.MatrNr
+  select h.VorlNr
+  from hoeren h
+  where h.MatrNr = s.MatrNr
 );
 ```
 
@@ -879,10 +879,10 @@ studieren:
 ```sql
 select s1.Name
 from Studenten s1
-where s1.Semester = any(
-	select s2.Semester
-	from Studenten s2
-	where s2.MatrNr != s1.MatrNr
+where s1.Semester = any (
+  select s2.Semester
+  from Studenten s2
+  where s2.MatrNr != s1.MatrNr
 );
 ```
 
@@ -892,10 +892,10 @@ Wie gesagt geht das aber auch mit `exists`:
 select s1.Name
 from Studenten s1
 where exists (
-	select *
-	from Studenten s2
-	where s1.MatrNr != s2.MatrNr and
-		  s1.Semester = s2.Semester
+  select *
+  from Studenten s2
+  where s1.MatrNr != s2.MatrNr and
+        s1.Semester = s2.Semester
 );
 ```
 
@@ -954,11 +954,11 @@ wollen z.B. alle Studenten, die nicht im ersten oder letzten Semester sind:
 ```sql
 (select Name from Studenten)
 except
-(select Name from Studenten where Semester = (select min(Semester) from
-Studenten))
+(select Name from Studenten
+ where Semester = (select min(Semester) from Studenten))
 except
-(select Name from Studenten where Semester = (select max(Semester) from
-Studenten));
+(select Name from Studenten
+ where Semester = (select max(Semester) from Studenten));
 ```
 
 ### Implikation und Allquantor
@@ -969,18 +969,18 @@ existierenden Operationen nachgebildet werden. Selbes gilt fuer die Implikation
 $\Rightarrow$. Hierfuer muss man sich an die mathematischen Aequivalenzen fuer
 diese Operatoren halten:
 
-* $\forall x F \equiv \not\exists x: \not F$. Wenn die Formel $F$ fuer alle $x$
+* $\forall x F \equiv \not\exists x: \neg F$. Wenn die Formel $F$ fuer alle $x$
   gilt, dann gibt es kein $x$, sodass die Formel fuer dieses $x$ nicht gilt.
 
-* $F \Rightarrow G \equiv \not F \lor G$. Ex falso quodlibet oder wenn $F$, dann
+* $F \Rightarrow G \equiv \neg F \lor G$. Ex falso quodlibet oder wenn $F$, dann
   auch $G$.
 
 Suchen wir beispielsweise alle Studenten, die alle Vorlesungen von Sokrates
 hoeren. In Tupelkalkuel:
 
-$\{s \,|\, s \in Studenten \land \forall v \in Vorlesungen(\exists p \in
-Professoren(p.Name='Sokrates' \land p.PersNr=v.gelesenVon) \Rightarrow \exists h
-\in hoeren(h.MatrNr=s.MatrNr \land h.VorlNr=v.VorlNr))\}$
+$\{s \,|\, s \in \text{Studenten} \land \forall v \in \text{Vorlesungen}(\exists p \in
+\text{Professoren}(p.\text{Name}=\text{‘Sokrates’} \land p.\text{PersNr}=v.\text{gelesenVon}) \Rightarrow \exists h
+\in \text{hoeren}(h.\text{MatrNr}=s.\text{MatrNr} \land h.\text{VorlNr}=v.\text{VorlNr}))\}$
 
 Fuer jede Vorlesung muss also gelten, wenn sie von Sokrates gelesen werden, dann
 muss der Student sie hoeren. Diese Formel enthaelt aber sowohl einen Allquantor,
@@ -990,9 +990,9 @@ sowie auch eine Implikation. Beide diese Operatoren koennen wir in SQL nicht
 Wir koennen aber ebenso sagen, dass es fuer einen solchen Studenten keine
 Vorlesung gibt, die von Sokrates gelesen wird und die der Student nicht besucht:
 
-$\{s \,|\, s \in Studenten \land \not\exists v \in Vorlesungen(\exist p \in
-Professoren(p.Name='Sokrates' \land p.PersNr=v.gelesenVon) \land \not\exist h
-\in hoeren(h.MatrNr=s.MatrNr \land v.VorlNr=h.vorlNr))\}$
+$\{s \,|\, s \in \text{Studenten} \land \not\exists v \in \text{Vorlesungen}(\exists p \in
+\text{Professoren}(p.\text{Name}=\text{‘Sokrates’} \land p.\text{PersNr}=v.\text{gelesenVon}) \land \not\exists h
+\in \text{hoeren}(h.\text{MatrNr}=s.\text{MatrNr} \land v.\text{VorlNr}=h.\text{vorlNr}))\}$
 
 Dieser Ausdruck hat, wie man sieht, nur mehr Existenzquantoren. Wir koennen ihn
 fast wortwoertlich in SQL uebersetzen:
@@ -1001,23 +1001,22 @@ fast wortwoertlich in SQL uebersetzen:
 select s.Name
 from Studenten s
 where not exists (
-			select v.VorlNr
-			from Vorlesungen v
-			where exists (
-						select *
-						from Professoren p
-						where p.Name='Sokrates' and
-									v.gelesenVon=p.PersNr
-			) and
-			not exists (
-					select *
-					from hoeren h
-					where h.MatrNr=s.MatrNr and
-								h.VorlNr=v.VorlNr
-			)
+      select v.VorlNr
+      from Vorlesungen v
+      where exists (
+            select *
+            from Professoren p
+            where p.Name = 'Sokrates' and
+                  v.gelesenVon = p.PersNr
+      ) and
+      not exists (
+            select *
+            from hoeren h
+            where h.MatrNr = s.MatrNr and
+                  h.VorlNr = v.VorlNr
+      )
 );
 ```
-
 Den ersten Existenzquantor in der Unteranfrage koennen wir hier sogar
 entschachteln. Den zweiten nicht mehr, weil `not exists` fuer alle Eintraege
 etwas ueberpruefen muss, waehren wir fuer den ersten Existenzquantor nur ein
@@ -1027,16 +1026,16 @@ geeignetes Tupel finden muessen.
 select s.Name
 from Studenten s
 where not exists (
-			select v.VorlNr
-			from Vorlesungen v, Professoren p
-			where v.gelesenVon=p.PersNr and
-						p.Name = 'Sokrates'   and
-						not exists (
-								select *
-								from hoeren h
-								where h.MatrNr=s.MatrNr and
-								      h.VorlNr=v.VorlNr
-						)
+      select v.VorlNr
+      from Vorlesungen v, Professoren p
+      where p.Name = 'Sokrates' and
+            v.gelesenVon = p.PersNr and
+            not exists (
+                select *
+                from hoeren h
+                where h.MatrNr = s.MatrNr and
+                      h.VorlNr = v.VorlNr
+            )
 );
 ```
 
@@ -1068,9 +1067,9 @@ ersetzen:
 ```sql
 select Titel
 from
-	(Studenten s join hoeren h on h.MatrNr=s.MatrNr)
-	join Vorlesungen v on v.VorlNr=h.VorlNr
-where s.Name='Fichte';
+  (Studenten s join hoeren h on h.MatrNr = s.MatrNr)
+  join Vorlesungen v on v.VorlNr = h.VorlNr
+where s.Name = 'Fichte';
 ```
 
 Was man hier sieht:
@@ -1089,8 +1088,8 @@ wenn sie Vorlesungen hoeren, dann auch diese sehen:
 
 ```sql
 select s.Name, v.Titel
-from (Studenten s left outer join hoeren h on h.MatrNr=s.MatrNr)
-		 left outer join Vorlesungen v on v.VorlNr=h.VorlNr;
+from (Studenten s left outer join hoeren h on h.MatrNr = s.MatrNr)
+     left outer join Vorlesungen v on v.VorlNr = h.VorlNr;
 ```
 
 oder wie gesagt mit Mengenoperationen:
@@ -1099,18 +1098,18 @@ oder wie gesagt mit Mengenoperationen:
 /* Zuerst die mit Vorlesungen */
 select s.Name, v.Titel
 from Studenten s, hoeren h, Vorlesungen v
-where s.MatrNr=h.MatrNr and
-			h.VorlNr=v.VorlNr
+where s.MatrNr = h.MatrNr and
+      h.VorlNr = v.VorlNr
 
 union all -- wird auch keine geben, aber effizienter
 
 /* Dann die ohne */
 select s.Name, null
 from Studenten s
-where not exists(
-			select *
-			from hoeren h
-			where h.MatrNr=s.MatrNr
+where not exists (
+      select *
+      from hoeren h
+      where h.MatrNr = s.MatrNr
 );
 ```
 
@@ -1124,8 +1123,8 @@ Tabellen zu erstellen. Die Syntax von `with ... as` ist wie folgt:
 ```sql
 with <Name1>(<Schema>) as (<Attribute>),
      <Name2>(<Schema>) as (<Attribute>),
-	 ...
-	 ;
+   ...
+   ;
 ```
 
 Was man sich unbedingt merken sollte, ist das man in einer SQL-Anfrage immer nur
@@ -1144,30 +1143,29 @@ Vorlesungen des Professoren hoeren, der Platon als Assistent hat:
 
 ```sql
 with hoeren2 as (
-		 select s.Name, h.*, v.Titel
-		 from Studenten s, hoeren h, Vorlesungen v
-		 where s.MatrNr = h.MatrNr and
-		 			 h.VorlNr = v.VorlNr
-	), Professoren2 as (
-		 select p.PersNr as Prof, a.Name as Assi
-		 from Professoren p, Assistenten a
-		 where p.PersNr=a.Boss
+     select s.Name, h.*, v.Titel
+     from Studenten s, hoeren h, Vorlesungen v
+     where s.MatrNr = h.MatrNr and
+            h.VorlNr = v.VorlNr
+  ), Professoren2 as (
+     select p.PersNr as Prof, a.Name as Assi
+     from Professoren p, Assistenten a
+     where p.PersNr = a.Boss
 )
-
 
 select s.Name
 from Studenten s
-where not exists(
-			select *
-			from Vorlesungen v, Professoren2 p
-			where p.Assi='Platon' and
-						v.gelesenVon = p.Prof
-			and not exists (
-					select *
-					from hoeren2 h
-					where h.MatrNr=s.MatrNr and
-								h.VorlNr=v.VorlNr
-			)
+where not exists (
+      select *
+      from Vorlesungen v, Professoren2 p
+      where p.Assi = 'Platon' and
+            v.gelesenVon = p.Prof
+      and not exists (
+          select *
+          from hoeren2 h
+          where h.MatrNr = s.MatrNr and
+                h.VorlNr = v.VorlNr
+      )
 );
 ```
 
@@ -1204,7 +1202,7 @@ Man kann Daten wie beim `with-as` Konstrukt entweder manuell spezifizieren, oder
 durch eine Anfrage. Manuell geht das wieder mit dem Schluesselwort `values`:
 
 ```sql
-insert into Studenten values (1, Peter, 5), (2, Hansi, 9);
+insert into Studenten values (1, 'Peter', 5), (2, 'Hansi', 9);
 ```
 
 Mit einem Statement geht es dann so, wobei das Schema natuerlich ident mit der
@@ -1213,7 +1211,7 @@ Zielrelation sein muss:
 ```sql
 /* Wir machen alle Professoren zu Erstsemestern */
 insert into Studenten
-	(select PersNr as MatrNr, Name, 1 from Professoren);
+  (select PersNr as MatrNr, Name, 1 from Professoren);
 ```
 
 Wenn man nicht alle Attribute einfuegen kann oder will, kann man nach der
@@ -1257,9 +1255,9 @@ dem `in` statements eine Selektion fuer ein Tupel machen:
 update Assistenten
 set Boss = null
 where PersNr in (
-	select a.PersNr
-	from Assistenten a, Professoren p
-	where p.Name = 'Sokrates' and a.Boss = p.PersNr;
+  select a.PersNr
+  from Assistenten a, Professoren p
+  where p.Name = 'Sokrates' and a.Boss = p.PersNr;
 )
 ```
 
@@ -1327,12 +1325,12 @@ Default-Wert fuer `x`, falls `x` null ist.
 `case` ist aehnlich zu anderen `switch/case`-Ausdruecken in vielen anderen
 Sprachen. Hierbei ist die Syntax wie folgt:
 
-```
+```sql
 (case
-	when <condition> then <expression>
-	when <condition> then <expression>
-	...
-	else ...
+  when <condition> then <expression>
+  when <condition> then <expression>
+  ...
+  else <expression>
 end)
 ```
 
@@ -1481,9 +1479,9 @@ eine solche Sicht nun also haben?
       Untertyp-Relationen mit einer Sicht definieren, wobei wir die Attribute
       des Obertyps noch an den Untertyp dranjoinen.
 
-  2. Indem wir die Untertypen voll definieren, und dann eine Sicht erstellen,
-     die nur jene Attribute der Untertypen enthaelt, die eigentlich der Obertyp
-     definieren sollte.
+   2. Indem wir die Untertypen voll definieren, und dann eine Sicht erstellen,
+      die nur jene Attribute der Untertypen enthaelt, die eigentlich der Obertyp
+      definieren sollte.
 
   Die erste Variante ist besser, wenn wir oefter Zugriffe auf die Obertypen
   machen und nur selten die Untertypen in ihrer vollen Definition
@@ -1500,7 +1498,7 @@ sind. Generell sind Sichten nur dann veraenderbar wenn:
 2. Sie den Schluessel dieser Tabelle auch enthalten.
 
 3. Sie nur Attribute und Tupel enthalten, die in der Basistabelle auch enthalten
-   sind. Das bedeutet insbesondere, dass keien Aggregationen durchgefuehrt
+   sind. Das bedeutet insbesondere, dass keine Aggregationen durchgefuehrt
    werden duerfen, sowie auch generell keine Gruppierungen durch `group by`.
 
 ## Referentielle Integritaet
@@ -1509,12 +1507,12 @@ Ist ein Teil des Schemas einer Relation $S$ der Schluessel einer anderen
 Relation $R$, so nennt man diese Attributmenge in $S$ einen *Fremdschluessel*
 auf die Relation $R$. Referentielle Integritaet beschreibt nun die Eigenschaft
 dieses Fremdschluessels in $S$, immer auf ein existentes Tupel in $R$ zu
-seigen. Ansonsten waere der Fremdschluessel eine *Dangling Reference*. Diese
+zeigen. Ansonsten waere der Fremdschluessel eine *Dangling Reference*. Diese
 Eigenschaft, dass ein Fremdschluessel immer gueltig sein soll, nennt man
 *referentielle Integritaet*.
 
 Sei $\alpha \in S$ der Fremdschluessel auf $R$, wobei $\kappa$ der Schluessel
-von $R$ ist, sodass also gilt $\alpha = \kapp$. Damit $\alpha$ dann
+von $R$ ist, sodass also gilt $\alpha = \kappa$. Damit $\alpha$ dann
 referentielle Integritaet aufweisst, muss fuer ein Tupel $s \in S$ folgendes
 gelten:
 
@@ -1531,7 +1529,7 @@ es hier mehrere Anforderungen an die beiden Relationen $S$ und $R$, sodass
 referentielle Integritaet garantiert sein kann (wieder fuer Tupel $s \in S, r
 \in R$):
 
-1. $$\Pi_\alpha(S) \subseteq \Pi_\kappa(R)$$: Jeder Fremdschluessel in $S$ muss
+1. $\Pi_\alpha(S) \subseteq \Pi_\kappa(R)$: Jeder Fremdschluessel in $S$ muss
    als Pendant auch immer einen echten Schluessel in $R$ besitzen.
 
 2. Wenn wir ein neues Tupel $s$ in $S$ einfuegen, muss also immer ein $r \in R$
@@ -1540,7 +1538,7 @@ referentielle Integritaet garantiert sein kann (wieder fuer Tupel $s \in S, r
 
 3. Wenn wir die Fremdschluesselattribute $s.\alpha$ des Tupels $s \in S$
    veraendern zu $s.\alpha'$, somuss danach das selbe gelten wie in (2):
-   $s.\alpha' in \Pi_\kappa{R}$.
+   $s.\alpha' \in \Pi_\kappa{R}$.
 
 4. Gibt es fuer einen Schluessel $r.\kappa$ mit $r \in R$ auch nur eine Kopie
    $s.\alpha$ wo $s \in S$ und $\alpha$ Fremdschluessel, dann darf $r.\kappa$
@@ -1564,8 +1562,8 @@ Tupel noch anfuehren. Also allgemein:
 
 ```sql
 create table <Name>(
-	<Attribut> <Typ> references <Relation>(<Referenzierte Attribute>),
-	...
+  <Attribut> <Typ> references <Relation>(<Referenzierte Attribute>),
+  ...
 );
 ```
 
@@ -1601,11 +1599,11 @@ Die allgemeine Syntax waere also nun:
 
 ```sql
 create table <Name>(
-	<Attribut> <Typ>,
-	...
+  <Attribut> <Typ>,
+  ...
 
-	foreign key(<Attribut1>, <Attribut2>)
-	references <Relation>(<Referenzierte Attribute>)
+  foreign key(<Attribut1>, <Attribut2>)
+  references <Relation>(<Referenzierte Attribute>)
 );
 ```
 
@@ -1623,16 +1621,16 @@ koennen. Generell hat man dann die Syntax:
 
 ```sql
 <Attribut> <Typ>
-	references <Relation>(<Referenzierte Attribute>)
-	on <condition> <action>;
+  references <Relation>(<Referenzierte Attribute>)
+  on <condition> <action>;
 ```
 
 Bzw. aehnliches fuer die out-of-line Variante:
 
 ```sql
 foreign key(<Attribut1>, <Attribut2>)
-	references <Relation>(<Referenzierte Attribute>)
-	on <condition> <action>
+  references <Relation>(<Referenzierte Attribute>)
+  on <condition> <action>
 ```
 
 Was man durch diese Angaben bewirken kann, ist das bei einer Aenderung des
@@ -1667,9 +1665,9 @@ sich ein anderer Dozent findet):
 
 ```sql
 create table Vorlesungen(
-	...
-	gelesenVon integer references Professoren on delete set null
-	...
+  ...
+  gelesenVon integer references Professoren on delete set null
+  ...
 );
 ```
 
@@ -1684,20 +1682,20 @@ Sei $S$ eine Relation mit Fremdschluessel $k$, die auf eine Relation $R$ verweis
 
 ```sql
 create table S(
-		k integer,
-		foreign key(k) references R(k)
-		on <condition> <action>
-	)
+  k integer,
+  foreign key(k) references R(k)
+  on <condition> <action>
+);
 ```
 
 Note hier dass die condition sich auf eine Aktion auf die referenzierten Tupel in $R$ bezieht, nicht auf die Spalten in $S$.
 
-Wo <condition> ist eines von:
+Wo `<condition>` ist eines von:
 
 * update
 * delete
 
-Und <action> ist eines von (*referential actions*):
+Und `<action>` ist eines von (*referential actions*):
 
 
 ## Rekursion
@@ -1708,14 +1706,14 @@ Recursive queries are of the form
 
 ```sql
 with recursive <table_name>(n) as (
-	select 1 -- anchor, the first selection, non-recursive
+  select 1 -- anchor, the first selection, non-recursive
 
-	union all -- to join subsequent stacks
+  union all -- to join subsequent stacks
 
-	-- recursive query, evaluated
-	-- while returns something
-	select n + 1 from <table_name>
-)
+  -- recursive query, evaluated
+  -- while returns something
+  select n + 1 from <table_name>
+) ...
 ```
 
 In actuality, this is not recursion. The "recursive" query will just repeat for all the new input it gets.
@@ -1724,18 +1722,17 @@ Example:
 
 ```sql
 with recursive vorher(vorlesung, semester) as (
-	select v.vorlnr, 0
-	from vorlesungen v
-	where v.titel = 'Der Wiener Kreis'
+  select v.vorlnr, 0
+  from Vorlesungen v
+  where v.titel = 'Der Wiener Kreis'
 
-	union all
+  union all
 
-	select vs.vorgaenger, vo.semester + 1
-	from voraussetzen vs, vorher vo
-	where vs.nachfolger = vo.vorlesung
+  select vs.vorgaenger, vo.semester + 1
+  from Voraussetzen vs, vorher vo
+  where vs.nachfolger = vo.vorlesung
 )
-
-select * from vorher
+select * from vorher;
 ```
 
 1. Here, the table first includes only 'Der Wiener Kreis'.
@@ -1759,36 +1756,33 @@ with recursive numbers(n) as (
   where n < 10
 )
 
-select * from numbers limit 100;
+select * from numbers;
 ```
 
 Other example, friends of Fichte with Grad:
 
 ```sql
 with recursive friends(name, matrnr, grad) as (
- 	select s.name, s.matrnr, 0
-  	from studenten s
-  	where s.name = 'Fichte'
+    select s.name, s.matrnr, 0
+    from Studenten s
+    where s.name = 'Fichte'
 
-  	union all
+    union all
 
-  	select s.name, s.matrnr, f.grad + 1
-  	from studenten s, hoeren h1, hoeren h2, friends f
-  	where
-  		s.matrnr = h1.matrnr	and
-  		h2.matrnr = f.matrnr	and
-	  	h1.matrnr != h2.matrnr	and
-  		h1.vorlnr = h2.vorlnr	and
-  		f.grad < 5
+    select s.name, s.matrnr, f.grad + 1
+    from Studenten s, hoeren h1, hoeren h2, friends f
+    where
+        s.matrnr = h1.matrnr and
+        h2.matrnr = f.matrnr and
+        h1.matrnr != h2.matrnr and
+        h1.vorlnr = h2.vorlnr and
+        f.grad < 5
 )
-
-
 select name, matrnr, min(grad) as grad
 from friends
 group by name, matrnr;
 ```
 
-```
 
 ## Examples
 
@@ -1798,68 +1792,72 @@ Alle Studenten, die alle 4-stuendigen Vorlesungen hoeren:
 select s.name
 from Studenten s
 where not exists (
-  select *
-  from Vorlesungen v
-  where v.SWS=4 and not exists (
     select *
-    from hoeren h
-    where h.matrnr = s.matrnr and h.vorlnr = v.vorlnr
+    from Vorlesungen v
+    where v.SWS = 4 and not exists (
+        select *
+        from hoeren h
+        where h.matrnr = s.matrnr
+          and h.vorlnr = v.vorlnr
     )
-  )
+);
 ```
 
-or
+oder auch:
 
 ```sql
 select s.name
 from Studenten s
 where not exists (
-  select *
-  from Vorlesungen v
-  where v.SWS=4 and v.vorlnr not in
-  (select h.vorlnr from hoeren h where h.matrnr=s.matrnr)
-  )
+    select *
+    from Vorlesungen v
+    where v.SWS = 4
+      and v.vorlnr not in
+      (select h.vorlnr  from hoeren h where h.matrnr = s.matrnr)
+);
 ```
 
 Studenten mit Semester > 5 and Notenschnitt < 2.5:
 
 ```sql
 select s.matrnr, s.name, avg(p.note)
-from studenten s, pruefen p
-where
-	s.matrnr = p.matrnr	and
-    s.semester > 5
+from Studenten s, pruefen p
+where s.matrnr = p.matrnr
+  and s.semester > 5
 group by s.matrnr, s.name
-having
-	avg(p.note) < 2.5
+having avg(p.note) < 2.5;
 ```
 
-Cast: `cast(avg(p.note) as integer)`
+Cast:
+```sql
+ cast(avg(p.note) as integer)
+ ```
 
 Tupelkalkuel:
 
-$\{s \, | \, s \in S \land \forall v \in V (\exists h \in hoeren (h.Vorlrn = v.Vorlnr \land h.MatrnNr = s.Matrnr))\}$
+$\{s \, | \, s \in \text{Studenten} \land \forall v \in \text{Vorlesungen} (\exists h \in \text{hoeren}
+ (h.\text{VorlNn} = v.\text{VorlNr} \land h.\text{MatrnNr} = s.\text{MatrNr}))\}$
+
+(Studenten, die alle Vorlesungen hoeren)
 
 ```sql
 select *
-from studenten s
+from Studenten s
 where not exists
 (
-	select *
-  	from vorlesungen v
+    select *
+    from Vorlesungen v
     where not exists
-  	(
-    	select *
+    (
+        select *
         from hoeren h
-      	where
-      		h.matrnr = s.matrnr	and
-      		v.vorlnr = h.vorlnr
-
+        where h.matrnr = s.matrnr  
+          and v.vorlnr = h.vorlnr
     )
-)
+);
 ```
 
-Da $\forall x P \equiv \neg \exists x (\neg p)$
+Da $\forall x P \equiv \not \exists x (\neg P)$
 
 ## Gotchas
 
